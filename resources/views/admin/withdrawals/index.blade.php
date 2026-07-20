@@ -18,15 +18,23 @@
         <div class="table-responsive">
             <table class="table table-png align-middle">
                 <thead>
-                    <tr><th>Date</th><th>Member</th><th>Wallet</th><th>Amount</th><th>Status</th><th>Action</th></tr>
+                    <tr><th>Date</th><th>Member</th><th>User ID</th><th>Wallet</th><th>Amount</th><th>BEP20 Address</th><th>Status</th><th>Action</th></tr>
                 </thead>
                 <tbody>
                     @forelse ($withdrawals as $w)
                         <tr>
                             <td>{{ $w->created_at->format('d M Y, H:i') }}</td>
                             <td>{{ $w->user->name }}</td>
+                            <td>{{ $w->user->id }}</td>
                             <td class="text-capitalize">{{ $w->wallet_type }}</td>
                             <td class="fw-semibold">${{ number_format($w->amount, 2) }}</td>
+                            <td>
+                                @if ($w->bep20_address)
+                                    <code class="small">{{ $w->bep20_address }}</code>
+                                @else
+                                    <span class="text-muted small">—</span>
+                                @endif
+                            </td>
                             <td>
                                 <span class="badge
                                     @class([
@@ -71,7 +79,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="6" class="text-center text-muted py-4">No withdrawals in this category.</td></tr>
+                        <tr><td colspan="8" class="text-center text-muted py-4">No withdrawals in this category.</td></tr>
                     @endforelse
                 </tbody>
             </table>

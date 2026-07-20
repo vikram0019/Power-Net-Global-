@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row gy-4">
             <div class="col-lg-4">
-                <h4 class="text-white fw-bold mb-2">Power<span style="color: var(--png-gold-400);">Net</span>Global</h4>
+                <img src="{{ asset('assets/img/logo.png') }}" alt="PowerNetGlobal" class="site-logo sm mb-2">
                 <p class="small mb-0">A global rewards and investment network built on direct rewards, level income, monthly profit sharing, and a 13-rank achievement ladder.</p>
             </div>
             <div class="col-lg-2 col-6">

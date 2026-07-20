@@ -27,7 +27,7 @@ class PayLevelIncome
             $upline->loadMissing('currentRank');
             $levelsUnlocked = $upline->currentRank->levels_unlocked ?? 0;
 
-            if ($levelsUnlocked >= $level && isset($levelPercentages[$level])) {
+            if ($levelsUnlocked >= $level && isset($levelPercentages[$level]) && $upline->hasMinimumInvestment()) {
                 $amount = round(
                     (float) $investment->amount * ($poolPercent / 100) * ($levelPercentages[$level] / 100),
                     2

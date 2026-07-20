@@ -38,7 +38,7 @@
                     <div class="card-png p-4 h-100">
                         <i class="bi bi-graph-up-arrow fs-2 mb-3" style="color: var(--png-navy-700);"></i>
                         <h5 class="fw-bold">Monthly Profit Sharing</h5>
-                        <p class="text-muted small mb-0">Every investment earns 8% monthly profit for 24 months, credited directly to your ROI wallet.</p>
+                        <p class="text-muted small mb-0">Every investment earns 8% monthly profit for {{ config('mlm.roi_max_months') }} months, credited directly to your ROI wallet.</p>
                     </div>
                 </div>
                 <div class="col-lg-6">

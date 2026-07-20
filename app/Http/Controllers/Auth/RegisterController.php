@@ -27,7 +27,18 @@ class RegisterController extends Controller
             'mobile' => ['required', 'string', 'max:20', 'unique:users,mobile'],
             'email' => ['required', 'email', 'max:150', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'referral_code' => ['required', 'string', 'exists:users,referral_code'],
+            'referral_code' => [
+                'required', 'string',
+                function ($attribute, $value, $fail) {
+                    $sponsor = User::where('referral_code', $value)->first();
+
+                    if (! $sponsor) {
+                        $fail('This referral code does not exist.');
+                    } elseif (! $sponsor->isActiveSponsor()) {
+                        $fail('This referral code belongs to an account that is not yet active. Ask your sponsor to wait for admin approval.');
+                    }
+                },
+            ],
         ]);
 
         $sponsor = User::where('referral_code', $validated['referral_code'])->firstOrFail();
@@ -75,7 +86,7 @@ class RegisterController extends Controller
         }
 
         $user->update([
-            'status' => 'active',
+            'status' => 'approval_pending',
             'email_verified_at' => now(),
             'otp_code' => null,
             'otp_expires_at' => null,
@@ -87,7 +98,7 @@ class RegisterController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()->route('dashboard')->with('status', 'Welcome to PowerNetGlobal! Your account is verified.');
+        return redirect()->route('dashboard')->with('status', 'Your email is verified! Your account is now pending admin approval before you can sponsor other members.');
     }
 
     public function resendOtp()

@@ -22,7 +22,7 @@ return [
 
     // Monthly ROI as % of invested amount, paid for this many months.
     'monthly_roi_percent' => 8,
-    'roi_max_months' => 24,
+    'roi_max_months' => 25,
 
     // Weighting applied to a member's top-3 legs (by team business volume) for rank qualification.
     'leg_weights' => [50, 30, 20],

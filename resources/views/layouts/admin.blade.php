@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Admin') — PowerNetGlobal</title>
+    @include('partials.favicon')
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -13,16 +14,27 @@
 <body>
     <div class="app-shell">
         <aside class="app-sidebar d-none d-lg-block">
-            <a href="{{ route('admin.dashboard') }}" class="brand">Admin<span class="text-white">Panel</span></a>
+            <a href="{{ route('admin.dashboard') }}" class="brand justify-content-center">
+                <img src="{{ asset('assets/img/logo.png') }}" alt="PowerNetGlobal" class="site-logo sm">
+            </a>
             <nav class="nav flex-column py-3">
                 <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                     <i class="bi bi-speedometer2"></i> Dashboard
                 </a>
-                <a href="{{ route('admin.users.index') }}" class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.users.index') }}" class="nav-link {{ request()->routeIs('admin.users.index') || request()->routeIs('admin.users.show') ? 'active' : '' }}">
                     <i class="bi bi-people"></i> Users
+                </a>
+                <a href="{{ route('admin.users.create-dummy') }}" class="nav-link {{ request()->routeIs('admin.users.create-dummy') ? 'active' : '' }}">
+                    <i class="bi bi-person-plus"></i> Create Dummy User
+                </a>
+                <a href="{{ route('admin.fund-requests.index') }}" class="nav-link {{ request()->routeIs('admin.fund-requests.*') ? 'active' : '' }}">
+                    <i class="bi bi-receipt"></i> Fund Requests
                 </a>
                 <a href="{{ route('admin.withdrawals.index') }}" class="nav-link {{ request()->routeIs('admin.withdrawals.*') ? 'active' : '' }}">
                     <i class="bi bi-cash-stack"></i> Withdrawals
+                </a>
+                <a href="{{ route('admin.payment-settings.edit') }}" class="nav-link {{ request()->routeIs('admin.payment-settings.*') ? 'active' : '' }}">
+                    <i class="bi bi-qr-code"></i> Payment Settings
                 </a>
                 <a href="{{ route('admin.ranks.index') }}" class="nav-link {{ request()->routeIs('admin.ranks.*') ? 'active' : '' }}">
                     <i class="bi bi-trophy"></i> Rank Log

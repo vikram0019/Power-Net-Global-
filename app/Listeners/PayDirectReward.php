@@ -30,6 +30,10 @@ class PayDirectReward
 
     private function pay($recipient, $investor, int $investmentId, float $investmentAmount, string $type, float $percent): void
     {
+        if (! $recipient->hasMinimumInvestment()) {
+            return;
+        }
+
         $amount = round($investmentAmount * $percent / 100, 2);
 
         $this->walletService->credit(

@@ -3,65 +3,74 @@
 namespace App\Http\Controllers;
 
 use App\Mail\OtpMail;
+use App\Models\FundRequest;
+use App\Models\PaymentSetting;
 use App\Models\WalletTransaction;
 use App\Models\Withdrawal;
-use App\Services\InvestmentService;
-use App\Services\WalletService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-use InvalidArgumentException;
 
 class WalletController extends Controller
 {
-    public function index(Request $request)
+    public function addFundPage(Request $request)
     {
         $user = $request->user();
         $wallet = $user->wallet;
 
-        $transactions = WalletTransaction::where('user_id', $user->id)
-            ->latest()
-            ->paginate(15, ['*'], 'transactions');
-
-        $withdrawals = Withdrawal::where('user_id', $user->id)
+        $fundRequests = FundRequest::where('user_id', $user->id)
             ->latest()
             ->take(10)
             ->get();
 
+        $paymentSetting = PaymentSetting::first();
         $minimumInvestment = config('mlm.minimum_investment');
 
-        return view('dashboard.wallet', compact('wallet', 'transactions', 'withdrawals', 'minimumInvestment'));
+        return view('dashboard.wallet-add-fund', compact('wallet', 'fundRequests', 'paymentSetting', 'minimumInvestment'));
     }
 
-    public function addFund(Request $request, WalletService $walletService)
+    public function withdrawPage(Request $request)
     {
-        $validated = $request->validate([
-            'amount' => ['required', 'numeric', 'min:1'],
-        ]);
+        $user = $request->user();
+        $wallet = $user->wallet;
 
-        // Payment gateway is stubbed for now — funds are credited instantly.
-        $walletService->credit(
-            $request->user(),
-            'deposit',
-            (float) $validated['amount'],
-            'Fund added to wallet (mock payment)'
-        );
-
-        return back()->with('status', 'Funds added successfully. You can now invest.');
+        return view('dashboard.wallet-withdraw', compact('wallet'));
     }
 
-    public function invest(Request $request, InvestmentService $investmentService)
+    public function paymentHistory(Request $request)
+    {
+        $transactions = WalletTransaction::where('user_id', $request->user()->id)
+            ->latest()
+            ->paginate(50);
+
+        return view('dashboard.wallet-payment-history', compact('transactions'));
+    }
+
+    public function withdrawalRequests(Request $request)
+    {
+        $withdrawals = Withdrawal::where('user_id', $request->user()->id)
+            ->latest()
+            ->paginate(50);
+
+        return view('dashboard.wallet-withdrawal-requests', compact('withdrawals'));
+    }
+
+    public function submitFundRequest(Request $request)
     {
         $validated = $request->validate([
             'amount' => ['required', 'numeric', 'min:' . config('mlm.minimum_investment')],
+            'screenshot' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:5120'],
         ]);
 
-        try {
-            $investmentService->invest($request->user(), (float) $validated['amount']);
-        } catch (InvalidArgumentException $e) {
-            return back()->withErrors(['amount' => $e->getMessage()]);
-        }
+        $path = $request->file('screenshot')->store('fund-screenshots', 'public');
 
-        return back()->with('status', 'Investment placed successfully. Rewards have been distributed to your upline.');
+        FundRequest::create([
+            'user_id' => $request->user()->id,
+            'amount' => $validated['amount'],
+            'screenshot_path' => $path,
+            'status' => 'pending',
+        ]);
+
+        return back()->with('status', 'Payment submitted for review. Your investment will be activated once admin approves it.');
     }
 
     public function requestWithdrawal(Request $request)
@@ -69,6 +78,7 @@ class WalletController extends Controller
         $validated = $request->validate([
             'wallet_type' => ['required', 'in:roi,working'],
             'amount' => ['required', 'numeric', 'min:1'],
+            'bep20_address' => ['required', 'string', 'max:100'],
         ]);
 
         $user = $request->user();
@@ -76,7 +86,7 @@ class WalletController extends Controller
         $column = $validated['wallet_type'] === 'roi' ? 'roi_balance' : 'working_balance';
 
         if ((float) $wallet->{$column} < (float) $validated['amount']) {
-            return back()->withErrors(['amount' => 'Insufficient balance in the selected wallet.']);
+            return back()->withErrors(['amount' => 'Insufficient fund'])->withInput();
         }
 
         $otp = (string) random_int(100000, 999999);
@@ -85,6 +95,7 @@ class WalletController extends Controller
             'user_id' => $user->id,
             'wallet_type' => $validated['wallet_type'],
             'amount' => $validated['amount'],
+            'bep20_address' => $validated['bep20_address'],
             'status' => 'pending',
             'otp_code' => $otp,
             'otp_expires_at' => now()->addMinutes(10),
