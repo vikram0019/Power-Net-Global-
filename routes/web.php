@@ -31,6 +31,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
 
     Route::get('/signup', [RegisterController::class, 'show'])->name('signup');
+    Route::get('/signup/verify-referral', [RegisterController::class, 'verifyReferralCode'])->name('signup.verify-referral');
     Route::post('/signup', [RegisterController::class, 'register'])->name('signup.submit');
     Route::get('/signup/verify', [RegisterController::class, 'showOtp'])->name('signup.otp');
     Route::post('/signup/verify', [RegisterController::class, 'verifyOtp'])->name('signup.otp.submit');

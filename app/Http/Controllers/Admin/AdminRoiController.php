@@ -14,7 +14,12 @@ class AdminRoiController extends Controller
         $completedInvestments = Investment::where('status', 'completed')->count();
         $totalRoiPaid = (float) Investment::sum('roi_total_paid');
 
-        return view('admin.roi', compact('activeInvestments', 'completedInvestments', 'totalRoiPaid'));
+        $nextScheduledRun = now()->startOfMonth()->startOfDay();
+        if ($nextScheduledRun->lessThanOrEqualTo(now())) {
+            $nextScheduledRun = $nextScheduledRun->addMonthNoOverflow();
+        }
+
+        return view('admin.roi', compact('activeInvestments', 'completedInvestments', 'totalRoiPaid', 'nextScheduledRun'));
     }
 
     public function run(RoiPayoutService $roiPayoutService)

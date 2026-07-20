@@ -20,6 +20,27 @@ class RegisterController extends Controller
         return view('auth.signup', compact('referral'));
     }
 
+    public function verifyReferralCode(Request $request)
+    {
+        $code = trim((string) $request->query('code', ''));
+
+        if ($code === '') {
+            return response()->json(['valid' => false, 'message' => 'Enter a referral code.']);
+        }
+
+        $sponsor = User::where('referral_code', $code)->first();
+
+        if (! $sponsor) {
+            return response()->json(['valid' => false, 'message' => 'Invalid referral code.']);
+        }
+
+        if (! $sponsor->isActiveSponsor()) {
+            return response()->json(['valid' => false, 'message' => 'This referral code belongs to an account that is not yet active.']);
+        }
+
+        return response()->json(['valid' => true, 'name' => $sponsor->name]);
+    }
+
     public function register(Request $request)
     {
         $validated = $request->validate([

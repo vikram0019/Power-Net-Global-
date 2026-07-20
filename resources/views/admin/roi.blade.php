@@ -25,13 +25,29 @@
         </div>
     </div>
 
+    <div class="card-png p-4 mb-4">
+        <h6 class="fw-bold mb-2"><i class="bi bi-calendar-check me-1"></i> Automatic Monthly Payout</h6>
+        <p class="small text-muted mb-1">
+            ROI now runs automatically on the <strong>1st of every month</strong> — 8% of invested amount paid to every
+            ROI-enabled active investment under the {{ config('mlm.roi_max_months') }}-month cap. Dummy users with the
+            monthly ROI benefit turned off are skipped.
+        </p>
+        <p class="small text-muted mb-0">
+            Next scheduled run: <strong>{{ $nextScheduledRun->format('d M Y, H:i') }}</strong>
+            <span class="text-muted">({{ $nextScheduledRun->diffForHumans() }})</span>
+        </p>
+        <p class="small text-muted mt-2 mb-0">
+            The schedule is defined in <code>routes/console.php</code> and fires whenever
+            <code>php artisan schedule:run</code> is triggered — wire that to a cron entry
+            (<code>* * * * * php artisan schedule:run</code>) on your production server.
+        </p>
+    </div>
+
     <div class="card-png p-4">
-        <h6 class="fw-bold mb-2">Run Monthly ROI Payout</h6>
+        <h6 class="fw-bold mb-2">Run Manually</h6>
         <p class="small text-muted">
-            There is no real cron scheduler wired up in this environment. Click below to pay one month's ROI
-            (8% of invested amount) to every ROI-enabled active investment under the {{ config('mlm.roi_max_months') }}-month cap.
-            Dummy users with the monthly ROI benefit turned off are skipped. In production,
-            wire <code>php artisan investments:pay-roi</code> to a monthly cron job instead.
+            Use this to run a payout on demand (e.g. to catch up if a scheduled run was missed, or during local testing
+            where no cron is wired up).
         </p>
         <form method="POST" action="{{ route('admin.roi.run') }}">
             @csrf
