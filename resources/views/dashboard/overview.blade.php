@@ -4,6 +4,34 @@
 @section('page-title', 'Overview')
 
 @section('content')
+    <div class="card-png p-4 mb-4" x-data="{ copiedCode: false, copiedLink: false }">
+        <h6 class="fw-bold mb-3"><i class="bi bi-share me-1"></i> Your Referral</h6>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label small fw-semibold">Referral Code</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" value="{{ auth()->user()->referral_code }}" id="referralCode" readonly>
+                    <button class="btn btn-navy" type="button"
+                        @click="navigator.clipboard.writeText(document.getElementById('referralCode').value); copiedCode = true; setTimeout(() => copiedCode = false, 2000)">
+                        <span x-show="!copiedCode"><i class="bi bi-clipboard"></i></span>
+                        <span x-show="copiedCode"><i class="bi bi-check2"></i></span>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <label class="form-label small fw-semibold">Signup Link — share this so new members auto-fill your referral code</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" value="{{ route('signup', ['ref' => auth()->user()->referral_code]) }}" id="referralLink" readonly>
+                    <button class="btn btn-gold fw-bold" type="button"
+                        @click="navigator.clipboard.writeText(document.getElementById('referralLink').value); copiedLink = true; setTimeout(() => copiedLink = false, 2000)">
+                        <span x-show="!copiedLink"><i class="bi bi-clipboard me-1"></i> Copy Link</span>
+                        <span x-show="copiedLink"><i class="bi bi-check2 me-1"></i> Copied</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row g-3 mb-4">
         <div class="col-md-3 col-6">
             <div class="stat-card">

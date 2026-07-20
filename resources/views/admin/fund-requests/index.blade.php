@@ -21,7 +21,7 @@
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <div>
                             <a href="{{ route('admin.users.show', $fr->user) }}" class="fw-bold text-decoration-none">{{ $fr->user->name }}</a>
-                            <div class="small text-muted">User ID: {{ $fr->user->id }}</div>
+                            <div class="small text-muted">Referral Code: <code>{{ $fr->user->referral_code }}</code></div>
                         </div>
                         <span class="badge
                             @class([

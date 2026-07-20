@@ -16,8 +16,9 @@ class RoiPayoutService
      * Pays one month's ROI to every active, ROI-enabled investment still under the
      * configured month cap (25 by default). Dummy users created by admin default to
      * roi_enabled = false and are skipped unless admin turns the benefit on for them.
-     * Intended to be triggered once per "month" — via the admin panel button or the
-     * investments:pay-roi artisan command (wire the command to a real cron in production).
+     * Runs automatically on the 1st of every month via the schedule defined in
+     * routes/console.php, and can also be triggered on demand via the admin panel
+     * "Run ROI Now" button or the investments:pay-roi artisan command directly.
      */
     public function processDueInvestments(): int
     {

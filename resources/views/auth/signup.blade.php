@@ -16,7 +16,32 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('signup.submit') }}">
+    <form method="POST" action="{{ route('signup.submit') }}"
+        x-data="{
+            referralCode: '{{ old('referral_code', $referral) }}',
+            referralState: 'idle',
+            referralName: '',
+            referralMessage: '',
+            checkReferral() {
+                const code = this.referralCode.trim();
+                if (!code) { this.referralState = 'idle'; this.referralName = ''; this.referralMessage = ''; return; }
+                this.referralState = 'checking';
+                fetch('{{ route('signup.verify-referral') }}?code=' + encodeURIComponent(code))
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.valid) {
+                            this.referralState = 'valid';
+                            this.referralName = data.name;
+                        } else {
+                            this.referralState = 'invalid';
+                            this.referralMessage = data.message;
+                        }
+                    })
+                    .catch(() => { this.referralState = 'invalid'; this.referralMessage = 'Could not verify referral code.'; });
+            }
+        }"
+        x-init="if (referralCode) checkReferral()"
+        @submit="if (referralState !== 'valid') { $event.preventDefault(); referralState = 'invalid'; referralMessage = referralMessage || 'Please enter a valid referral code.'; }">
         @csrf
         <div class="mb-3">
             <label class="form-label small fw-semibold">Full Name</label>
@@ -29,7 +54,14 @@
             </div>
             <div class="col-6 mb-3">
                 <label class="form-label small fw-semibold">Referral Number</label>
-                <input type="text" name="referral_code" class="form-control" value="{{ old('referral_code', $referral) }}" placeholder="e.g. PNGABC123" required>
+                <input type="text" name="referral_code" class="form-control" x-model="referralCode" @input.debounce.500ms="checkReferral()" placeholder="e.g. PNGABC123" required>
+                <div class="small mt-1" x-show="referralState === 'checking'" x-cloak>
+                    <i class="bi bi-hourglass-split"></i> Checking...
+                </div>
+                <div class="small mt-1" style="color: var(--png-green-500);" x-show="referralState === 'valid'" x-cloak>
+                    <i class="bi bi-check-circle-fill"></i> <span x-text="referralName"></span>
+                </div>
+                <div class="small text-danger mt-1" x-show="referralState === 'invalid'" x-cloak x-text="referralMessage"></div>
             </div>
         </div>
         <div class="mb-3">
