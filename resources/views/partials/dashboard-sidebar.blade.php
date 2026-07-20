@@ -1,13 +1,24 @@
-<a href="{{ route('home') }}" class="brand">Power<span class="text-white">Net</span>Global</a>
+<a href="{{ route('home') }}" class="brand justify-content-center">
+    <img src="{{ asset('assets/img/logo.png') }}" alt="PowerNetGlobal" class="site-logo sm">
+</a>
 <nav class="nav flex-column py-3">
     <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
         <i class="bi bi-speedometer2"></i> Overview
     </a>
-    <a href="{{ route('wallet.index') }}" class="nav-link {{ request()->routeIs('wallet.*') ? 'active' : '' }}">
-        <i class="bi bi-wallet2"></i> Wallet
+    <a href="{{ route('wallet.add-fund') }}" class="nav-link {{ request()->routeIs('wallet.add-fund') || request()->routeIs('wallet.fund-request') ? 'active' : '' }}">
+        <i class="bi bi-plus-circle"></i> Add Fund
     </a>
-    <a href="{{ route('income.index') }}" class="nav-link {{ request()->routeIs('income.*') ? 'active' : '' }}">
-        <i class="bi bi-cash-coin"></i> Income
+    <a href="{{ route('wallet.withdraw.page') }}" class="nav-link {{ request()->routeIs('wallet.withdraw.page') || request()->routeIs('wallet.withdraw') || request()->routeIs('wallet.withdraw.verify-otp') ? 'active' : '' }}">
+        <i class="bi bi-cash-stack"></i> Withdrawal
+    </a>
+    <a href="{{ route('wallet.payment-history') }}" class="nav-link {{ request()->routeIs('wallet.payment-history') ? 'active' : '' }}">
+        <i class="bi bi-clock-history"></i> Payment History
+    </a>
+    <a href="{{ route('wallet.withdrawal-requests') }}" class="nav-link {{ request()->routeIs('wallet.withdrawal-requests') ? 'active' : '' }}">
+        <i class="bi bi-receipt-cutoff"></i> Withdrawal Requests
+    </a>
+    <a href="{{ route('payment.index') }}" class="nav-link {{ request()->routeIs('payment.*') ? 'active' : '' }}">
+        <i class="bi bi-cash-coin"></i> Payment
     </a>
     <a href="{{ route('team.index') }}" class="nav-link {{ request()->routeIs('team.*') ? 'active' : '' }}">
         <i class="bi bi-diagram-3"></i> Team

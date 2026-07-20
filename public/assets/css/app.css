@@ -8,6 +8,10 @@
   --png-gold-500: #d4a94a;
   --png-gold-400: #e6c26b;
   --png-gold-300: #f2d78e;
+  --png-blue-600: #1d4fd1;
+  --png-blue-500: #2f6fed;
+  --png-blue-400: #5b8ff9;
+  --png-blue-300: #8fb3fb;
   --png-green-500: #1fb27a;
   --png-red-500: #e5484d;
   --png-ink-100: #f4f6fb;
@@ -32,6 +36,24 @@ body {
   font-weight: 800;
   letter-spacing: 0.5px;
   color: var(--png-gold-400) !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.site-logo {
+  height: 120px;
+  width: auto;
+  display: block;
+}
+
+.site-logo.lg {
+  height: 150px;
+  margin: 0 auto;
+}
+
+.site-logo.sm {
+  height: 120px;
 }
 
 .navbar-png .nav-link {
@@ -72,6 +94,7 @@ body {
 .hero-png {
   background:
     radial-gradient(circle at 20% 20%, rgba(212, 169, 74, 0.18), transparent 45%),
+    radial-gradient(circle at 85% 15%, rgba(47, 111, 237, 0.22), transparent 40%),
     linear-gradient(135deg, var(--png-navy-950), var(--png-navy-800) 60%, var(--png-navy-700));
   color: var(--png-ink-100);
   position: relative;
@@ -124,6 +147,10 @@ body {
 
 .stat-card.green {
   background: linear-gradient(135deg, #0d5c40, var(--png-green-500));
+}
+
+.stat-card.blue {
+  background: linear-gradient(135deg, var(--png-navy-800), var(--png-blue-500));
 }
 
 .stat-card .stat-label {
@@ -188,11 +215,11 @@ body {
   text-transform: uppercase;
 }
 
-.badge-group.star { background: #eef2ff; color: #4338ca; }
-.badge-group.eagle { background: #eff8ff; color: #0369a1; }
-.badge-group.diamond { background: #f0f9ff; color: #0891b2; }
-.badge-group.crown { background: #fff7e8; color: #a16207; }
-.badge-group.universal { background: #f5f0ff; color: #7c3aed; }
+.badge-group.star { background: #e8f0ff; color: var(--png-blue-600); }
+.badge-group.eagle { background: #e2e9fb; color: var(--png-navy-600); }
+.badge-group.diamond { background: #dde6f5; color: var(--png-navy-700); }
+.badge-group.crown { background: #fbf1dc; color: #8a6412; }
+.badge-group.universal { background: var(--png-navy-950); color: var(--png-gold-300); }
 
 .progress-png {
   height: 10px;
@@ -203,7 +230,7 @@ body {
 
 .progress-png .bar {
   height: 100%;
-  background: linear-gradient(90deg, var(--png-navy-700), var(--png-gold-500));
+  background: linear-gradient(90deg, var(--png-blue-500), var(--png-gold-500));
   border-radius: 999px;
   transition: width 0.4s ease;
 }
@@ -230,7 +257,9 @@ body {
   font-weight: 800;
   padding: 1.15rem 1.25rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
 }
 
 .app-sidebar .nav-link {
@@ -334,6 +363,10 @@ body {
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
+}
+
+[x-cloak] {
+  display: none !important;
 }
 
 .auth-card {

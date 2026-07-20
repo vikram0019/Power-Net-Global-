@@ -4,32 +4,62 @@
 @section('page-title', 'Users')
 
 @section('content')
-    <div class="card-png p-4 mb-4">
-        <form method="GET" class="d-flex gap-2">
+    <div class="card-png p-4 mb-4 d-flex flex-wrap flex-row justify-content-between align-items-center gap-3">
+        <form method="GET" class="d-flex gap-2 flex-fill" style="max-width: 480px;">
             <input type="text" name="search" value="{{ $search }}" class="form-control" placeholder="Search by name, email, mobile, or referral code">
             <button type="submit" class="btn btn-navy">Search</button>
         </form>
+        <a href="{{ route('admin.users.create-dummy') }}" class="btn btn-gold fw-bold"><i class="bi bi-person-plus me-1"></i>Create Dummy User</a>
     </div>
 
     <div class="card-png p-4">
         <div class="table-responsive">
             <table class="table table-png align-middle">
                 <thead>
-                    <tr><th>Name</th><th>Contact</th><th>Referral Code</th><th>Sponsor</th><th>Rank</th><th>Status</th><th></th></tr>
+                    <tr><th>Name</th><th>Contact</th><th>Referral Code</th><th>Sponsor</th><th>Rank</th><th>Status</th><th>ROI</th><th></th></tr>
                 </thead>
                 <tbody>
                     @forelse ($users as $u)
                         <tr>
-                            <td class="fw-semibold">{{ $u->name }}</td>
+                            <td class="fw-semibold">
+                                {{ $u->name }}
+                                @if ($u->is_dummy)
+                                    <span class="badge bg-secondary ms-1">Dummy</span>
+                                @endif
+                            </td>
                             <td class="small">{{ $u->email }}<br><span class="text-muted">{{ $u->mobile }}</span></td>
                             <td><code>{{ $u->referral_code }}</code></td>
                             <td>{{ $u->sponsor->name ?? '—' }}</td>
                             <td>{{ $u->currentRank->name ?? 'Unranked' }}</td>
-                            <td><span class="badge {{ $u->status === 'active' ? 'bg-success' : ($u->status === 'pending' ? 'bg-warning text-dark' : 'bg-danger') }}">{{ $u->status }}</span></td>
-                            <td><a href="{{ route('admin.users.show', $u) }}" class="btn btn-sm btn-navy">View</a></td>
+                            <td>
+                                <span class="badge
+                                    @class([
+                                        'bg-success' => $u->status === 'active',
+                                        'bg-info text-dark' => $u->status === 'approval_pending',
+                                        'bg-warning text-dark' => $u->status === 'pending',
+                                        'bg-danger' => $u->status === 'suspended',
+                                    ])">{{ str_replace('_', ' ', $u->status) }}</span>
+                            </td>
+                            <td>
+                                <form method="POST" action="{{ route('admin.users.toggle-roi', $u) }}">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm {{ $u->roi_enabled ? 'btn-gold' : 'btn-outline-secondary' }}">
+                                        {{ $u->roi_enabled ? 'On' : 'Off' }}
+                                    </button>
+                                </form>
+                            </td>
+                            <td class="d-flex gap-1">
+                                <a href="{{ route('admin.users.show', $u) }}" class="btn btn-sm btn-navy">View</a>
+                                @if ($u->status === 'approval_pending')
+                                    <form method="POST" action="{{ route('admin.users.approve', $u) }}">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-gold">Approve</button>
+                                    </form>
+                                @endif
+                            </td>
                         </tr>
                     @empty
-                        <tr><td colspan="7" class="text-center text-muted py-4">No users found.</td></tr>
+                        <tr><td colspan="8" class="text-center text-muted py-4">No users found.</td></tr>
                     @endforelse
                 </tbody>
             </table>

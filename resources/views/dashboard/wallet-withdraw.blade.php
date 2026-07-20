@@ -1,0 +1,85 @@
+@extends('layouts.dashboard')
+
+@section('title', 'Withdrawal')
+@section('page-title', 'Wallet — Withdrawal')
+
+@section('content')
+    @if (session('dev_otp_hint'))
+        <div class="alert alert-warning py-2 small">
+            <i class="bi bi-terminal me-1"></i> Dev mode — withdrawal OTP is <strong>{{ session('dev_otp_hint') }}</strong>.
+            @if (session('pending_withdrawal_id'))
+                <form method="POST" action="{{ route('wallet.withdraw.verify-otp', session('pending_withdrawal_id')) }}" class="d-inline-flex gap-2 mt-2">
+                    @csrf
+                    <input type="text" name="otp" maxlength="6" class="form-control form-control-sm" style="width: 120px;" placeholder="OTP" required>
+                    <button type="submit" class="btn btn-sm btn-navy">Verify Now</button>
+                </form>
+            @endif
+        </div>
+    @endif
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="stat-card gold">
+                <div class="stat-label">ROI Income Wallet</div>
+                <div class="stat-value">${{ number_format($wallet->roi_balance, 2) }}</div>
+                <small class="opacity-75">Monthly profit earnings</small>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="stat-card green">
+                <div class="stat-label">Working Income Wallet</div>
+                <div class="stat-value">${{ number_format($wallet->working_balance, 2) }}</div>
+                <small class="opacity-75">Direct, level &amp; rank rewards</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-png p-4 mb-4" style="max-width: 520px;"
+        x-data="{
+            balances: { roi: {{ (float) $wallet->roi_balance }}, working: {{ (float) $wallet->working_balance }} },
+            walletType: 'roi',
+            amount: '',
+            get balance() { return this.balances[this.walletType]; },
+            get insufficient() { return this.balance <= 0 || (this.amount !== '' && Number(this.amount) > this.balance); }
+        }">
+        <h6 class="fw-bold mb-3"><i class="bi bi-cash-stack me-1"></i> Withdraw</h6>
+        <p class="small text-muted">Requires OTP verification, then admin approval. Funds are sent to the BEP20 address you provide below.</p>
+
+        @error('amount')
+            <div class="alert alert-danger py-1 small">{{ $message }}</div>
+        @enderror
+        @error('otp')
+            <div class="alert alert-danger py-1 small">{{ $message }}</div>
+        @enderror
+
+        <form method="POST" action="{{ route('wallet.withdraw') }}" @submit="if (insufficient) $event.preventDefault()">
+            @csrf
+            <div class="mb-2">
+                <label class="form-label small fw-semibold">Wallet</label>
+                <select name="wallet_type" class="form-select" x-model="walletType" required>
+                    <option value="roi">ROI Income</option>
+                    <option value="working">Working Income</option>
+                </select>
+                <div class="small mt-1">
+                    Available balance: <strong>$<span x-text="balance.toFixed(2)"></span></strong>
+                </div>
+            </div>
+            <div class="mb-2">
+                <label class="form-label small fw-semibold">Amount (USD)</label>
+                <input type="number" step="0.01" min="1" name="amount" class="form-control" x-model="amount" required>
+            </div>
+            <div class="mb-2" x-show="insufficient" x-cloak>
+                <div class="alert alert-danger py-1 small mb-0">Insufficient fund</div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label small fw-semibold">Your BEP20 Address (to receive funds)</label>
+                <input type="text" name="bep20_address" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-navy w-100" :disabled="balance <= 0">Request Withdrawal</button>
+        </form>
+    </div>
+
+    <a href="{{ route('wallet.withdrawal-requests') }}" class="btn btn-navy">
+        <i class="bi bi-clock-history me-1"></i> View Recent Withdrawal Requests
+    </a>
+@endsection

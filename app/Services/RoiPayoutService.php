@@ -13,7 +13,9 @@ class RoiPayoutService
     }
 
     /**
-     * Pays one month's ROI to every active investment still under the 24-month cap.
+     * Pays one month's ROI to every active, ROI-enabled investment still under the
+     * configured month cap (25 by default). Dummy users created by admin default to
+     * roi_enabled = false and are skipped unless admin turns the benefit on for them.
      * Intended to be triggered once per "month" — via the admin panel button or the
      * investments:pay-roi artisan command (wire the command to a real cron in production).
      */
@@ -26,6 +28,7 @@ class RoiPayoutService
         Investment::with('user')
             ->where('status', 'active')
             ->where('roi_months_paid', '<', $maxMonths)
+            ->whereHas('user', fn ($q) => $q->where('roi_enabled', true))
             ->chunkById(100, function ($investments) use (&$paid, $maxMonths, $percent) {
                 foreach ($investments as $investment) {
                     DB::transaction(function () use ($investment, $maxMonths, $percent) {

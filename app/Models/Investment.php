@@ -32,6 +32,6 @@ class Investment extends Model
 
     public function isRoiComplete(): bool
     {
-        return $this->roi_months_paid >= 24;
+        return $this->roi_months_paid >= (int) config('mlm.roi_max_months');
     }
 }

@@ -6,11 +6,38 @@
 @section('content')
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div>
-            <h4 class="fw-bold mb-0">{{ $user->name }}</h4>
+            <h4 class="fw-bold mb-0">
+                {{ $user->name }}
+                @if ($user->is_dummy)
+                    <span class="badge bg-secondary">Dummy</span>
+                @endif
+            </h4>
             <p class="text-muted small mb-0">{{ $user->email }} &middot; {{ $user->mobile }} &middot; Referral: <code>{{ $user->referral_code }}</code></p>
             <p class="small mb-0">Sponsor: {{ $user->sponsor->name ?? '—' }} &middot; Joined {{ $user->created_at->format('d M Y') }}</p>
         </div>
-        <span class="badge fs-6 {{ $user->status === 'active' ? 'bg-success' : ($user->status === 'pending' ? 'bg-warning text-dark' : 'bg-danger') }}">{{ $user->status }}</span>
+        <div class="text-end">
+            <span class="badge fs-6 mb-2
+                @class([
+                    'bg-success' => $user->status === 'active',
+                    'bg-info text-dark' => $user->status === 'approval_pending',
+                    'bg-warning text-dark' => $user->status === 'pending',
+                    'bg-danger' => $user->status === 'suspended',
+                ])">{{ str_replace('_', ' ', $user->status) }}</span>
+            <div class="d-flex gap-2 justify-content-end">
+                @if ($user->status === 'approval_pending')
+                    <form method="POST" action="{{ route('admin.users.approve', $user) }}">
+                        @csrf
+                        <button type="submit" class="btn btn-sm btn-gold">Approve</button>
+                    </form>
+                @endif
+                <form method="POST" action="{{ route('admin.users.toggle-roi', $user) }}">
+                    @csrf
+                    <button type="submit" class="btn btn-sm {{ $user->roi_enabled ? 'btn-gold' : 'btn-outline-secondary' }}">
+                        Monthly ROI: {{ $user->roi_enabled ? 'On' : 'Off' }}
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
 
     <div class="row g-3 mb-4">
@@ -54,7 +81,7 @@
                                 <tr>
                                     <td>{{ $inv->created_at->format('d M Y') }}</td>
                                     <td>${{ number_format($inv->amount, 2) }}</td>
-                                    <td>{{ $inv->roi_months_paid }}/24 (${{ number_format($inv->roi_total_paid, 2) }})</td>
+                                    <td>{{ $inv->roi_months_paid }}/{{ config('mlm.roi_max_months') }} (${{ number_format($inv->roi_total_paid, 2) }})</td>
                                     <td><span class="badge {{ $inv->status === 'active' ? 'bg-success' : 'bg-secondary' }}">{{ $inv->status }}</span></td>
                                 </tr>
                             @empty

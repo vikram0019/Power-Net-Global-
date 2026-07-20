@@ -38,7 +38,7 @@ class TeamController extends Controller
         return view('dashboard.team', compact('rows', 'teamSize', 'totalTeamBusiness', 'tree'));
     }
 
-    private function buildTree(User $user, int $depth = 0, int $maxDepth = 6): array
+    private function buildTree(User $user, int $depth = 0, int $maxDepth = 20): array
     {
         $children = $depth >= $maxDepth
             ? collect()

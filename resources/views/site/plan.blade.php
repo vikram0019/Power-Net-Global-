@@ -40,7 +40,7 @@
                     <div class="card-png p-4 h-100">
                         <div class="fs-3 fw-800" style="color: var(--png-gold-500);">8%</div>
                         <h6 class="fw-bold">Monthly Profit</h6>
-                        <p class="small text-muted mb-0">Of your investment, paid monthly for 24 months.</p>
+                        <p class="small text-muted mb-0">Of your investment, paid monthly for {{ config('mlm.roi_max_months') }} months.</p>
                     </div>
                 </div>
             </div>
@@ -151,9 +151,10 @@
                 <h6 class="fw-bold mb-2">Notes</h6>
                 <ul class="small text-muted mb-0">
                     <li>Withdrawals are paid after admin approval and email OTP verification.</li>
-                    <li>Monthly profit is 8% of the invested amount, paid monthly for up to 24 months.</li>
-                    <li>Accounts must be created and activated, then a minimum investment of $100 is required.</li>
-                    <li>Every member has a wallet system to add funds, invest, and track all earnings.</li>
+                    <li>Monthly profit is 8% of the invested amount, paid monthly for up to {{ config('mlm.roi_max_months') }} months.</li>
+                    <li>New accounts require admin approval before their referral code can be used by others.</li>
+                    <li>A minimum investment of ${{ number_format(config('mlm.minimum_investment')) }} is required to be eligible for the monthly profit, level income, and rank income benefits.</li>
+                    <li>Every member has a wallet system to submit deposits and track all earnings.</li>
                 </ul>
             </div>
         </div>

@@ -13,7 +13,7 @@
         </div>
         <div class="col-md-4">
             <div class="stat-card gold">
-                <div class="stat-label">Completed (24 months)</div>
+                <div class="stat-label">Completed ({{ config('mlm.roi_max_months') }} months)</div>
                 <div class="stat-value">{{ $completedInvestments }}</div>
             </div>
         </div>
@@ -29,7 +29,8 @@
         <h6 class="fw-bold mb-2">Run Monthly ROI Payout</h6>
         <p class="small text-muted">
             There is no real cron scheduler wired up in this environment. Click below to pay one month's ROI
-            (8% of invested amount) to every active investment under the 24-month cap. In production,
+            (8% of invested amount) to every ROI-enabled active investment under the {{ config('mlm.roi_max_months') }}-month cap.
+            Dummy users with the monthly ROI benefit turned off are skipped. In production,
             wire <code>php artisan investments:pay-roi</code> to a monthly cron job instead.
         </p>
         <form method="POST" action="{{ route('admin.roi.run') }}">

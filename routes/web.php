@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminFundRequestController;
+use App\Http\Controllers\Admin\AdminPaymentSettingController;
 use App\Http\Controllers\Admin\AdminRankController;
 use App\Http\Controllers\Admin\AdminRoiController;
 use App\Http\Controllers\Admin\AdminUserController;
@@ -8,8 +10,8 @@ use App\Http\Controllers\Admin\AdminWithdrawalController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RankController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\WalletController;
@@ -42,14 +44,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::prefix('wallet')->name('wallet.')->group(function () {
-        Route::get('/', [WalletController::class, 'index'])->name('index');
-        Route::post('/add-fund', [WalletController::class, 'addFund'])->name('add-fund');
-        Route::post('/invest', [WalletController::class, 'invest'])->name('invest');
+        Route::redirect('/', '/wallet/add-fund')->name('index');
+        Route::get('/add-fund', [WalletController::class, 'addFundPage'])->name('add-fund');
+        Route::post('/add-fund', [WalletController::class, 'submitFundRequest'])->name('fund-request');
+        Route::get('/withdraw', [WalletController::class, 'withdrawPage'])->name('withdraw.page');
         Route::post('/withdraw', [WalletController::class, 'requestWithdrawal'])->name('withdraw');
         Route::post('/withdraw/{withdrawal}/verify-otp', [WalletController::class, 'verifyWithdrawalOtp'])->name('withdraw.verify-otp');
+        Route::get('/payment-history', [WalletController::class, 'paymentHistory'])->name('payment-history');
+        Route::get('/withdrawal-requests', [WalletController::class, 'withdrawalRequests'])->name('withdrawal-requests');
     });
 
-    Route::get('/income', [IncomeController::class, 'index'])->name('income.index');
+    Route::prefix('payment')->name('payment.')->group(function () {
+        Route::get('/', [PaymentController::class, 'index'])->name('index');
+        Route::get('/roi', [PaymentController::class, 'roi'])->name('roi');
+        Route::get('/rank-reward', [PaymentController::class, 'rankReward'])->name('rank-reward');
+        Route::get('/level', [PaymentController::class, 'level'])->name('level');
+        Route::get('/direct', [PaymentController::class, 'direct'])->name('direct');
+    });
+
     Route::get('/team', [TeamController::class, 'index'])->name('team.index');
     Route::get('/rank', [RankController::class, 'index'])->name('rank.index');
 });
@@ -59,7 +71,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::get('/users/create-dummy', [AdminUserController::class, 'createDummy'])->name('users.create-dummy');
+    Route::post('/users/create-dummy', [AdminUserController::class, 'storeDummy'])->name('users.store-dummy');
     Route::get('/users/{user}', [AdminUserController::class, 'show'])->name('users.show');
+    Route::post('/users/{user}/approve', [AdminUserController::class, 'approve'])->name('users.approve');
+    Route::post('/users/{user}/toggle-roi', [AdminUserController::class, 'toggleRoi'])->name('users.toggle-roi');
 
     Route::get('/withdrawals', [AdminWithdrawalController::class, 'index'])->name('withdrawals.index');
     Route::post('/withdrawals/{withdrawal}/approve', [AdminWithdrawalController::class, 'approve'])->name('withdrawals.approve');
@@ -69,4 +85,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::get('/roi', [AdminRoiController::class, 'index'])->name('roi.index');
     Route::post('/roi/run', [AdminRoiController::class, 'run'])->name('roi.run');
+
+    Route::get('/payment-settings', [AdminPaymentSettingController::class, 'edit'])->name('payment-settings.edit');
+    Route::post('/payment-settings', [AdminPaymentSettingController::class, 'update'])->name('payment-settings.update');
+
+    Route::get('/fund-requests', [AdminFundRequestController::class, 'index'])->name('fund-requests.index');
+    Route::post('/fund-requests/{fundRequest}/approve', [AdminFundRequestController::class, 'approve'])->name('fund-requests.approve');
+    Route::post('/fund-requests/{fundRequest}/reject', [AdminFundRequestController::class, 'reject'])->name('fund-requests.reject');
 });

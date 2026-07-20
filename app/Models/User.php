@@ -28,6 +28,8 @@ class User extends Authenticatable
         'status',
         'current_rank_id',
         'is_admin',
+        'is_dummy',
+        'roi_enabled',
     ];
 
     protected $hidden = [
@@ -43,6 +45,8 @@ class User extends Authenticatable
             'otp_expires_at' => 'datetime',
             'password' => 'hashed',
             'is_admin' => 'boolean',
+            'is_dummy' => 'boolean',
+            'roi_enabled' => 'boolean',
         ];
     }
 
@@ -94,6 +98,16 @@ class User extends Authenticatable
     public function totalInvested(): float
     {
         return (float) $this->investments()->sum('amount');
+    }
+
+    public function hasMinimumInvestment(): bool
+    {
+        return $this->totalInvested() >= (float) config('mlm.minimum_investment');
+    }
+
+    public function isActiveSponsor(): bool
+    {
+        return $this->status === 'active';
     }
 
     public static function generateReferralCode(): string

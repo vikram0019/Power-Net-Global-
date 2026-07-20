@@ -5,32 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Withdrawal extends Model
+class FundRequest extends Model
 {
     protected $fillable = [
         'user_id',
-        'wallet_type',
         'amount',
-        'bep20_address',
+        'screenshot_path',
         'status',
-        'otp_code',
-        'otp_expires_at',
-        'otp_verified_at',
         'admin_id',
         'admin_note',
+        'investment_id',
         'processed_at',
-    ];
-
-    protected $hidden = [
-        'otp_code',
     ];
 
     protected function casts(): array
     {
         return [
             'amount' => 'decimal:2',
-            'otp_expires_at' => 'datetime',
-            'otp_verified_at' => 'datetime',
             'processed_at' => 'datetime',
         ];
     }
@@ -43,5 +34,10 @@ class Withdrawal extends Model
     public function admin(): BelongsTo
     {
         return $this->belongsTo(User::class, 'admin_id');
+    }
+
+    public function investment(): BelongsTo
+    {
+        return $this->belongsTo(Investment::class);
     }
 }

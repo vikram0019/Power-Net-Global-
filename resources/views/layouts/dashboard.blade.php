@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Dashboard') — PowerNetGlobal</title>
+    @include('partials.favicon')
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -49,6 +50,15 @@
             </div>
 
             <div class="app-content">
+                @if (auth()->user()->status === 'approval_pending')
+                    <div class="alert alert-warning d-flex align-items-center gap-2">
+                        <i class="bi bi-hourglass-split fs-5"></i>
+                        <div>
+                            <strong>Account pending admin approval.</strong>
+                            You can use your wallet and invest normally, but your referral code won't work for new signups until an admin approves your account.
+                        </div>
+                    </div>
+                @endif
                 @if (session('status'))
                     <div class="alert alert-success">{{ session('status') }}</div>
                 @endif
@@ -62,7 +72,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/[email protected]/dist/cdn.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js" defer></script>
     @stack('scripts')
 </body>
 </html>
