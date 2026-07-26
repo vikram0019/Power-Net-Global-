@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -113,7 +112,7 @@ class User extends Authenticatable
     public static function generateReferralCode(): string
     {
         do {
-            $code = 'PNG' . strtoupper(Str::random(6));
+            $code = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
         } while (self::where('referral_code', $code)->exists());
 
         return $code;

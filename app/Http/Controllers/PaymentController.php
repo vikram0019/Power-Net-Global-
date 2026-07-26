@@ -72,18 +72,24 @@ class PaymentController extends Controller
 
     public function direct(Request $request)
     {
-        // Upline (2%) pass-up income is intentionally not surfaced on the member dashboard —
-        // only the member's own direct-referral income is shown here.
         $transactions = IncomeTransaction::with('sourceUser')
             ->where('user_id', $request->user()->id)
-            ->where('type', 'direct_reward')
+            ->whereIn('type', ['direct_reward', 'direct_reward_upline'])
             ->latest()
             ->paginate(20);
 
         $total = (float) IncomeTransaction::where('user_id', $request->user()->id)
+            ->whereIn('type', ['direct_reward', 'direct_reward_upline'])
+            ->sum('amount');
+
+        $directTotal = (float) IncomeTransaction::where('user_id', $request->user()->id)
             ->where('type', 'direct_reward')
             ->sum('amount');
 
-        return view('dashboard.payment.direct', compact('transactions', 'total'));
+        $uplineTotal = (float) IncomeTransaction::where('user_id', $request->user()->id)
+            ->where('type', 'direct_reward_upline')
+            ->sum('amount');
+
+        return view('dashboard.payment.direct', compact('transactions', 'total', 'directTotal', 'uplineTotal'));
     }
 }

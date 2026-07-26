@@ -20,22 +20,16 @@
         x-data="{
             referralCode: '{{ old('referral_code', $referral) }}',
             referralState: 'idle',
-            referralName: '',
             referralMessage: '',
             checkReferral() {
                 const code = this.referralCode.trim();
-                if (!code) { this.referralState = 'idle'; this.referralName = ''; this.referralMessage = ''; return; }
+                if (!code) { this.referralState = 'idle'; this.referralMessage = ''; return; }
                 this.referralState = 'checking';
                 fetch('{{ route('signup.verify-referral') }}?code=' + encodeURIComponent(code))
                     .then(r => r.json())
                     .then(data => {
-                        if (data.valid) {
-                            this.referralState = 'valid';
-                            this.referralName = data.name;
-                        } else {
-                            this.referralState = 'invalid';
-                            this.referralMessage = data.message;
-                        }
+                        this.referralState = data.valid ? 'valid' : 'invalid';
+                        this.referralMessage = data.message;
                     })
                     .catch(() => { this.referralState = 'invalid'; this.referralMessage = 'Could not verify referral code.'; });
             }
@@ -54,12 +48,12 @@
             </div>
             <div class="col-6 mb-3">
                 <label class="form-label small fw-semibold">Referral Number</label>
-                <input type="text" name="referral_code" class="form-control" x-model="referralCode" @input.debounce.500ms="checkReferral()" placeholder="e.g. PNGABC123" required>
+                <input type="text" name="referral_code" class="form-control" x-model="referralCode" @input.debounce.500ms="checkReferral()" placeholder="e.g. 482913" maxlength="6" inputmode="numeric" required>
                 <div class="small mt-1" x-show="referralState === 'checking'" x-cloak>
                     <i class="bi bi-hourglass-split"></i> Checking...
                 </div>
                 <div class="small mt-1" style="color: var(--png-green-500);" x-show="referralState === 'valid'" x-cloak>
-                    <i class="bi bi-check-circle-fill"></i> <span x-text="referralName"></span>
+                    <i class="bi bi-check-circle-fill"></i> <span x-text="referralMessage"></span>
                 </div>
                 <div class="small text-danger mt-1" x-show="referralState === 'invalid'" x-cloak x-text="referralMessage"></div>
             </div>

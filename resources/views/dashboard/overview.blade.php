@@ -70,7 +70,7 @@
             <div class="card-png p-4 h-100">
                 <h6 class="fw-bold mb-3">Income Breakdown</h6>
                 @php
-                    $labels = ['direct_reward' => 'Direct Reward', 'level_income' => 'Level Income', 'monthly_roi' => 'Monthly ROI', 'rank_reward' => 'Rank Reward'];
+                    $labels = ['direct_reward' => 'Direct Reward', 'direct_reward_upline' => 'Direct Reward (Upline)', 'level_income' => 'Level Income', 'monthly_roi' => 'Monthly ROI', 'rank_reward' => 'Rank Reward'];
                 @endphp
                 @forelse ($incomeByType as $type => $amount)
                     <div class="d-flex justify-content-between align-items-center mb-2">
