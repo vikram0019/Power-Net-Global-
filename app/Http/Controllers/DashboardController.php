@@ -13,13 +13,9 @@ class DashboardController extends Controller
     {
         $user = $request->user();
 
-        // Upline (2%) pass-up income is intentionally not surfaced on the member dashboard.
-        $visibleIncome = IncomeTransaction::where('user_id', $user->id)
-            ->where('type', '!=', 'direct_reward_upline');
-
         $totalInvested = $user->totalInvested();
-        $totalIncome = (float) (clone $visibleIncome)->sum('amount');
-        $incomeByType = (clone $visibleIncome)
+        $totalIncome = (float) IncomeTransaction::where('user_id', $user->id)->sum('amount');
+        $incomeByType = IncomeTransaction::where('user_id', $user->id)
             ->select('type', DB::raw('SUM(amount) as total'))
             ->groupBy('type')
             ->pluck('total', 'type');
@@ -27,15 +23,15 @@ class DashboardController extends Controller
         $teamSize = $calculator->totalTeamSize($user);
         $directCount = $user->directReferrals()->count();
 
-        $monthly = (clone $visibleIncome)
+        $monthly = IncomeTransaction::where('user_id', $user->id)
             ->where('created_at', '>=', now()->subMonths(6)->startOfMonth())
             ->select(DB::raw("DATE_FORMAT(created_at, '%Y-%m') as ym"), DB::raw('SUM(amount) as total'))
             ->groupBy('ym')
             ->orderBy('ym')
             ->pluck('total', 'ym');
 
-        $recentIncome = (clone $visibleIncome)
-            ->with('sourceUser')
+        $recentIncome = IncomeTransaction::with('sourceUser')
+            ->where('user_id', $user->id)
             ->latest()
             ->take(8)
             ->get();

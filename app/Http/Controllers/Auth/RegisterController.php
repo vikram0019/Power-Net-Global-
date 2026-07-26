@@ -38,7 +38,7 @@ class RegisterController extends Controller
             return response()->json(['valid' => false, 'message' => 'This referral code belongs to an account that is not yet active.']);
         }
 
-        return response()->json(['valid' => true, 'name' => $sponsor->name]);
+        return response()->json(['valid' => true, 'message' => 'This is a valid referral code.']);
     }
 
     public function register(Request $request)

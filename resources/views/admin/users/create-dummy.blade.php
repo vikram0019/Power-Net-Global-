@@ -48,7 +48,7 @@
             </div>
             <div class="mb-3">
                 <label class="form-label small fw-semibold">Sponsor Referral Code</label>
-                <input type="text" name="sponsor_referral_code" class="form-control" value="{{ old('sponsor_referral_code') }}" placeholder="e.g. PNGABC123" required>
+                <input type="text" name="sponsor_referral_code" class="form-control" value="{{ old('sponsor_referral_code') }}" placeholder="e.g. 482913" maxlength="6" inputmode="numeric" required>
             </div>
             <div class="mb-3">
                 <label class="form-label small fw-semibold">Starting Investment (optional)</label>
