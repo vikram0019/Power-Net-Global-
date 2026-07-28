@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-png sticky-top py-2">
+<nav class="navbar navbar-expand-lg navbar-dark navbar-png sticky-top py-2">
     <div class="container">
         <a class="navbar-brand fs-4 py-0" href="{{ route('home') }}">
             <img src="{{ asset('assets/img/logo.png') }}" alt="Power Net Global" class="site-logo">

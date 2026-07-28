@@ -2,26 +2,43 @@
 
 namespace App\Services;
 
+use App\Models\Investment;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 
 class TeamBusinessCalculator
 {
+    /**
+     * Collect the ids of every descendant of the given user id, walking the
+     * tree one level at a time (one query per level, not per node). Portable
+     * to any MySQL/MariaDB version — some shared-hosting DB servers (e.g.
+     * MySQL 5.6) don't support recursive CTEs (WITH RECURSIVE, MySQL 8.0+).
+     */
+    private function subtreeIds(int $rootId, ?int $maxDepth = null): array
+    {
+        $ids = [];
+        $frontier = [$rootId];
+        $depth = 0;
+
+        while ($frontier !== [] && ($maxDepth === null || $depth < $maxDepth)) {
+            $children = User::whereIn('sponsor_id', $frontier)->pluck('id')->all();
+
+            if ($children === []) {
+                break;
+            }
+
+            $ids = array_merge($ids, $children);
+            $frontier = $children;
+            $depth++;
+        }
+
+        return $ids;
+    }
+
     public function legBusiness(User $legRoot): float
     {
-        $result = DB::selectOne(
-            'WITH RECURSIVE subtree AS (
-                SELECT id FROM users WHERE id = ?
-                UNION ALL
-                SELECT u.id FROM users u INNER JOIN subtree s ON u.sponsor_id = s.id
-            )
-            SELECT COALESCE(SUM(i.amount), 0) AS total
-            FROM investments i
-            WHERE i.user_id IN (SELECT id FROM subtree)',
-            [$legRoot->id]
-        );
+        $ids = array_merge([$legRoot->id], $this->subtreeIds($legRoot->id));
 
-        return (float) $result->total;
+        return (float) Investment::whereIn('user_id', $ids)->sum('amount');
     }
 
     /**
@@ -51,16 +68,6 @@ class TeamBusinessCalculator
 
     public function totalTeamSize(User $user): int
     {
-        $result = DB::selectOne(
-            'WITH RECURSIVE subtree AS (
-                SELECT id FROM users WHERE sponsor_id = ?
-                UNION ALL
-                SELECT u.id FROM users u INNER JOIN subtree s ON u.sponsor_id = s.id
-            )
-            SELECT COUNT(*) AS total FROM subtree',
-            [$user->id]
-        );
-
-        return (int) $result->total;
+        return count($this->subtreeIds($user->id));
     }
 }
