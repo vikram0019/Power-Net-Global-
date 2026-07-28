@@ -1,7 +1,8 @@
 <nav class="navbar navbar-expand-lg navbar-png sticky-top py-2">
     <div class="container">
         <a class="navbar-brand fs-4 py-0" href="{{ route('home') }}">
-            <img src="{{ asset('assets/img/logo.png') }}" alt="PowerNetGlobal" class="site-logo">
+            <img src="{{ asset('assets/img/logo.png') }}" alt="Power Net Global" class="site-logo">
+            <span class="brand-name">Power Net Global</span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#siteNav">
             <span class="navbar-toggler-icon"></span>
