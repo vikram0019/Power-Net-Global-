@@ -282,10 +282,6 @@
                                 <span class="text-muted">Team Business</span>
                                 <span class="fw-semibold">${{ number_format($entryRank->team_business_required, 0) }}</span>
                             </div>
-                            <div class="rank-preview-stat">
-                                <span class="text-muted">Levels Unlocked</span>
-                                <span class="fw-semibold">{{ $entryRank->levels_unlocked >= 20 ? 'All (20)' : $entryRank->levels_unlocked }}</span>
-                            </div>
                         </div>
                     </div>
                 @endforeach
