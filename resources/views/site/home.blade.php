@@ -275,11 +275,11 @@
                             <div class="fw-bold mb-1">{{ $entryRank->name }}</div>
                             <div class="fs-4 fw-800 mb-3" style="color: var(--png-gold-500);">${{ number_format($entryRank->reward_amount, 0) }}</div>
                             <div class="rank-preview-stat">
-                                <span class="text-muted">Own Invest</span>
+                                <span class="text-muted d-block">Own Invest</span>
                                 <span class="fw-semibold">${{ number_format($entryRank->own_invest_required, 0) }}</span>
                             </div>
                             <div class="rank-preview-stat">
-                                <span class="text-muted">Team Business</span>
+                                <span class="text-muted d-block">Team Business</span>
                                 <span class="fw-semibold">${{ number_format($entryRank->team_business_required, 0) }}</span>
                             </div>
                         </div>

@@ -248,12 +248,14 @@ body {
 }
 
 .rank-preview-stat {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.5rem;
   font-size: 0.82rem;
   padding: 0.4rem 0;
   border-top: 1px dashed #eceff5;
+  line-height: 1.4;
+}
+
+.rank-preview-stat .text-muted {
+  font-size: 0.72rem;
 }
 
 .rank-preview-stat:first-of-type {
