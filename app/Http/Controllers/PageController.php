@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\IncomeTransaction;
+use App\Models\Investment;
 use App\Models\Rank;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -12,8 +14,10 @@ class PageController extends Controller
     {
         $ranks = Rank::ordered()->get();
         $memberCount = User::where('is_admin', false)->count();
+        $totalInvested = Investment::sum('amount');
+        $totalPaid = IncomeTransaction::sum('amount');
 
-        return view('site.home', compact('ranks', 'memberCount'));
+        return view('site.home', compact('ranks', 'memberCount', 'totalInvested', 'totalPaid'));
     }
 
     public function about()

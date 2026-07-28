@@ -56,6 +56,20 @@ body {
   height: 120px;
 }
 
+.brand-name {
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--png-gold-400);
+  white-space: nowrap;
+}
+
+@media (max-width: 575.98px) {
+  .brand-name {
+    font-size: 1.3rem;
+  }
+}
+
 .navbar-png .nav-link {
   color: var(--png-ink-300) !important;
   font-weight: 500;
@@ -389,3 +403,85 @@ body {
 .status-dot.green { background: var(--png-green-500); }
 .status-dot.yellow { background: var(--png-gold-500); }
 .status-dot.red { background: var(--png-red-500); }
+
+/* Home page — feature / why-choose-us cards */
+.feature-card {
+  border-radius: var(--png-radius);
+  border: 1px solid #eceff5;
+  background: #fff;
+  box-shadow: var(--png-shadow);
+  padding: 1.75rem;
+  height: 100%;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 34px -14px rgba(5, 11, 24, 0.4);
+}
+
+.feature-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: #fff;
+  background: linear-gradient(135deg, var(--png-navy-800), var(--png-navy-600));
+  margin-bottom: 1rem;
+}
+
+.feature-icon.gold {
+  background: linear-gradient(135deg, var(--png-gold-500), var(--png-gold-400));
+  color: var(--png-navy-950);
+}
+
+/* Home page — how it works steps */
+.step-card {
+  position: relative;
+  height: 100%;
+}
+
+.step-number {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--png-navy-950);
+  background: linear-gradient(135deg, var(--png-gold-400), var(--png-gold-500));
+  box-shadow: 0 6px 16px -6px rgba(212, 169, 74, 0.55);
+  margin-bottom: 1rem;
+}
+
+.step-connector {
+  position: absolute;
+  top: 22px;
+  left: calc(50% + 30px);
+  right: calc(-50% + 30px);
+  height: 2px;
+  background: repeating-linear-gradient(90deg, #dde3ee 0 8px, transparent 8px 14px);
+}
+
+/* Home page — live stats band */
+.stats-band {
+  background: linear-gradient(135deg, var(--png-navy-950), var(--png-navy-800) 60%, var(--png-navy-700));
+  border-radius: var(--png-radius);
+  position: relative;
+  overflow: hidden;
+}
+
+.stats-band::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 22px 22px;
+  opacity: 0.5;
+  pointer-events: none;
+}

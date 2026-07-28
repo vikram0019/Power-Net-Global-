@@ -7,6 +7,7 @@
         <div class="container py-5 text-center">
             <div class="eyebrow-gold mb-2">Our Services</div>
             <h1 class="display-6 fw-bold">What We Offer</h1>
+            <p class="opacity-75 mt-2 col-lg-7 mx-auto">A full suite of investment management services built around one goal — protecting and growing investor capital.</p>
         </div>
     </section>
 
@@ -15,44 +16,44 @@
             <div class="row g-4">
                 <div class="col-lg-6">
                     <div class="card-png p-4 h-100">
-                        <i class="bi bi-wallet2 fs-2 mb-3" style="color: var(--png-navy-700);"></i>
-                        <h5 class="fw-bold">Wallet &amp; Investment</h5>
-                        <p class="text-muted small mb-0">Add funds to your wallet and invest from just $100. Every dollar invested is tracked transparently, with income automatically distributed to your upline the moment you invest.</p>
+                        <i class="bi bi-briefcase fs-2 mb-3" style="color: var(--png-navy-700);"></i>
+                        <h5 class="fw-bold">Portfolio Management</h5>
+                        <p class="text-muted small mb-0">We design and actively manage diversified investment portfolios tailored for long-term wealth creation — balancing growth opportunities against capital protection across multiple asset classes and global markets.</p>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="card-png p-4 h-100">
-                        <i class="bi bi-cash-coin fs-2 mb-3" style="color: var(--png-navy-700);"></i>
-                        <h5 class="fw-bold">Direct Rewards</h5>
-                        <p class="text-muted small mb-0">Earn 4% of your direct referral's investment instantly, plus 2% passed up to your own sponsor — rewarding both recruitment and mentorship.</p>
+                        <i class="bi bi-shuffle fs-2 mb-3" style="color: var(--png-navy-700);"></i>
+                        <h5 class="fw-bold">Alternative Investment Strategies</h5>
+                        <p class="text-muted small mb-0">Beyond traditional markets, we deploy alternative investment strategies designed to capture opportunities less correlated with conventional equity and bond markets, strengthening diversification across the portfolio.</p>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="card-png p-4 h-100">
-                        <i class="bi bi-diagram-3 fs-2 mb-3" style="color: var(--png-navy-700);"></i>
-                        <h5 class="fw-bold">20-Level Team Income</h5>
-                        <p class="text-muted small mb-0">A 4.5% level-income pool distributed across 20 levels of your team — unlocked progressively as you climb the rank ladder.</p>
+                        <i class="bi bi-search fs-2 mb-3" style="color: var(--png-navy-700);"></i>
+                        <h5 class="fw-bold">Global Market Research</h5>
+                        <p class="text-muted small mb-0">Our research process continuously tracks global financial markets, macroeconomic trends, and emerging opportunities, so every investment decision is grounded in data rather than speculation.</p>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="card-png p-4 h-100">
-                        <i class="bi bi-graph-up-arrow fs-2 mb-3" style="color: var(--png-navy-700);"></i>
-                        <h5 class="fw-bold">Monthly Profit Sharing</h5>
-                        <p class="text-muted small mb-0">Every investment earns 8% monthly profit for {{ config('mlm.roi_max_months') }} months, credited directly to your ROI wallet.</p>
+                        <i class="bi bi-shield-check fs-2 mb-3" style="color: var(--png-navy-700);"></i>
+                        <h5 class="fw-bold">Risk Management</h5>
+                        <p class="text-muted small mb-0">A systematic, disciplined risk framework governs every position we take — capital preservation comes first, with consistent long-term performance pursued within clearly defined risk limits.</p>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="card-png p-4 h-100">
-                        <i class="bi bi-trophy fs-2 mb-3" style="color: var(--png-navy-700);"></i>
-                        <h5 class="fw-bold">13-Rank Achievement Ladder</h5>
-                        <p class="text-muted small mb-0">From Start to Crown Ambassador Universal — climb through 5 packages, unlocking bigger cash rewards and deeper level income at every rank.</p>
+                        <i class="bi bi-person-check fs-2 mb-3" style="color: var(--png-navy-700);"></i>
+                        <h5 class="fw-bold">Investment Advisory</h5>
+                        <p class="text-muted small mb-0">Investors receive clear, ongoing guidance on portfolio performance, market conditions, and strategy — so you always understand where your capital is deployed and why.</p>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="card-png p-4 h-100">
-                        <i class="bi bi-shield-lock fs-2 mb-3" style="color: var(--png-navy-700);"></i>
-                        <h5 class="fw-bold">Secure Withdrawals</h5>
-                        <p class="text-muted small mb-0">Withdraw from your ROI or Working income wallet with email OTP verification and admin approval for every payout.</p>
+                        <i class="bi bi-gem fs-2 mb-3" style="color: var(--png-navy-700);"></i>
+                        <h5 class="fw-bold">Wealth Creation Solutions</h5>
+                        <p class="text-muted small mb-0">From your first investment onward, our structured programs are designed to compound value over time, with full transparency on performance tracked through your personal dashboard.</p>
                     </div>
                 </div>
             </div>

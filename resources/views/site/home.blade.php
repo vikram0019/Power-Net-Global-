@@ -50,6 +50,32 @@
         </div>
     </section>
 
+    {{-- Live Stats Band --}}
+    <section class="py-5">
+        <div class="container">
+            <div class="stats-band p-5">
+                <div class="row g-4 text-center position-relative" style="color: #fff;">
+                    <div class="col-6 col-lg-3">
+                        <div class="fs-2 fw-800" style="color: var(--png-gold-400);">{{ number_format($memberCount) }}+</div>
+                        <div class="small opacity-75 text-uppercase" style="letter-spacing: 0.5px;">Members Worldwide</div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="fs-2 fw-800" style="color: var(--png-gold-400);">${{ number_format($totalInvested, 0) }}+</div>
+                        <div class="small opacity-75 text-uppercase" style="letter-spacing: 0.5px;">Total Invested</div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="fs-2 fw-800" style="color: var(--png-gold-400);">${{ number_format($totalPaid, 0) }}+</div>
+                        <div class="small opacity-75 text-uppercase" style="letter-spacing: 0.5px;">Rewards Paid Out</div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="fs-2 fw-800" style="color: var(--png-gold-400);">13</div>
+                        <div class="small opacity-75 text-uppercase" style="letter-spacing: 0.5px;">Achievement Ranks</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     {{-- Summary About --}}
     <section class="py-5">
         <div class="container py-4">
@@ -58,6 +84,7 @@
                     <div class="eyebrow-gold mb-2">About Us</div>
                     <h2 class="section-title mb-3">A global network built on trust and transparency</h2>
                     <p class="text-muted">PowerNetGlobal connects ambitious members worldwide through a structured rewards network — combining direct referral bonuses, team-driven income, and long-term profit sharing, all tracked in a transparent wallet-based system.</p>
+                    <p class="text-muted">Every member starts on the same footing: build your team, unlock deeper income levels as you rank up, and watch your rewards accumulate in a dashboard you can check anytime — no spreadsheets, no guesswork, just a clear real-time ledger of what you've earned.</p>
                     <a href="{{ route('about') }}" class="fw-semibold text-decoration-none">Learn more about us <i class="bi bi-arrow-right"></i></a>
                 </div>
                 <div class="col-lg-6">
@@ -86,6 +113,61 @@
                                 <div class="fw-bold mt-2">Team Rewards</div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- Why Choose Us --}}
+    <section class="py-5" style="background: #f6f7fb;">
+        <div class="container py-4">
+            <div class="text-center mb-5">
+                <div class="eyebrow-gold mb-2">Why PowerNetGlobal</div>
+                <h2 class="section-title">Built for members who play the long game</h2>
+                <p class="text-muted col-lg-7 mx-auto">A platform designed around one idea — every dollar you or your team invests should be traceable, every reward should post automatically, and you should never have to wonder where you stand.</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="bi bi-lock"></i></div>
+                        <h6 class="fw-bold">OTP-Verified Security</h6>
+                        <p class="small text-muted mb-0">Account creation and withdrawals are protected by OTP verification, so your wallet stays in your hands alone.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon gold"><i class="bi bi-receipt"></i></div>
+                        <h6 class="fw-bold">Fully Transparent Ledger</h6>
+                        <p class="small text-muted mb-0">Every direct reward, level payout, and monthly profit share is logged with a timestamp — nothing is ever a mystery figure.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="bi bi-diagram-3"></i></div>
+                        <h6 class="fw-bold">20-Level Team Income</h6>
+                        <p class="small text-muted mb-0">Your effort compounds — as your team grows deeper, unlocked ranks let you earn from up to 20 levels of activity.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon gold"><i class="bi bi-lightning-charge"></i></div>
+                        <h6 class="fw-bold">Automated Payouts</h6>
+                        <p class="small text-muted mb-0">Direct rewards and level income post the moment an investment is made — no manual processing, no waiting on admin.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="bi bi-trophy"></i></div>
+                        <h6 class="fw-bold">13 Ranks, 5 Packages</h6>
+                        <p class="small text-muted mb-0">A clear, published path from Start all the way to Universal Crown, with a reward at every milestone.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon gold"><i class="bi bi-headset"></i></div>
+                        <h6 class="fw-bold">Real Support, Real People</h6>
+                        <p class="small text-muted mb-0">Questions about your wallet, your team, or your next rank? Reach out and a real person gets back to you.</p>
                     </div>
                 </div>
             </div>
@@ -132,13 +214,56 @@
         </div>
     </section>
 
+    {{-- How It Works --}}
+    <section class="py-5">
+        <div class="container py-4">
+            <div class="text-center mb-5">
+                <div class="eyebrow-gold mb-2">How It Works</div>
+                <h2 class="section-title">From sign-up to your first payout</h2>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="step-card text-center px-2">
+                        <div class="step-connector d-none d-lg-block"></div>
+                        <div class="step-number mx-auto">1</div>
+                        <h6 class="fw-bold">Create Your Account</h6>
+                        <p class="small text-muted mb-0">Sign up with a referral code, verify with OTP, and wait for a quick admin approval.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="step-card text-center px-2">
+                        <div class="step-connector d-none d-lg-block"></div>
+                        <div class="step-number mx-auto">2</div>
+                        <h6 class="fw-bold">Fund Your Wallet</h6>
+                        <p class="small text-muted mb-0">Add funds and make your investment — the minimum to activate income is just $100.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="step-card text-center px-2">
+                        <div class="step-connector d-none d-lg-block"></div>
+                        <div class="step-number mx-auto">3</div>
+                        <h6 class="fw-bold">Build Your Team</h6>
+                        <p class="small text-muted mb-0">Share your referral link, grow your downline, and unlock deeper levels as you rank up.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="step-card text-center px-2">
+                        <div class="step-number mx-auto">4</div>
+                        <h6 class="fw-bold">Earn &amp; Withdraw</h6>
+                        <p class="small text-muted mb-0">Watch direct, level, and monthly rewards post to your wallet, then withdraw whenever you're ready.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     {{-- Summary Plan --}}
     <section class="py-5">
         <div class="container py-4">
             <div class="text-center mb-5">
                 <div class="eyebrow-gold mb-2">Our Plan</div>
                 <h2 class="section-title">A 13-rank journey to the top</h2>
-                <p class="text-muted">From Start to Crown Ambassador Universal — every rank unlocks bigger rewards and deeper team income.</p>
+                <p class="text-muted">From Start to Universal Crown — every rank unlocks bigger rewards and deeper team income.</p>
             </div>
             <div class="row g-3">
                 @foreach ($ranks->take(6) as $rank)

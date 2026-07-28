@@ -56,11 +56,19 @@
                         </div>
                         <div class="d-flex justify-content-between small">
                             <span class="text-muted">Legs Open</span>
-                            <span class="fw-semibold">{{ $rank->legs_open >= 255 ? 'No Limit' : $rank->legs_open }}</span>
+                            <span class="fw-semibold">{{ $rank->sort_order >= 5 ? '-' : ($rank->legs_open >= 255 ? 'No Limit' : $rank->legs_open) }}</span>
                         </div>
                         <div class="d-flex justify-content-between small">
                             <span class="text-muted">Levels Unlocked</span>
-                            <span class="fw-semibold">{{ $rank->levels_unlocked >= 20 ? 'All (20)' : $rank->levels_unlocked }}</span>
+                            <span class="fw-semibold">
+                                @if ($rank->code === 'eagle')
+                                    Achieved Eagle Rank All Levels opened
+                                @elseif ($rank->sort_order >= 5)
+                                    -
+                                @else
+                                    {{ $rank->levels_unlocked >= 20 ? 'All (20)' : $rank->levels_unlocked }}
+                                @endif
+                            </span>
                         </div>
                     </div>
                 </div>

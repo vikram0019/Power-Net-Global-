@@ -12,14 +12,28 @@
 
     <section class="py-5">
         <div class="container py-4">
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-9 text-center">
+                    <p class="fs-5 text-muted">Power Net Global Hedge Fund is a professional investment management company dedicated to creating long-term wealth through disciplined investment strategies, advanced market research, and strong risk management.</p>
+                    <p class="fs-5 text-muted mb-0">Our objective is to identify high-quality investment opportunities across global financial markets while protecting investor capital through a diversified portfolio and a systematic investment approach.</p>
+                </div>
+            </div>
+
             <div class="row g-5 align-items-center mb-5">
                 <div class="col-lg-6">
-                    <h2 class="section-title mb-3">Our Vision</h2>
-                    <p class="text-muted">To build the world's most trusted global rewards network — one where every member has a transparent, fair path to financial growth through collaboration, teamwork, and shared success.</p>
+                    <div class="eyebrow-gold mb-2">Our Vision</div>
+                    <h2 class="section-title mb-3">A globally trusted investment partner</h2>
+                    <p class="text-muted">To become a globally trusted investment management company by delivering consistent, transparent, and sustainable investment performance.</p>
                 </div>
                 <div class="col-lg-6">
-                    <h2 class="section-title mb-3">Our Mission</h2>
-                    <p class="text-muted">We provide a structured, technology-driven platform that rewards direct effort and team building alike — combining direct referral bonuses, deep-level team income, monthly profit sharing, and a clear 13-rank achievement ladder so every member always knows what's next.</p>
+                    <div class="eyebrow-gold mb-2">Our Mission</div>
+                    <h2 class="section-title mb-3">Principles we invest by</h2>
+                    <ul class="text-muted mb-0 ps-3">
+                        <li class="mb-2">Deliver long-term value for investors.</li>
+                        <li class="mb-2">Maintain the highest standards of integrity and transparency.</li>
+                        <li class="mb-2">Use data-driven investment decisions.</li>
+                        <li>Focus on effective risk management and capital preservation.</li>
+                    </ul>
                 </div>
             </div>
 
@@ -42,7 +56,7 @@
                     <div class="card-png p-4 h-100 text-center">
                         <i class="bi bi-rocket-takeoff fs-1 mb-3" style="color: var(--png-gold-500);"></i>
                         <h5 class="fw-bold">Growth</h5>
-                        <p class="small text-muted mb-0">A clear path from your first investment to Crown Ambassador Universal status.</p>
+                        <p class="small text-muted mb-0">A clear path from your first investment to Universal Crown status.</p>
                     </div>
                 </div>
             </div>
