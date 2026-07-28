@@ -15,7 +15,7 @@
             <div class="stat-card gold">
                 <div class="stat-label">Weighted Team Business</div>
                 <div class="stat-value">${{ number_format($teamBusiness, 2) }}</div>
-                <small class="opacity-75">Top 3 legs weighted 50% / 30% / 20%</small>
+                <small class="opacity-75">Power leg 50% / 2nd leg 30% / all other legs combined 20%</small>
             </div>
         </div>
     </div>

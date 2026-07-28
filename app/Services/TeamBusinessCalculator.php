@@ -25,8 +25,10 @@ class TeamBusinessCalculator
     }
 
     /**
-     * Rank-qualification business: sum of the top-3 legs weighted per config('mlm.leg_weights').
-     * Legs outside the top 3 contribute nothing toward rank qualification.
+     * Rank-qualification business: power leg (largest) weighted 50%, 2nd leg weighted
+     * 30%, and every remaining leg (3rd, 4th, 5th...) summed together and weighted 20%
+     * — so, unlike a strict top-3 cutoff, legs beyond the 2nd always contribute
+     * something. Weight percentages come from config('mlm.leg_weights').
      */
     public function weightedTeamBusiness(User $user): float
     {
@@ -36,14 +38,15 @@ class TeamBusinessCalculator
             ->sortDesc()
             ->values();
 
-        $weights = config('mlm.leg_weights');
-        $total = 0.0;
+        [$powerWeight, $secondWeight, $restWeight] = config('mlm.leg_weights');
 
-        foreach ($weights as $index => $weightPercent) {
-            $total += $legTotals->get($index, 0) * ($weightPercent / 100);
-        }
+        $powerLeg = $legTotals->get(0, 0);
+        $secondLeg = $legTotals->get(1, 0);
+        $restLegsSum = $legTotals->slice(2)->sum();
 
-        return $total;
+        return ($powerLeg * $powerWeight / 100)
+            + ($secondLeg * $secondWeight / 100)
+            + ($restLegsSum * $restWeight / 100);
     }
 
     public function totalTeamSize(User $user): int

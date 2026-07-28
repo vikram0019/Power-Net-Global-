@@ -6,14 +6,10 @@
 @section('content')
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div>
-            <h4 class="fw-bold mb-0">
-                {{ $user->name }}
-                @if ($user->is_dummy)
-                    <span class="badge bg-secondary">Dummy</span>
-                @endif
-            </h4>
+            <h4 class="fw-bold mb-0">{{ $user->name }}</h4>
             <p class="text-muted small mb-0">{{ $user->email }} &middot; {{ $user->mobile }} &middot; Referral: <code>{{ $user->referral_code }}</code></p>
-            <p class="small mb-0">Sponsor: {{ $user->sponsor->name ?? '—' }} &middot; Joined {{ $user->created_at->format('d M Y') }}</p>
+            <p class="small mb-1">Sponsor: {{ $user->sponsor->name ?? '—' }} &middot; Joined {{ $user->created_at->format('d M Y') }}</p>
+            @include('partials.investor-status', ['user' => $user])
         </div>
         <div class="text-end">
             <span class="badge fs-6 mb-2

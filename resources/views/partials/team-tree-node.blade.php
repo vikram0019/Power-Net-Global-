@@ -8,6 +8,7 @@
             <span style="width: 20px; display: inline-block;"></span>
         @endif
         <i class="bi bi-person-circle text-secondary"></i>
+        <span class="status-dot {{ $node['user']->investorStatus() }}" title="{{ $node['user']->investorStatusLabel() }}"></span>
         <span class="fw-semibold">{{ $node['user']->name }}</span>
         <span class="badge badge-group star">{{ $node['user']->currentRank?->name ?? 'Unranked' }}</span>
         <span class="small text-muted">${{ number_format($node['invested'], 2) }}</span>

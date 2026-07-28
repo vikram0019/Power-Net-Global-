@@ -14,10 +14,10 @@ class TeamController extends Controller
 
         $rows = DB::select(
             'WITH RECURSIVE subtree AS (
-                SELECT id, name, current_rank_id, created_at, 1 AS depth
+                SELECT id, name, current_rank_id, is_dummy, created_at, 1 AS depth
                 FROM users WHERE sponsor_id = ?
                 UNION ALL
-                SELECT u.id, u.name, u.current_rank_id, u.created_at, s.depth + 1
+                SELECT u.id, u.name, u.current_rank_id, u.is_dummy, u.created_at, s.depth + 1
                 FROM users u
                 INNER JOIN subtree s ON u.sponsor_id = s.id
                 WHERE s.depth < 20

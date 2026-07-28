@@ -24,6 +24,14 @@ class PayLevelIncome
         $level = 1;
 
         while ($upline && $level <= 20) {
+            // Red (zero-investment) uplines are transparently skipped — they don't
+            // occupy a level slot at all. Green (active) and yellow (dummy) uplines
+            // both count normally at whatever level they land on.
+            if (! $upline->countsForLevelIncome()) {
+                $upline = $upline->sponsor;
+                continue;
+            }
+
             $upline->loadMissing('currentRank');
             $levelsUnlocked = $upline->currentRank->levels_unlocked ?? 0;
 

@@ -77,7 +77,7 @@
 
             <div class="card-png p-4 mb-5">
                 <h5 class="fw-bold mb-3">Team Legs Distribution (Rank Qualification)</h5>
-                <p class="small text-muted mb-3">When qualifying for a rank, your top 3 team legs are weighted as follows. Other legs don't count toward rank qualification, but still earn normal direct, level, and ROI income.</p>
+                <p class="small text-muted mb-3">When qualifying for a rank, your team legs are weighted as follows: your single largest leg (Power), your next largest (2nd), and every other leg combined. All legs still earn normal direct, level, and ROI income regardless of this weighting.</p>
                 <div class="row g-3 text-center">
                     <div class="col-4">
                         <div class="fs-4 fw-800" style="color: var(--png-navy-800);">50%</div>
@@ -85,11 +85,11 @@
                     </div>
                     <div class="col-4">
                         <div class="fs-4 fw-800" style="color: var(--png-navy-800);">30%</div>
-                        <div class="small text-muted">Second Leg</div>
+                        <div class="small text-muted">2nd Leg</div>
                     </div>
                     <div class="col-4">
                         <div class="fs-4 fw-800" style="color: var(--png-navy-800);">20%</div>
-                        <div class="small text-muted">Third Leg</div>
+                        <div class="small text-muted">All Other Legs Combined</div>
                     </div>
                 </div>
             </div>
