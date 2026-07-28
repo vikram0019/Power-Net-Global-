@@ -258,26 +258,40 @@
     </section>
 
     {{-- Summary Plan --}}
-    <section class="py-5">
+    <section class="py-5" style="background: #f6f7fb;">
         <div class="container py-4">
             <div class="text-center mb-5">
                 <div class="eyebrow-gold mb-2">Our Plan</div>
                 <h2 class="section-title">A 13-rank journey to the top</h2>
-                <p class="text-muted">From Start to Universal Crown — every rank unlocks bigger rewards and deeper team income.</p>
+                <p class="text-muted col-lg-7 mx-auto">Five packages, thirteen ranks — every step up unlocks a bigger cash reward, deeper team income, and more unlocked levels. From Start all the way to Universal Crown.</p>
             </div>
-            <div class="row g-3">
-                @foreach ($ranks->take(6) as $rank)
-                    <div class="col-lg-2 col-md-4 col-6">
-                        <div class="rank-card p-3 text-center">
-                            <div class="rank-badge mx-auto mb-2">{{ $rank->sort_order }}</div>
-                            <div class="fw-bold small">{{ $rank->name }}</div>
-                            <div class="small text-muted">${{ number_format($rank->reward_amount, 0) }}</div>
+            <div class="row g-4">
+                @foreach ($ranks->groupBy('package_group') as $groupName => $groupRanks)
+                    @php $entryRank = $groupRanks->first(); @endphp
+                    <div class="col-lg col-md-4 col-6">
+                        <div class="rank-preview-card p-4 text-center h-100">
+                            <span class="badge-group {{ strtolower($groupName) }} mb-3 d-inline-block">{{ $groupName }}</span>
+                            <div class="rank-badge mx-auto mb-3">{{ $entryRank->sort_order }}</div>
+                            <div class="fw-bold mb-1">{{ $entryRank->name }}</div>
+                            <div class="fs-4 fw-800 mb-3" style="color: var(--png-gold-500);">${{ number_format($entryRank->reward_amount, 0) }}</div>
+                            <div class="rank-preview-stat">
+                                <span class="text-muted">Own Invest</span>
+                                <span class="fw-semibold">${{ number_format($entryRank->own_invest_required, 0) }}</span>
+                            </div>
+                            <div class="rank-preview-stat">
+                                <span class="text-muted">Team Business</span>
+                                <span class="fw-semibold">${{ number_format($entryRank->team_business_required, 0) }}</span>
+                            </div>
+                            <div class="rank-preview-stat">
+                                <span class="text-muted">Levels Unlocked</span>
+                                <span class="fw-semibold">{{ $entryRank->levels_unlocked >= 20 ? 'All (20)' : $entryRank->levels_unlocked }}</span>
+                            </div>
                         </div>
                     </div>
                 @endforeach
             </div>
-            <div class="text-center mt-4">
-                <a href="{{ route('plan') }}" class="btn btn-navy px-4">View Full Plan</a>
+            <div class="text-center mt-5">
+                <a href="{{ route('plan') }}" class="btn btn-navy px-4">View Full Plan — All 13 Ranks</a>
             </div>
         </div>
     </section>

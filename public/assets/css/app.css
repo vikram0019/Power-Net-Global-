@@ -193,7 +193,8 @@ body {
   box-shadow: 0 16px 34px -14px rgba(5, 11, 24, 0.4);
 }
 
-.rank-card .rank-badge {
+.rank-card .rank-badge,
+.rank-preview-card .rank-badge {
   width: 52px;
   height: 52px;
   border-radius: 50%;
@@ -217,6 +218,46 @@ body {
 .rank-card.current {
   border-color: var(--png-navy-600);
   box-shadow: 0 0 0 2px rgba(31, 54, 96, 0.3), var(--png-shadow);
+}
+
+/* Home page — rank plan preview cards (one per package tier) */
+.rank-preview-card {
+  border-radius: var(--png-radius);
+  border: 1px solid #eceff5;
+  background: #fff;
+  box-shadow: var(--png-shadow);
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.rank-preview-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--png-blue-500), var(--png-gold-500));
+}
+
+.rank-preview-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px -16px rgba(5, 11, 24, 0.45);
+}
+
+.rank-preview-stat {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  padding: 0.4rem 0;
+  border-top: 1px dashed #eceff5;
+}
+
+.rank-preview-stat:first-of-type {
+  border-top: none;
 }
 
 .badge-group {
@@ -266,7 +307,8 @@ body {
   overflow-y: auto;
 }
 
-.app-sidebar .brand {
+.app-sidebar .brand,
+.offcanvas .brand {
   color: var(--png-gold-400);
   font-weight: 800;
   padding: 1.15rem 1.25rem;
@@ -276,7 +318,8 @@ body {
   gap: 0.6rem;
 }
 
-.app-sidebar .nav-link {
+.app-sidebar .nav-link,
+.offcanvas .nav-link {
   color: var(--png-ink-300);
   padding: 0.65rem 1.25rem;
   border-left: 3px solid transparent;
@@ -287,12 +330,14 @@ body {
   gap: 0.6rem;
 }
 
-.app-sidebar .nav-link:hover {
+.app-sidebar .nav-link:hover,
+.offcanvas .nav-link:hover {
   background: rgba(255, 255, 255, 0.04);
   color: var(--png-ink-100);
 }
 
-.app-sidebar .nav-link.active {
+.app-sidebar .nav-link.active,
+.offcanvas .nav-link.active {
   color: var(--png-gold-300);
   background: rgba(212, 169, 74, 0.1);
   border-left-color: var(--png-gold-400);
