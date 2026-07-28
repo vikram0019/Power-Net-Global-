@@ -109,6 +109,39 @@ class User extends Authenticatable
         return $this->status === 'active';
     }
 
+    /**
+     * Investor status for display + level-counting purposes — distinct from the
+     * `status` column above, which tracks account/OTP/admin-approval lifecycle.
+     * green = signed up and has invested; yellow = admin-created dummy; red = signed
+     * up but never invested a cent.
+     */
+    public function investorStatus(): string
+    {
+        if ($this->is_dummy) {
+            return 'yellow';
+        }
+
+        return $this->totalInvested() > 0 ? 'green' : 'red';
+    }
+
+    public function investorStatusLabel(): string
+    {
+        return match ($this->investorStatus()) {
+            'yellow' => 'Dummy',
+            'green' => 'Active',
+            default => 'Inactive',
+        };
+    }
+
+    /**
+     * Whether this user occupies a level slot in the level-income chain. Red
+     * (zero-investment) users are transparently skipped; green and yellow both count.
+     */
+    public function countsForLevelIncome(): bool
+    {
+        return $this->investorStatus() !== 'red';
+    }
+
     public static function generateReferralCode(): string
     {
         do {

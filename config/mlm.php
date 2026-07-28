@@ -24,7 +24,8 @@ return [
     'monthly_roi_percent' => 8,
     'roi_max_months' => 25,
 
-    // Weighting applied to a member's top-3 legs (by team business volume) for rank qualification.
+    // Weighting for rank qualification: [power leg, 2nd leg, every remaining leg combined].
+    // The 3rd value applies to the *sum* of all legs beyond the top 2, not just the 3rd leg.
     'leg_weights' => [50, 30, 20],
 
     // Sentinel value stored in ranks.legs_open meaning "no limit".

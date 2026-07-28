@@ -16,21 +16,17 @@
         <div class="table-responsive">
             <table class="table table-png align-middle">
                 <thead>
-                    <tr><th>Name</th><th>Contact</th><th>Referral Code</th><th>Sponsor</th><th>Rank</th><th>Status</th><th>ROI</th><th></th></tr>
+                    <tr><th>Name</th><th>Contact</th><th>Referral Code</th><th>Sponsor</th><th>Rank</th><th>Investor Status</th><th>Account Status</th><th>ROI</th><th></th></tr>
                 </thead>
                 <tbody>
                     @forelse ($users as $u)
                         <tr>
-                            <td class="fw-semibold">
-                                {{ $u->name }}
-                                @if ($u->is_dummy)
-                                    <span class="badge bg-secondary ms-1">Dummy</span>
-                                @endif
-                            </td>
+                            <td class="fw-semibold">{{ $u->name }}</td>
                             <td class="small">{{ $u->email }}<br><span class="text-muted">{{ $u->mobile }}</span></td>
                             <td><code>{{ $u->referral_code }}</code></td>
                             <td>{{ $u->sponsor->name ?? '—' }}</td>
                             <td>{{ $u->currentRank->name ?? 'Unranked' }}</td>
+                            <td>@include('partials.investor-status', ['user' => $u])</td>
                             <td>
                                 <span class="badge
                                     @class([
@@ -59,7 +55,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="8" class="text-center text-muted py-4">No users found.</td></tr>
+                        <tr><td colspan="9" class="text-center text-muted py-4">No users found.</td></tr>
                     @endforelse
                 </tbody>
             </table>
