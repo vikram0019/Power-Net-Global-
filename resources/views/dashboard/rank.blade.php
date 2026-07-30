@@ -32,7 +32,7 @@
                     $iconSize = $tierSizes[$tierIndex - 1];
                 @endphp
                 <div class="col-lg-4 col-md-6">
-                    <div class="rank-card p-4 @if($rank->is_achieved) achieved @elseif(!$rank->is_current && $rank->invest_progress < 100) locked @endif @if($rank->is_current) current @endif">
+                    <div class="rank-card p-4 @if($rank->is_achieved) achieved @elseif(!$rank->is_current && ($rank->invest_progress < 100 || $rank->team_progress < 100)) locked @endif @if($rank->is_current) current @endif">
                         <div class="d-flex align-items-center gap-3 mb-3">
                             <div class="rank-badge">{{ $rank->sort_order }}</div>
                             <div>
