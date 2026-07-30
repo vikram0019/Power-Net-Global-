@@ -756,9 +756,29 @@ body {
 }
 
 .org-node-referral {
-  font-size: 0.68rem;
-  color: var(--png-ink-500);
-  font-family: monospace;
+  display: flex;
+  justify-content: center;
+  margin: 0.15rem 0 0.3rem;
+}
+
+.org-node-referral-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.08rem 0.55rem;
+  font-size: 0.64rem;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--png-navy-600);
+  background: #eef2fb;
+  border: 1px dashed #c7d2e8;
+  border-radius: 999px;
+  line-height: 1.4;
+}
+
+.org-node-referral-chip i {
+  font-size: 0.78rem;
 }
 
 .org-node-toggle {
