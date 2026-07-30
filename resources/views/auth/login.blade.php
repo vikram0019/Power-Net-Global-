@@ -6,6 +6,10 @@
     <h4 class="fw-bold mb-1">Welcome back</h4>
     <p class="text-muted small mb-4">Login to access your dashboard.</p>
 
+    @if (session('status'))
+        <div class="alert alert-success py-2 small">{{ session('status') }}</div>
+    @endif
+
     @if ($errors->any())
         <div class="alert alert-danger py-2 small">
             <ul class="mb-0 ps-3">
@@ -23,7 +27,10 @@
             <input type="text" name="login" class="form-control" value="{{ old('login') }}" required autofocus>
         </div>
         <div class="mb-3">
-            <label class="form-label small fw-semibold">Password</label>
+            <div class="d-flex justify-content-between align-items-center">
+                <label class="form-label small fw-semibold mb-0">Password</label>
+                <a href="{{ route('password.request') }}" class="small text-decoration-none">Forgot password?</a>
+            </div>
             <input type="password" name="password" class="form-control" required>
         </div>
         <div class="form-check mb-3">

@@ -50,32 +50,6 @@
         </div>
     </section>
 
-    {{-- Live Stats Band --}}
-    <section class="py-5">
-        <div class="container">
-            <div class="stats-band p-5">
-                <div class="row g-4 text-center position-relative" style="color: #fff;">
-                    <div class="col-6 col-lg-3">
-                        <div class="fs-2 fw-800" style="color: var(--png-gold-400);">{{ number_format($memberCount) }}+</div>
-                        <div class="small opacity-75 text-uppercase" style="letter-spacing: 0.5px;">Members Worldwide</div>
-                    </div>
-                    <div class="col-6 col-lg-3">
-                        <div class="fs-2 fw-800" style="color: var(--png-gold-400);">${{ number_format($totalInvested, 0) }}+</div>
-                        <div class="small opacity-75 text-uppercase" style="letter-spacing: 0.5px;">Total Invested</div>
-                    </div>
-                    <div class="col-6 col-lg-3">
-                        <div class="fs-2 fw-800" style="color: var(--png-gold-400);">${{ number_format($totalPaid, 0) }}+</div>
-                        <div class="small opacity-75 text-uppercase" style="letter-spacing: 0.5px;">Rewards Paid Out</div>
-                    </div>
-                    <div class="col-6 col-lg-3">
-                        <div class="fs-2 fw-800" style="color: var(--png-gold-400);">13</div>
-                        <div class="small opacity-75 text-uppercase" style="letter-spacing: 0.5px;">Achievement Ranks</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     {{-- Summary About --}}
     <section class="py-5">
         <div class="container py-4">

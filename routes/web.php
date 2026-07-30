@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\AdminRoiController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminWithdrawalController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PageController;
@@ -29,6 +30,11 @@ Route::post('/contact-us', [PageController::class, 'submitContact'])->name('cont
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'show'])->name('login');
     Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
+
+    Route::get('/forgot-password', [PasswordResetController::class, 'showForgotForm'])->name('password.request');
+    Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])->name('password.email');
+    Route::get('/reset-password/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])->name('password.update');
 
     Route::get('/signup', [RegisterController::class, 'show'])->name('signup');
     Route::get('/signup/verify-referral', [RegisterController::class, 'verifyReferralCode'])->name('signup.verify-referral');
