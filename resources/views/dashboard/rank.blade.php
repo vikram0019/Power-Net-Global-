@@ -42,15 +42,18 @@
                                         <i class="bi bi-check-circle-fill text-success" title="Rank Achieved"></i>
                                     @endif
                                 </div>
-                                @if ($rank->is_current)
-                                    <span class="badge bg-dark">Current Rank</span>
-                                @elseif ($rank->is_achieved)
-                                    <span class="badge-group rank-achieved-pill {{ strtolower($rank->package_group) }}">
-                                        <i class="bi {{ $rank->icon }}" style="font-size: {{ $iconSize }};"></i>Rank Achieved
-                                    </span>
-                                @else
-                                    <span class="badge bg-secondary">Locked</span>
-                                @endif
+                                <div class="d-flex flex-wrap align-items-center gap-1">
+                                    @if ($rank->is_current)
+                                        <span class="badge bg-dark">Current Rank</span>
+                                    @endif
+                                    @if ($rank->is_achieved)
+                                        <span class="badge-group rank-achieved-pill {{ strtolower($rank->package_group) }}">
+                                            <i class="bi {{ $rank->icon }}" style="font-size: {{ $iconSize }};"></i>Rank Achieved
+                                        </span>
+                                    @elseif (!$rank->is_current)
+                                        <span class="badge bg-secondary">Locked</span>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                         <div class="small text-muted mb-1">Own Investment</div>
