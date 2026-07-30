@@ -41,4 +41,8 @@
         @csrf
         <button type="submit" class="btn btn-link btn-sm text-decoration-none">Didn't get the code? Resend OTP</button>
     </form>
+
+    <p class="text-center small text-muted mt-2 mb-0">
+        <a href="{{ route('login') }}" class="fw-semibold text-decoration-none">Back to login</a>
+    </p>
 @endsection

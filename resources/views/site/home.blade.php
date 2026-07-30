@@ -260,8 +260,11 @@
                     </div>
                 @endforeach
             </div>
-            <div class="text-center mt-5">
+            <div class="text-center mt-5 d-flex gap-3 justify-content-center flex-wrap">
                 <a href="{{ route('plan') }}" class="btn btn-navy px-4">View Full Plan — All 13 Ranks</a>
+                <a href="{{ asset('assets/docs/Power-Net-Global-Plan.pdf') }}" class="btn btn-gold px-4 fw-bold" download>
+                    <i class="bi bi-file-earmark-arrow-down me-1"></i> Full Plan Download
+                </a>
             </div>
         </div>
     </section>
