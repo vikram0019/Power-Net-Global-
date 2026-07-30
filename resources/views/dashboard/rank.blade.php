@@ -45,8 +45,8 @@
                                 @if ($rank->is_current)
                                     <span class="badge bg-dark">Current Rank</span>
                                 @elseif ($rank->is_achieved)
-                                    <span class="badge-group {{ strtolower($rank->package_group) }}">
-                                        <i class="bi {{ $rank->icon }} me-1" style="font-size: {{ $iconSize }};"></i>Rank Achieved
+                                    <span class="badge-group rank-achieved-pill {{ strtolower($rank->package_group) }}">
+                                        <i class="bi {{ $rank->icon }}" style="font-size: {{ $iconSize }};"></i>Rank Achieved
                                     </span>
                                 @else
                                     <span class="badge bg-secondary">Locked</span>

@@ -279,6 +279,12 @@ body {
 .badge-group.universal { background: var(--png-navy-950); color: var(--png-gold-300); }
 .badge-group.unranked { background: #eceff5; color: var(--png-ink-500); }
 
+.badge-group.rank-achieved-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
 .rank-badge-pill {
   display: inline-flex;
   align-items: center;
