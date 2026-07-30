@@ -4,16 +4,54 @@
 @section('page-title', 'Wallet — Withdrawal')
 
 @section('content')
-    @if (session('dev_otp_hint'))
-        <div class="alert alert-warning py-2 small">
-            <i class="bi bi-terminal me-1"></i> Dev mode — withdrawal OTP is <strong>{{ session('dev_otp_hint') }}</strong>.
-            @if (session('pending_withdrawal_id'))
-                <form method="POST" action="{{ route('wallet.withdraw.verify-otp', session('pending_withdrawal_id')) }}" class="d-inline-flex gap-2 mt-2">
-                    @csrf
-                    <input type="text" name="otp" maxlength="6" class="form-control form-control-sm" style="width: 120px;" placeholder="OTP" required>
-                    <button type="submit" class="btn btn-sm btn-navy">Verify Now</button>
-                </form>
+    @if (session('pending_withdrawal_id'))
+        <div class="card-png p-4 mb-4" style="max-width: 420px;">
+            <h6 class="fw-bold mb-1"><i class="bi bi-shield-lock me-1"></i> Verify Withdrawal</h6>
+            <p class="small text-muted mb-3">Enter the 6-digit code sent to your email to confirm this withdrawal.</p>
+
+            @error('otp')
+                <div class="alert alert-danger py-1 small">{{ $message }}</div>
+            @enderror
+
+            @if (session('dev_otp_hint'))
+                <div class="alert alert-warning py-2 small">
+                    <i class="bi bi-terminal me-1"></i> Dev mode — your OTP is <strong>{{ session('dev_otp_hint') }}</strong>.
+                </div>
             @endif
+
+            <form method="POST" action="{{ route('wallet.withdraw.verify-otp', session('pending_withdrawal_id')) }}"
+                x-data="{
+                    digits: ['', '', '', '', '', ''],
+                    get otp() { return this.digits.join(''); },
+                    onInput(i, e, p) {
+                        const v = e.target.value.replace(/[^0-9]/g, '').slice(-1);
+                        this.digits[i] = v;
+                        e.target.value = v;
+                        if (v && i < 5) this.$refs[p + (i + 1)].focus();
+                    },
+                    onKeydown(i, e, p) {
+                        if (e.key === 'Backspace' && e.target.value === '' && i > 0) {
+                            this.$refs[p + (i - 1)].focus();
+                        }
+                    },
+                    onPaste(e, p) {
+                        const text = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '').slice(0, 6);
+                        if (!text) return;
+                        e.preventDefault();
+                        for (let i = 0; i < 6; i++) {
+                            this.digits[i] = text[i] || '';
+                            if (this.$refs[p + i]) this.$refs[p + i].value = text[i] || '';
+                        }
+                        const last = Math.min(text.length, 6) - 1;
+                        if (last >= 0 && this.$refs[p + last]) this.$refs[p + last].focus();
+                    }
+                }"
+                x-init="$nextTick(() => $refs.w0.focus())">
+                @csrf
+                <input type="hidden" name="otp" :value="otp">
+                @include('partials.otp-digit-boxes', ['refPrefix' => 'w'])
+                <button type="submit" class="btn btn-navy w-100">Verify Now</button>
+            </form>
         </div>
     @endif
 
@@ -46,9 +84,6 @@
         <p class="small text-muted">Requires OTP verification, then admin approval. Funds are sent to the BEP20 address you provide below.</p>
 
         @error('amount')
-            <div class="alert alert-danger py-1 small">{{ $message }}</div>
-        @enderror
-        @error('otp')
             <div class="alert alert-danger py-1 small">{{ $message }}</div>
         @enderror
 
