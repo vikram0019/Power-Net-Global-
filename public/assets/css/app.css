@@ -708,6 +708,7 @@ body {
   min-width: 130px;
   position: relative;
   z-index: 1;
+  text-align: center;
 }
 
 .org-node-root {
