@@ -133,29 +133,6 @@
         </div>
     </div>
 
-    <div class="card-png p-4">
-        <h6 class="fw-bold mb-3">Recent Income</h6>
-        <div class="table-responsive">
-            <table class="table table-png align-middle">
-                <thead>
-                    <tr><th>Date</th><th>Type</th><th>From</th><th>Level</th><th>Amount</th></tr>
-                </thead>
-                <tbody>
-                    @forelse ($recentIncome as $income)
-                        <tr>
-                            <td>{{ $income->created_at->format('d M Y, H:i') }}</td>
-                            <td class="text-capitalize">{{ str_replace('_', ' ', $income->type) }}</td>
-                            <td>{{ $income->sourceUser->name ?? '—' }}</td>
-                            <td>{{ $income->level ?? '—' }}</td>
-                            <td class="fw-semibold">${{ number_format($income->amount, 2) }}</td>
-                        </tr>
-                    @empty
-                        <tr><td colspan="5" class="text-center text-muted py-4">No income transactions yet.</td></tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
 @endsection
 
 @push('scripts')

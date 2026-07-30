@@ -31,12 +31,6 @@ class DashboardController extends Controller
             ->orderBy('ym')
             ->pluck('total', 'ym');
 
-        $recentIncome = IncomeTransaction::with('sourceUser')
-            ->where('user_id', $user->id)
-            ->latest()
-            ->take(8)
-            ->get();
-
         $announcements = Announcement::active()->latest()->get();
 
         $achievedToday = $user->rankHistory()
@@ -52,7 +46,6 @@ class DashboardController extends Controller
             'teamSize',
             'directCount',
             'monthly',
-            'recentIncome',
             'announcements',
             'achievedToday'
         ));
