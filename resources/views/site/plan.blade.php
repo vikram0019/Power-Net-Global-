@@ -117,10 +117,10 @@
                     <table class="table table-png align-middle mb-0">
                         <thead><tr><th>Rank</th><th>Levels Unlocked</th></tr></thead>
                         <tbody>
-                            <tr><td>Start</td><td>Level 1 only</td></tr>
-                            <tr><td>Super Star</td><td>Levels 1–2</td></tr>
-                            <tr><td>Seven Star</td><td>Levels 1–3</td></tr>
-                            <tr><td>Eagle and above</td><td>All 20 levels</td></tr>
+                            <tr><td>Start</td><td>2 D - 1 level Open</td></tr>
+                            <tr><td>Super Star</td><td>+1 D, 2 Level Open</td></tr>
+                            <tr><td>Seven Star</td><td>+1 D, 3 Level Open</td></tr>
+                            <tr><td>Eagle and above</td><td>10 D + Achieved Eagle Rank, All Level are opened</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -148,7 +148,7 @@
                                 <th style="width: 13%;">Own Investment</th>
                                 <th style="width: 14%;">Team Business</th>
                                 <th style="width: 12%;">Reward</th>
-                                <th style="width: 12%;">Legs Open</th>
+                                <th style="width: 12%;">Direct</th>
                                 <th style="width: 29%;">Levels Unlocked</th>
                             </tr>
                         </thead>
