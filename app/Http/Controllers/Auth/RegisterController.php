@@ -107,7 +107,7 @@ class RegisterController extends Controller
         }
 
         $user->update([
-            'status' => 'approval_pending',
+            'status' => 'active',
             'email_verified_at' => now(),
             'otp_code' => null,
             'otp_expires_at' => null,
@@ -119,7 +119,7 @@ class RegisterController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()->route('dashboard')->with('status', 'Your email is verified! Your account is now pending admin approval before you can sponsor other members.');
+        return redirect()->route('dashboard')->with('status', 'Your email is verified! Your account is now active.');
     }
 
     public function resendOtp()

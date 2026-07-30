@@ -186,7 +186,6 @@
                 <ul class="small text-muted mb-0">
                     <li>Withdrawals are paid after admin approval and email OTP verification.</li>
                     <li>Monthly profit is 8% of the invested amount, paid monthly for up to {{ config('mlm.roi_max_months') }} months.</li>
-                    <li>New accounts require admin approval before their referral code can be used by others.</li>
                     <li>A minimum investment of ${{ number_format(config('mlm.minimum_investment')) }} is required to be eligible for the monthly profit, level income, and rank income benefits.</li>
                     <li>Every member has a wallet system to submit deposits and track all earnings.</li>
                 </ul>

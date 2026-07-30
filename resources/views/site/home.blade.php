@@ -201,7 +201,7 @@
                         <div class="step-connector d-none d-lg-block"></div>
                         <div class="step-number mx-auto">1</div>
                         <h6 class="fw-bold">Create Your Account</h6>
-                        <p class="small text-muted mb-0">Sign up with a referral code, verify with OTP, and wait for a quick admin approval.</p>
+                        <p class="small text-muted mb-0">Sign up with a referral code and verify with a one-time code — your account is active instantly.</p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
