@@ -33,10 +33,13 @@
                 <div class="col-lg-5">
                     <div class="card-png p-4" style="background: rgba(255,255,255,0.06); backdrop-filter: blur(6px); border-color: rgba(255,255,255,0.15);">
                         <h5 class="text-white fw-bold mb-3">Quick Login</h5>
+                        @error('login')
+                            <div class="alert alert-danger py-2 small mb-3">{{ $message }}</div>
+                        @enderror
                         <form method="POST" action="{{ route('login.submit') }}">
                             @csrf
                             <div class="mb-3">
-                                <input type="text" name="login" class="form-control" placeholder="Email or Mobile" required>
+                                <input type="text" name="login" class="form-control" value="{{ old('login') }}" placeholder="Email or Mobile" required>
                             </div>
                             <div class="mb-3">
                                 <input type="password" name="password" class="form-control" placeholder="Password" required>
