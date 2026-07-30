@@ -28,10 +28,27 @@
     <div class="card-png p-4 mb-4">
         <h6 class="fw-bold mb-3"><i class="bi bi-diagram-3 me-1"></i> Team Tree</h6>
         @if (count($tree['children']))
-            <div>
-                @foreach ($tree['children'] as $child)
-                    @include('partials.team-tree-node', ['node' => $child])
-                @endforeach
+            <div class="org-tree-wrap">
+                <ul class="org-tree">
+                    <li x-data="{ open: true }">
+                        <div class="org-node org-node-root">
+                            <div class="org-node-avatar">
+                                <i class="bi bi-person-circle"></i>
+                            </div>
+                            <div class="org-node-name">{{ $tree['user']->name }} (You)</div>
+                            <div class="org-node-rank badge-group {{ strtolower($tree['user']->currentRank?->package_group ?? 'unranked') }}">{{ $tree['user']->currentRank?->name ?? 'Unranked' }}</div>
+                            <div class="org-node-invested">${{ number_format($tree['invested'], 2) }}</div>
+                            <button type="button" class="org-node-toggle" @click="open = !open">
+                                <i class="bi" :class="open ? 'bi-dash-circle' : 'bi-plus-circle'"></i>
+                            </button>
+                        </div>
+                        <ul x-show="open">
+                            @foreach ($tree['children'] as $child)
+                                @include('partials.team-tree-node', ['node' => $child])
+                            @endforeach
+                        </ul>
+                    </li>
+                </ul>
             </div>
         @else
             <p class="text-muted small mb-0">You haven't referred anyone yet. Share your referral code to build your team.</p>

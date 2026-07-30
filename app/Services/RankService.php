@@ -57,7 +57,7 @@ class RankService
 
         $this->walletService->credit(
             $user,
-            'working',
+            'rank_reward',
             (float) $rank->reward_amount,
             "Rank reward — {$rank->name}",
             Rank::class,

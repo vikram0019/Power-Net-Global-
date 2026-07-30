@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Overview')
-@section('page-title', 'Overview')
+@section('title', 'Dashboard')
+@section('page-title', 'Dashboard')
 
 @section('content')
     <div class="card-png p-4 mb-4" x-data="{ copiedCode: false, copiedLink: false }">
@@ -67,19 +67,43 @@
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="card-png p-4 h-100">
-                <h6 class="fw-bold mb-3">Income Breakdown</h6>
-                @php
-                    $labels = ['direct_reward' => 'Direct Reward', 'direct_reward_upline' => 'Direct Reward (Upline)', 'level_income' => 'Level Income', 'monthly_roi' => 'Monthly ROI', 'rank_reward' => 'Rank Reward'];
-                @endphp
-                @forelse ($incomeByType as $type => $amount)
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="small text-muted">{{ $labels[$type] ?? $type }}</span>
-                        <span class="fw-semibold">${{ number_format($amount, 2) }}</span>
+            <div class="card-png p-4 h-100" x-data="{ open: false, selected: null }">
+                <h6 class="fw-bold mb-3"><i class="bi bi-megaphone me-1"></i> Announcements</h6>
+
+                @if ($announcements->isEmpty())
+                    <p class="text-muted small mb-0">No announcements right now.</p>
+                @else
+                    <div class="announcement-ticker">
+                        <div class="announcement-ticker-track" style="animation-duration: {{ max(10, $announcements->count() * 4) }}s;">
+                            @foreach ($announcements->concat($announcements) as $a)
+                                <div class="announcement-ticker-item">
+                                    <span class="small fw-semibold text-truncate">{{ $a->title }}</span>
+                                    <button type="button" class="btn btn-link btn-sm p-0 flex-shrink-0"
+                                        @click="open = true; selected = { title: @js($a->title), description: @js($a->description) }">
+                                        Read More
+                                    </button>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
-                @empty
-                    <p class="text-muted small mb-0">No income yet. Invest to start earning.</p>
-                @endforelse
+
+                    <div class="modal" :class="{ 'd-block': open }" x-show="open" x-cloak tabindex="-1" style="background: rgba(5,11,24,0.6);" @click.self="open = false">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h6 class="modal-title fw-bold" x-text="selected?.title"></h6>
+                                    <button type="button" class="btn-close" @click="open = false"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p class="mb-0" x-text="selected?.description" style="white-space: pre-line;"></p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-navy" @click="open = false">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

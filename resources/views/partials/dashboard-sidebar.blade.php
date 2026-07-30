@@ -3,7 +3,7 @@
 </a>
 <nav class="nav flex-column py-3">
     <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-        <i class="bi bi-speedometer2"></i> Overview
+        <i class="bi bi-speedometer2"></i> Dashboard
     </a>
     <a href="{{ route('wallet.add-fund') }}" class="nav-link {{ request()->routeIs('wallet.add-fund') || request()->routeIs('wallet.fund-request') ? 'active' : '' }}">
         <i class="bi bi-plus-circle"></i> Add Fund
@@ -24,7 +24,7 @@
         <i class="bi bi-diagram-3"></i> Team
     </a>
     <a href="{{ route('rank.index') }}" class="nav-link {{ request()->routeIs('rank.*') ? 'active' : '' }}">
-        <i class="bi bi-trophy"></i> Rank Progress
+        <i class="bi bi-trophy"></i> Rank &amp; Rewards Progress
     </a>
     <div class="mt-3 pt-3 border-top border-secondary border-opacity-25">
         <a href="{{ route('home') }}" class="nav-link">

@@ -31,11 +31,18 @@
                         <div class="d-flex align-items-center gap-3 mb-3">
                             <div class="rank-badge">{{ $rank->sort_order }}</div>
                             <div>
-                                <div class="fw-bold">{{ $rank->name }}</div>
+                                <div class="fw-bold d-flex align-items-center gap-1">
+                                    {{ $rank->name }}
+                                    @if ($rank->is_achieved)
+                                        <i class="bi bi-check-circle-fill text-success" title="Rank Achieved"></i>
+                                    @endif
+                                </div>
                                 @if ($rank->is_current)
                                     <span class="badge bg-dark">Current Rank</span>
                                 @elseif ($rank->is_achieved)
-                                    <span class="badge bg-success">Achieved</span>
+                                    <span class="badge-group {{ strtolower($rank->package_group) }}">
+                                        <i class="bi bi-check-circle-fill me-1"></i>Rank Achieved
+                                    </span>
                                 @else
                                     <span class="badge bg-secondary">Locked</span>
                                 @endif
@@ -55,7 +62,7 @@
                             <span class="fw-bold">${{ number_format($rank->reward_amount, 0) }}</span>
                         </div>
                         <div class="d-flex justify-content-between small">
-                            <span class="text-muted">Legs Open</span>
+                            <span class="text-muted">Direct</span>
                             <span class="fw-semibold">{{ $rank->sort_order >= 5 ? '-' : ($rank->legs_open >= 255 ? 'No Limit' : $rank->legs_open) }}</span>
                         </div>
                         <div class="d-flex justify-content-between small">

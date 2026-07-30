@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Announcement;
 use App\Models\IncomeTransaction;
 use App\Services\TeamBusinessCalculator;
 use Illuminate\Http\Request;
@@ -36,6 +37,8 @@ class DashboardController extends Controller
             ->take(8)
             ->get();
 
+        $announcements = Announcement::active()->latest()->get();
+
         return view('dashboard.overview', compact(
             'totalInvested',
             'totalIncome',
@@ -43,7 +46,8 @@ class DashboardController extends Controller
             'teamSize',
             'directCount',
             'monthly',
-            'recentIncome'
+            'recentIncome',
+            'announcements'
         ));
     }
 }

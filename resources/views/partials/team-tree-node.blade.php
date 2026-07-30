@@ -1,23 +1,23 @@
-<div class="mb-2" x-data="{ open: true }">
-    <div class="tree-node">
+<li x-data="{ open: true }">
+    <div class="org-node">
+        <div class="org-node-avatar">
+            <i class="bi bi-person-circle"></i>
+            <span class="status-dot {{ $node['user']->investorStatus() }}" title="{{ $node['user']->investorStatusLabel() }}"></span>
+        </div>
+        <div class="org-node-name" title="{{ $node['user']->name }}">{{ $node['user']->name }}</div>
+        <div class="org-node-rank badge-group {{ strtolower($node['user']->currentRank?->package_group ?? 'unranked') }}">{{ $node['user']->currentRank?->name ?? 'Unranked' }}</div>
+        <div class="org-node-invested">${{ number_format($node['invested'], 2) }}</div>
         @if (count($node['children']))
-            <button class="btn btn-sm p-0 border-0" @click="open = !open" style="width: 20px;">
-                <i class="bi" :class="open ? 'bi-dash-square' : 'bi-plus-square'"></i>
+            <button type="button" class="org-node-toggle" @click="open = !open">
+                <i class="bi" :class="open ? 'bi-dash-circle' : 'bi-plus-circle'"></i>
             </button>
-        @else
-            <span style="width: 20px; display: inline-block;"></span>
         @endif
-        <i class="bi bi-person-circle text-secondary"></i>
-        <span class="status-dot {{ $node['user']->investorStatus() }}" title="{{ $node['user']->investorStatusLabel() }}"></span>
-        <span class="fw-semibold">{{ $node['user']->name }}</span>
-        <span class="badge badge-group star">{{ $node['user']->currentRank?->name ?? 'Unranked' }}</span>
-        <span class="small text-muted">${{ number_format($node['invested'], 2) }}</span>
     </div>
     @if (count($node['children']))
-        <div class="tree-children mt-2" x-show="open">
+        <ul x-show="open">
             @foreach ($node['children'] as $child)
                 @include('partials.team-tree-node', ['node' => $child])
             @endforeach
-        </div>
+        </ul>
     @endif
-</div>
+</li>

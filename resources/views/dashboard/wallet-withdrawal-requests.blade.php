@@ -14,7 +14,7 @@
                     @forelse ($withdrawals as $w)
                         <tr>
                             <td>{{ $w->created_at->format('d M Y, H:i') }}</td>
-                            <td class="text-capitalize">{{ $w->wallet_type }}</td>
+                            <td class="text-capitalize">{{ str_replace('_', ' ', $w->wallet_type) }}</td>
                             <td>${{ number_format($w->amount, 2) }}</td>
                             <td><code class="small">{{ $w->bep20_address ?? '—' }}</code></td>
                             <td>

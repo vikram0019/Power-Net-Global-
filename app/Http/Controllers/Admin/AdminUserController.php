@@ -19,6 +19,7 @@ class AdminUserController extends Controller
 
         $users = User::with('currentRank', 'sponsor')
             ->where('is_admin', false)
+            ->where('status', '!=', 'pending')
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
@@ -45,6 +46,34 @@ class AdminUserController extends Controller
         $investments = $user->investments()->latest()->get();
 
         return view('admin.users.show', compact('user', 'totalInvested', 'teamSize', 'teamBusiness', 'rankHistory', 'investments'));
+    }
+
+    public function edit(User $user)
+    {
+        return view('admin.users.edit', compact('user'));
+    }
+
+    public function update(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:100'],
+            'email' => ['required', 'email', 'max:150', 'unique:users,email,' . $user->id],
+            'mobile' => ['required', 'string', 'max:20', 'unique:users,mobile,' . $user->id],
+            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        $user->mobile = $validated['mobile'];
+        $user->roi_enabled = $request->boolean('roi_enabled');
+
+        if (! empty($validated['password'])) {
+            $user->password = Hash::make($validated['password']);
+        }
+
+        $user->save();
+
+        return redirect()->route('admin.users.show', $user)->with('status', "{$user->name}'s account has been updated.");
     }
 
     public function approve(User $user)

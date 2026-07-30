@@ -49,7 +49,7 @@
             Use this to run a payout on demand (e.g. to catch up if a scheduled run was missed, or during local testing
             where no cron is wired up).
         </p>
-        <form method="POST" action="{{ route('admin.roi.run') }}">
+        <form method="POST" action="{{ route('admin.roi.run') }}" onsubmit="return confirm('Run monthly ROI payout now? This will credit 8% ROI to every eligible active investment and cannot be undone.');">
             @csrf
             <button type="submit" class="btn btn-gold fw-bold px-4">
                 <i class="bi bi-play-circle me-1"></i> Run ROI Now

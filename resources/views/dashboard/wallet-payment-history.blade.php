@@ -14,7 +14,7 @@
                     @forelse ($transactions as $t)
                         <tr>
                             <td>{{ $t->created_at->format('d M Y, H:i') }}</td>
-                            <td class="text-capitalize">{{ $t->wallet_type }}</td>
+                            <td class="text-capitalize">{{ str_replace('_', ' ', $t->wallet_type) }}</td>
                             <td>
                                 <span class="badge {{ $t->direction === 'credit' ? 'bg-success' : 'bg-secondary' }}">{{ $t->direction }}</span>
                             </td>

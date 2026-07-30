@@ -26,7 +26,7 @@
                             <td>{{ $w->created_at->format('d M Y, H:i') }}</td>
                             <td>{{ $w->user->name }}</td>
                             <td><code class="small">{{ $w->user->referral_code }}</code></td>
-                            <td class="text-capitalize">{{ $w->wallet_type }}</td>
+                            <td class="text-capitalize">{{ str_replace('_', ' ', $w->wallet_type) }}</td>
                             <td class="fw-semibold">${{ number_format($w->amount, 2) }}</td>
                             <td>
                                 @if ($w->bep20_address)
@@ -47,7 +47,7 @@
                             </td>
                             <td>
                                 @if ($w->status === 'otp_verified')
-                                    <form method="POST" action="{{ route('admin.withdrawals.approve', $w) }}" class="d-inline">
+                                    <form method="POST" action="{{ route('admin.withdrawals.approve', $w) }}" class="d-inline" onsubmit="return confirm('Approve this withdrawal of ${{ number_format($w->amount, 2) }} to {{ $w->user->name }}? This cannot be undone.');">
                                         @csrf
                                         <button type="submit" class="btn btn-sm btn-gold">Approve</button>
                                     </form>

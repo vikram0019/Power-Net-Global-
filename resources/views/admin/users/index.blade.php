@@ -46,6 +46,7 @@
                             </td>
                             <td class="d-flex gap-1">
                                 <a href="{{ route('admin.users.show', $u) }}" class="btn btn-sm btn-navy">View</a>
+                                <a href="{{ route('admin.users.edit', $u) }}" class="btn btn-sm btn-outline-secondary">Edit</a>
                                 @if ($u->status === 'approval_pending')
                                     <form method="POST" action="{{ route('admin.users.approve', $u) }}">
                                         @csrf

@@ -76,14 +76,18 @@ class WalletController extends Controller
     public function requestWithdrawal(Request $request)
     {
         $validated = $request->validate([
-            'wallet_type' => ['required', 'in:roi,working'],
+            'wallet_type' => ['required', 'in:roi,working,rank_reward'],
             'amount' => ['required', 'numeric', 'min:1'],
             'bep20_address' => ['required', 'string', 'max:100'],
         ]);
 
         $user = $request->user();
         $wallet = $user->wallet;
-        $column = $validated['wallet_type'] === 'roi' ? 'roi_balance' : 'working_balance';
+        $column = match ($validated['wallet_type']) {
+            'roi' => 'roi_balance',
+            'rank_reward' => 'rank_reward_balance',
+            default => 'working_balance',
+        };
 
         if ((float) $wallet->{$column} < (float) $validated['amount']) {
             return back()->withErrors(['amount' => 'Insufficient fund'])->withInput();

@@ -56,25 +56,32 @@
     @endif
 
     <div class="row g-3 mb-4">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="stat-card gold">
                 <div class="stat-label">ROI Income Wallet</div>
                 <div class="stat-value">${{ number_format($wallet->roi_balance, 2) }}</div>
                 <small class="opacity-75">Monthly profit earnings</small>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="stat-card green">
                 <div class="stat-label">Working Income Wallet</div>
                 <div class="stat-value">${{ number_format($wallet->working_balance, 2) }}</div>
-                <small class="opacity-75">Direct, level &amp; rank rewards</small>
+                <small class="opacity-75">Direct &amp; level income</small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card blue">
+                <div class="stat-label">Rank &amp; Reward Wallet</div>
+                <div class="stat-value">${{ number_format($wallet->rank_reward_balance, 2) }}</div>
+                <small class="opacity-75">Rank achievement rewards</small>
             </div>
         </div>
     </div>
 
     <div class="card-png p-4 mb-4" style="max-width: 520px;"
         x-data="{
-            balances: { roi: {{ (float) $wallet->roi_balance }}, working: {{ (float) $wallet->working_balance }} },
+            balances: { roi: {{ (float) $wallet->roi_balance }}, working: {{ (float) $wallet->working_balance }}, rank_reward: {{ (float) $wallet->rank_reward_balance }} },
             walletType: 'roi',
             amount: '',
             get balance() { return this.balances[this.walletType]; },
@@ -94,6 +101,7 @@
                 <select name="wallet_type" class="form-select" x-model="walletType" required>
                     <option value="roi">ROI Income</option>
                     <option value="working">Working Income</option>
+                    <option value="rank_reward">Rank &amp; Reward Income</option>
                 </select>
                 <div class="small mt-1">
                     Available balance: <strong>$<span x-text="balance.toFixed(2)"></span></strong>

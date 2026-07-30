@@ -20,6 +20,9 @@
                     'bg-danger' => $user->status === 'suspended',
                 ])">{{ str_replace('_', ' ', $user->status) }}</span>
             <div class="d-flex gap-2 justify-content-end">
+                <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-sm btn-navy">
+                    <i class="bi bi-pencil-square me-1"></i> Edit
+                </a>
                 @if ($user->status === 'approval_pending')
                     <form method="POST" action="{{ route('admin.users.approve', $user) }}">
                         @csrf
@@ -45,9 +48,9 @@
         </div>
         <div class="col-md-3 col-6">
             <div class="stat-card gold">
-                <div class="stat-label">Deposit / ROI / Working</div>
-                <div class="stat-value" style="font-size:1.1rem;">
-                    ${{ number_format($user->wallet->deposit_balance ?? 0, 0) }} / ${{ number_format($user->wallet->roi_balance ?? 0, 0) }} / ${{ number_format($user->wallet->working_balance ?? 0, 0) }}
+                <div class="stat-label">Deposit / ROI / Working / Rank</div>
+                <div class="stat-value" style="font-size:0.95rem;">
+                    ${{ number_format($user->wallet->deposit_balance ?? 0, 0) }} / ${{ number_format($user->wallet->roi_balance ?? 0, 0) }} / ${{ number_format($user->wallet->working_balance ?? 0, 0) }} / ${{ number_format($user->wallet->rank_reward_balance ?? 0, 0) }}
                 </div>
             </div>
         </div>
