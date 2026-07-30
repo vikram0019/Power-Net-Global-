@@ -33,7 +33,10 @@ class WalletController extends Controller
         $user = $request->user();
         $wallet = $user->wallet;
 
-        return view('dashboard.wallet-withdraw', compact('wallet'));
+        $roiWindowOpen = in_array((int) now()->day, [1, 2], true);
+        $weeklyWindowOpen = now()->isSunday();
+
+        return view('dashboard.wallet-withdraw', compact('wallet', 'roiWindowOpen', 'weeklyWindowOpen'));
     }
 
     public function paymentHistory(Request $request)
@@ -80,6 +83,14 @@ class WalletController extends Controller
             'amount' => ['required', 'numeric', 'min:1'],
             'bep20_address' => ['required', 'string', 'max:100'],
         ]);
+
+        if ($validated['wallet_type'] === 'roi') {
+            if (!in_array((int) now()->day, [1, 2], true)) {
+                return back()->withErrors(['amount' => 'ROI Income can only be withdrawn on the 1st or 2nd day of the month.'])->withInput();
+            }
+        } elseif (!now()->isSunday()) {
+            return back()->withErrors(['amount' => 'Working Income and Rank & Reward Income can only be withdrawn on Sundays.'])->withInput();
+        }
 
         $user = $request->user();
         $wallet = $user->wallet;

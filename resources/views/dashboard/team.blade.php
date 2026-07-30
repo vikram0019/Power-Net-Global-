@@ -37,6 +37,7 @@
                             </div>
                             <div class="org-node-name">{{ $tree['user']->name }} (You)</div>
                             <div class="org-node-rank badge-group {{ strtolower($tree['user']->currentRank?->package_group ?? 'unranked') }}">{{ $tree['user']->currentRank?->name ?? 'Unranked' }}</div>
+                            <div class="org-node-referral">{{ $tree['user']->referral_code }}</div>
                             <div class="org-node-invested">${{ number_format($tree['invested'], 2) }}</div>
                             <button type="button" class="org-node-toggle" @click="open = !open">
                                 <i class="bi" :class="open ? 'bi-dash-circle' : 'bi-plus-circle'"></i>

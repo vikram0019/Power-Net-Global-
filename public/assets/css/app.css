@@ -279,6 +279,14 @@ body {
 .badge-group.universal { background: var(--png-navy-950); color: var(--png-gold-300); }
 .badge-group.unranked { background: #eceff5; color: var(--png-ink-500); }
 
+.rank-icon-only { font-size: 1rem; }
+.rank-icon-only.star { color: var(--png-blue-600); }
+.rank-icon-only.eagle { color: var(--png-navy-600); }
+.rank-icon-only.diamond { color: var(--png-navy-700); }
+.rank-icon-only.crown { color: #8a6412; }
+.rank-icon-only.universal { color: var(--png-gold-300); }
+.rank-icon-only.unranked { color: var(--png-ink-500); }
+
 .rank-badge-pill {
   display: inline-flex;
   align-items: center;
@@ -747,6 +755,12 @@ body {
 .org-node-invested {
   font-size: 0.72rem;
   color: var(--png-ink-500);
+}
+
+.org-node-referral {
+  font-size: 0.68rem;
+  color: var(--png-ink-500);
+  font-family: monospace;
 }
 
 .org-node-toggle {

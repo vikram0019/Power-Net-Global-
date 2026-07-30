@@ -120,7 +120,7 @@
                             <tr><td>Start</td><td>2 D - 1 level Open</td></tr>
                             <tr><td>Super Star</td><td>+1 D, 2 Level Open</td></tr>
                             <tr><td>Seven Star</td><td>+1 D, 3 Level Open</td></tr>
-                            <tr><td>Eagle and above</td><td>10 D + Achieved Eagle Rank, All Level are opened</td></tr>
+                            <tr><td>Eagle and above</td><td>Total 10 D, Achieved Eagle Rank, All Level are opened</td></tr>
                         </tbody>
                     </table>
                 </div>

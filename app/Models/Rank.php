@@ -31,4 +31,16 @@ class Rank extends Model
     {
         return $query->orderBy('sort_order');
     }
+
+    public function getIconAttribute(): string
+    {
+        return match (strtolower($this->package_group ?? '')) {
+            'star' => 'bi-star-fill',
+            'eagle' => 'bi-award-fill',
+            'diamond' => 'bi-gem',
+            'crown' => 'bi-trophy-fill',
+            'universal' => 'bi-globe-americas',
+            default => 'bi-person-badge',
+        };
+    }
 }

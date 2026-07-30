@@ -34,14 +34,14 @@
                                 <div class="fw-bold d-flex align-items-center gap-1">
                                     {{ $rank->name }}
                                     @if ($rank->is_achieved)
-                                        <i class="bi bi-check-circle-fill text-success" title="Rank Achieved"></i>
+                                        <i class="bi {{ $rank->icon }} rank-icon-only {{ strtolower($rank->package_group) }}" title="Rank Achieved"></i>
                                     @endif
                                 </div>
                                 @if ($rank->is_current)
                                     <span class="badge bg-dark">Current Rank</span>
                                 @elseif ($rank->is_achieved)
                                     <span class="badge-group {{ strtolower($rank->package_group) }}">
-                                        <i class="bi bi-check-circle-fill me-1"></i>Rank Achieved
+                                        <i class="bi {{ $rank->icon }} me-1"></i>Rank Achieved
                                     </span>
                                 @else
                                     <span class="badge bg-secondary">Locked</span>

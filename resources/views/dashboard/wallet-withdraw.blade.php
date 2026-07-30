@@ -79,12 +79,20 @@
         </div>
     </div>
 
+    <div class="alert alert-warning small mb-4" style="max-width: 520px;">
+        <i class="bi bi-calendar-event me-1"></i>
+        <strong>Withdrawal windows:</strong> ROI Income can only be withdrawn on the <strong>1st &amp; 2nd of every month</strong>.
+        Working Income and Rank &amp; Reward Income can only be withdrawn on <strong>Sundays</strong>. No withdrawals are accepted on any other day.
+    </div>
+
     <div class="card-png p-4 mb-4" style="max-width: 520px;"
         x-data="{
             balances: { roi: {{ (float) $wallet->roi_balance }}, working: {{ (float) $wallet->working_balance }}, rank_reward: {{ (float) $wallet->rank_reward_balance }} },
-            walletType: 'roi',
+            windowOpen: { roi: {{ $roiWindowOpen ? 'true' : 'false' }}, working: {{ $weeklyWindowOpen ? 'true' : 'false' }}, rank_reward: {{ $weeklyWindowOpen ? 'true' : 'false' }} },
+            walletType: {{ $roiWindowOpen ? "'roi'" : ($weeklyWindowOpen ? "'working'" : "'roi'") }},
             amount: '',
             get balance() { return this.balances[this.walletType]; },
+            get windowClosed() { return !this.windowOpen[this.walletType]; },
             get insufficient() { return this.balance <= 0 || (this.amount !== '' && Number(this.amount) > this.balance); }
         }">
         <h6 class="fw-bold mb-3"><i class="bi bi-cash-stack me-1"></i> Withdraw</h6>
@@ -94,14 +102,18 @@
             <div class="alert alert-danger py-1 small">{{ $message }}</div>
         @enderror
 
-        <form method="POST" action="{{ route('wallet.withdraw') }}" @submit="if (insufficient) $event.preventDefault()">
+        @if (!$roiWindowOpen && !$weeklyWindowOpen)
+            <div class="alert alert-danger py-2 small mb-3">Withdrawals are closed today. Please come back on the 1st/2nd of the month (ROI) or on Sunday (Working &amp; Rank/Reward).</div>
+        @endif
+
+        <form method="POST" action="{{ route('wallet.withdraw') }}" @submit="if (insufficient || windowClosed) $event.preventDefault()">
             @csrf
             <div class="mb-2">
                 <label class="form-label small fw-semibold">Wallet</label>
                 <select name="wallet_type" class="form-select" x-model="walletType" required>
-                    <option value="roi">ROI Income</option>
-                    <option value="working">Working Income</option>
-                    <option value="rank_reward">Rank &amp; Reward Income</option>
+                    <option value="roi" @if(!$roiWindowOpen) disabled @endif>ROI Income @if(!$roiWindowOpen)(closed today)@endif</option>
+                    <option value="working" @if(!$weeklyWindowOpen) disabled @endif>Working Income @if(!$weeklyWindowOpen)(closed today)@endif</option>
+                    <option value="rank_reward" @if(!$weeklyWindowOpen) disabled @endif>Rank &amp; Reward Income @if(!$weeklyWindowOpen)(closed today)@endif</option>
                 </select>
                 <div class="small mt-1">
                     Available balance: <strong>$<span x-text="balance.toFixed(2)"></span></strong>
@@ -111,14 +123,17 @@
                 <label class="form-label small fw-semibold">Amount (USD)</label>
                 <input type="number" step="0.01" min="1" name="amount" class="form-control" x-model="amount" required>
             </div>
-            <div class="mb-2" x-show="insufficient" x-cloak>
+            <div class="mb-2" x-show="windowClosed" x-cloak>
+                <div class="alert alert-danger py-1 small mb-0">This wallet cannot be withdrawn today. Check the withdrawal window above.</div>
+            </div>
+            <div class="mb-2" x-show="!windowClosed && insufficient" x-cloak>
                 <div class="alert alert-danger py-1 small mb-0">Insufficient fund</div>
             </div>
             <div class="mb-3">
                 <label class="form-label small fw-semibold">Your BEP20 Address (to receive funds)</label>
                 <input type="text" name="bep20_address" class="form-control" required>
             </div>
-            <button type="submit" class="btn btn-navy w-100" :disabled="balance <= 0">Request Withdrawal</button>
+            <button type="submit" class="btn btn-navy w-100" :disabled="balance <= 0 || windowClosed">Request Withdrawal</button>
         </form>
     </div>
 
