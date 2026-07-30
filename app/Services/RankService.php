@@ -17,27 +17,30 @@ class RankService
 
     public function evaluateAndPromote(User $user): void
     {
-        $ranks = Rank::ordered()->get();
+        $ranks = Rank::withCumulativeTeamBusiness();
         $ownInvest = $user->totalInvested();
         $teamBusiness = $this->teamBusinessCalculator->weightedTeamBusiness($user);
 
-        $achievedRankIds = $user->rankHistory()->pluck('rank_id')->all();
+        $alreadyAchievedRankIds = $user->rankHistory()->pluck('rank_id')->all();
         $highestQualifyingRankId = $user->current_rank_id;
 
         foreach ($ranks as $rank) {
             $qualifies = $ownInvest >= (float) $rank->own_invest_required
-                && $teamBusiness >= (float) $rank->team_business_required;
+                && $teamBusiness >= $rank->cumulative_team_business_required;
 
-            if (! $qualifies) {
-                continue;
-            }
+            $alreadyAchieved = in_array($rank->id, $alreadyAchievedRankIds, true);
 
-            if (! in_array($rank->id, $achievedRankIds, true)) {
+            if ($qualifies && ! $alreadyAchieved) {
                 $this->promote($user, $rank);
-                $achievedRankIds[] = $rank->id;
             }
 
-            $highestQualifyingRankId = $rank->id;
+            // Grandfather ranks already achieved: raising a rank's cumulative
+            // threshold later must never demote a user's current rank below
+            // one they already earned (and were paid for) under an older,
+            // lower threshold.
+            if ($qualifies || $alreadyAchieved) {
+                $highestQualifyingRankId = $rank->id;
+            }
         }
 
         if ($highestQualifyingRankId !== $user->current_rank_id) {

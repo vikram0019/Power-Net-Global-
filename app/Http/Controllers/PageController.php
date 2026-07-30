@@ -10,7 +10,7 @@ class PageController extends Controller
 {
     public function home()
     {
-        $ranks = Rank::ordered()->get();
+        $ranks = Rank::withCumulativeTeamBusiness();
         $memberCount = User::where('is_admin', false)->count();
 
         return view('site.home', compact('ranks', 'memberCount'));
@@ -28,7 +28,7 @@ class PageController extends Controller
 
     public function plan()
     {
-        $ranks = Rank::ordered()->get()->groupBy('package_group');
+        $ranks = Rank::withCumulativeTeamBusiness()->groupBy('package_group');
 
         return view('site.plan', compact('ranks'));
     }
