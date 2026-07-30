@@ -59,7 +59,7 @@
 
                         <div class="small text-muted mb-1">Team Business</div>
                         <div class="progress-png mb-1"><div class="bar" style="width: {{ $rank->team_progress }}%;"></div></div>
-                        <div class="small mb-3">${{ number_format($teamBusiness, 0) }} / ${{ number_format($rank->cumulative_team_business_required, 0) }}</div>
+                        <div class="small mb-3">${{ number_format($teamBusiness, 0) }} / ${{ number_format($rank->team_business_required, 0) }}</div>
 
                         <hr>
                         <div class="d-flex justify-content-between small">
