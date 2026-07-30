@@ -25,7 +25,12 @@
     @foreach ($groups as $groupName => $groupRanks)
         <h6 class="fw-bold text-uppercase small mb-3" style="letter-spacing: 1px; color: var(--png-ink-500);">{{ $groupName }} Package</h6>
         <div class="row g-3 mb-4">
+            @php $tierSizes = ['1rem', '1.3rem', '1.6rem']; @endphp
             @foreach ($groupRanks as $rank)
+                @php
+                    $tierIndex = $groupRanks->count() === 1 ? 3 : min($loop->iteration, 3);
+                    $iconSize = $tierSizes[$tierIndex - 1];
+                @endphp
                 <div class="col-lg-4 col-md-6">
                     <div class="rank-card p-4 @if($rank->is_achieved) achieved @elseif(!$rank->is_current && $rank->invest_progress < 100) locked @endif @if($rank->is_current) current @endif">
                         <div class="d-flex align-items-center gap-3 mb-3">
@@ -34,14 +39,14 @@
                                 <div class="fw-bold d-flex align-items-center gap-1">
                                     {{ $rank->name }}
                                     @if ($rank->is_achieved)
-                                        <i class="bi {{ $rank->icon }} rank-icon-only {{ strtolower($rank->package_group) }}" title="Rank Achieved"></i>
+                                        <i class="bi bi-check-circle-fill text-success" title="Rank Achieved"></i>
                                     @endif
                                 </div>
                                 @if ($rank->is_current)
                                     <span class="badge bg-dark">Current Rank</span>
                                 @elseif ($rank->is_achieved)
                                     <span class="badge-group {{ strtolower($rank->package_group) }}">
-                                        <i class="bi {{ $rank->icon }} me-1"></i>Rank Achieved
+                                        <i class="bi {{ $rank->icon }} me-1" style="font-size: {{ $iconSize }};"></i>Rank Achieved
                                     </span>
                                 @else
                                     <span class="badge bg-secondary">Locked</span>
