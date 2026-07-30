@@ -4,6 +4,31 @@
 @section('page-title', 'Dashboard')
 
 @section('content')
+    @if ($achievedToday)
+        <div class="rank-celebrate-overlay" x-data="{ open: true }" x-show="open" x-cloak @click.self="open = false">
+            <div class="rank-celebrate-card">
+                <div class="rank-confetti">
+                    @for ($i = 0; $i < 30; $i++)
+                        @php
+                            $left = ($i * 37) % 100;
+                            $delay = ($i % 10) * 0.15;
+                            $duration = 2.5 + ($i % 5) * 0.3;
+                            $colors = ['#d4a94a', '#ffd97a', '#8ea6ff', '#ff8fa3', '#6ee7b7'];
+                            $color = $colors[$i % count($colors)];
+                            $rotate = ($i * 47) % 360;
+                        @endphp
+                        <span style="left: {{ $left }}%; background: {{ $color }}; animation-delay: {{ $delay }}s; animation-duration: {{ $duration }}s; transform: rotate({{ $rotate }}deg);"></span>
+                    @endfor
+                </div>
+                <button type="button" class="rank-celebrate-close" @click="open = false" aria-label="Close">&times;</button>
+                <i class="bi bi-trophy-fill rank-celebrate-trophy"></i>
+                <div class="rank-celebrate-name">{{ auth()->user()->name }}</div>
+                <div class="rank-celebrate-msg">🎉 Congratulations! You achieved <strong>{{ $achievedToday->rank->name }}</strong>!</div>
+                <button type="button" class="btn btn-gold fw-bold mt-3" @click="open = false">Awesome!</button>
+            </div>
+        </div>
+    @endif
+
     <div class="card-png p-4 mb-4" x-data="{ copiedCode: false, copiedLink: false }">
         <h6 class="fw-bold mb-3"><i class="bi bi-share me-1"></i> Your Referral</h6>
         <div class="row g-3">

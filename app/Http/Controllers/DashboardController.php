@@ -39,6 +39,12 @@ class DashboardController extends Controller
 
         $announcements = Announcement::active()->latest()->get();
 
+        $achievedToday = $user->rankHistory()
+            ->whereDate('achieved_at', now()->toDateString())
+            ->with('rank')
+            ->latest('achieved_at')
+            ->first();
+
         return view('dashboard.overview', compact(
             'totalInvested',
             'totalIncome',
@@ -47,7 +53,8 @@ class DashboardController extends Controller
             'directCount',
             'monthly',
             'recentIncome',
-            'announcements'
+            'announcements',
+            'achievedToday'
         ));
     }
 }
