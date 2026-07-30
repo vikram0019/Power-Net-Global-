@@ -439,6 +439,21 @@ body {
   padding: 2.25rem;
 }
 
+.auth-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--png-ink-500);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  margin-bottom: 1.25rem;
+}
+
+.auth-back-link:hover {
+  color: var(--png-navy-800);
+}
+
 .status-dot {
   display: inline-block;
   width: 10px;

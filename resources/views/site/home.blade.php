@@ -133,7 +133,7 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="feature-card">
                         <div class="feature-icon"><i class="bi bi-trophy"></i></div>
-                        <h6 class="fw-bold">13 Ranks, 5 Packages</h6>
+                        <h6 class="fw-bold">13 Rank & Rewards</h6>
                         <p class="small text-muted mb-0">A clear, published path from Start all the way to Universal Crown, with a reward at every milestone.</p>
                     </div>
                 </div>

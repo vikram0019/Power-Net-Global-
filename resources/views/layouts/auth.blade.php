@@ -12,7 +12,10 @@
 </head>
 <body>
     <div class="auth-shell">
-        <div class="auth-card">
+        <div class="auth-card position-relative">
+            <a href="{{ route('home') }}" class="auth-back-link">
+                <i class="bi bi-arrow-left"></i> Back to Home
+            </a>
             <div class="text-center mb-4">
                 <a href="{{ route('home') }}" class="text-decoration-none d-inline-block">
                     <img src="{{ asset('assets/img/logo.png') }}" alt="PowerNetGlobal" class="site-logo lg">
