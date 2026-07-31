@@ -26,6 +26,7 @@ class User extends Authenticatable
         'sponsor_id',
         'otp_code',
         'otp_expires_at',
+        'email_verified_at',
         'status',
         'current_rank_id',
         'is_admin',

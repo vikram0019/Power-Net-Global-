@@ -6,7 +6,7 @@
     <div class="text-center mb-4">
         <i class="bi bi-envelope-check display-5" style="color: var(--png-gold-500);"></i>
         <h4 class="fw-bold mt-2 mb-1">Verify your email</h4>
-        <p class="text-muted small mb-0">Enter the 6-digit code sent to <strong>{{ $user->email }}</strong></p>
+        <p class="text-muted small mb-0">Enter the 6-digit code sent to <strong>{{ $email }}</strong></p>
     </div>
 
     @if ($errors->any())

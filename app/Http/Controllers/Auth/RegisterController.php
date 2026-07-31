@@ -41,6 +41,11 @@ class RegisterController extends Controller
         return response()->json(['valid' => true, 'message' => 'This is a valid referral code.']);
     }
 
+    /**
+     * Nothing is written to the users table here — the submitted data is
+     * held in the session until OTP verification succeeds, so an
+     * abandoned/never-verified signup leaves no trace in the database.
+     */
     public function register(Request $request)
     {
         $validated = $request->validate([
@@ -64,58 +69,72 @@ class RegisterController extends Controller
 
         $sponsor = User::where('referral_code', $validated['referral_code'])->firstOrFail();
 
-        $user = User::create([
+        $otp = (string) random_int(100000, 999999);
+
+        session(['pending_signup' => [
             'name' => $validated['name'],
             'mobile' => $validated['mobile'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'referral_code' => User::generateReferralCode(),
             'sponsor_id' => $sponsor->id,
-            'status' => 'pending',
-        ]);
+            'otp_code' => $otp,
+            'otp_expires_at' => now()->addMinutes(10)->toDateTimeString(),
+        ]]);
 
-        $this->sendOtp($user, 'Account Verification');
-
-        session(['pending_user_id' => $user->id]);
+        $this->sendOtpMail($validated['email'], $otp, 'Account Verification');
 
         return redirect()->route('signup.otp');
     }
 
     public function showOtp()
     {
-        $userId = session('pending_user_id');
+        $pending = session('pending_signup');
 
-        if (! $userId || ! ($user = User::find($userId))) {
+        if (! $pending) {
             return redirect()->route('signup');
         }
 
-        return view('auth.signup-otp', compact('user'));
+        return view('auth.signup-otp', ['email' => $pending['email']]);
     }
 
     public function verifyOtp(Request $request)
     {
-        $userId = session('pending_user_id');
+        $pending = session('pending_signup');
 
-        if (! $userId || ! ($user = User::find($userId))) {
+        if (! $pending) {
             return redirect()->route('signup');
         }
 
         $request->validate(['otp' => ['required', 'digits:6']]);
 
-        if (! $user->otp_code || $user->otp_code !== $request->otp || ! $user->otp_expires_at || $user->otp_expires_at->isPast()) {
+        if ($pending['otp_code'] !== $request->otp || now()->greaterThan($pending['otp_expires_at'])) {
             return back()->withErrors(['otp' => 'Invalid or expired OTP code.']);
         }
 
-        $user->update([
+        // Defensive re-check: someone else could have registered this exact
+        // email/mobile while this signup sat unverified in session.
+        if (User::where('email', $pending['email'])->orWhere('mobile', $pending['mobile'])->exists()) {
+            session()->forget('pending_signup');
+
+            return redirect()->route('signup')->withErrors([
+                'email' => 'This email or mobile was just registered by someone else. Please sign up again.',
+            ]);
+        }
+
+        $user = User::create([
+            'name' => $pending['name'],
+            'mobile' => $pending['mobile'],
+            'email' => $pending['email'],
+            'password' => $pending['password'],
+            'referral_code' => User::generateReferralCode(),
+            'sponsor_id' => $pending['sponsor_id'],
             'status' => 'active',
             'email_verified_at' => now(),
-            'otp_code' => null,
-            'otp_expires_at' => null,
         ]);
 
         Wallet::firstOrCreate(['user_id' => $user->id]);
 
-        session()->forget(['pending_user_id', 'dev_otp_hint']);
+        session()->forget(['pending_signup', 'dev_otp_hint']);
         Auth::login($user);
         $request->session()->regenerate();
 
@@ -124,28 +143,26 @@ class RegisterController extends Controller
 
     public function resendOtp()
     {
-        $userId = session('pending_user_id');
+        $pending = session('pending_signup');
 
-        if (! $userId || ! ($user = User::find($userId))) {
+        if (! $pending) {
             return redirect()->route('signup');
         }
 
-        $this->sendOtp($user, 'Account Verification');
+        $otp = (string) random_int(100000, 999999);
+        $pending['otp_code'] = $otp;
+        $pending['otp_expires_at'] = now()->addMinutes(10)->toDateTimeString();
+        session(['pending_signup' => $pending]);
+
+        $this->sendOtpMail($pending['email'], $otp, 'Account Verification');
 
         return back()->with('status', 'A new OTP has been sent to your email.');
     }
 
-    private function sendOtp(User $user, string $purpose): void
+    private function sendOtpMail(string $email, string $otp, string $purpose): void
     {
-        $otp = (string) random_int(100000, 999999);
-
-        $user->update([
-            'otp_code' => $otp,
-            'otp_expires_at' => now()->addMinutes(10),
-        ]);
-
         try {
-            Mail::to($user->email)->send(new OtpMail($otp, $purpose));
+            Mail::to($email)->send(new OtpMail($otp, $purpose));
         } catch (\Throwable $e) {
             report($e);
         }
