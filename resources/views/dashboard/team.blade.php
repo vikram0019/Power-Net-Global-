@@ -37,9 +37,10 @@
                                     name: @js($tree['user']->name . ' (You)'),
                                     joined: @js($tree['user']->created_at->format('d M Y')),
                                     invested: {{ (float) $tree['invested'] }},
-                                    power: {{ (int) $tree['leg_counts']['power'] }},
-                                    second: {{ (int) $tree['leg_counts']['second'] }},
-                                    rest: {{ (int) $tree['leg_counts']['rest'] }}
+                                    rank: @js($tree['user']->currentRank?->name ?? 'Unranked'),
+                                    power: { count: {{ (int) $tree['leg_stats']['power']['count'] }}, investment: {{ (float) $tree['leg_stats']['power']['investment'] }} },
+                                    second: { count: {{ (int) $tree['leg_stats']['second']['count'] }}, investment: {{ (float) $tree['leg_stats']['second']['investment'] }} },
+                                    rest: { count: {{ (int) $tree['leg_stats']['rest']['count'] }}, investment: {{ (float) $tree['leg_stats']['rest']['investment'] }} }
                                 }; popupOpen = true">
                                 <i class="bi bi-person-circle"></i>
                             </button>
@@ -80,6 +81,8 @@
                             <div class="text-end">
                                 <div class="small text-muted">Investment</div>
                                 <div class="fw-semibold">$<span x-text="selected?.invested.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })"></span></div>
+                                <div class="mt-2 small text-muted">Rank</div>
+                                <div class="fw-semibold" x-text="selected?.rank"></div>
                             </div>
                         </div>
                         <div class="table-responsive">
@@ -93,9 +96,18 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td class="fw-bold" x-text="selected?.power"></td>
-                                        <td class="fw-bold" x-text="selected?.second"></td>
-                                        <td class="fw-bold" x-text="selected?.rest"></td>
+                                        <td>
+                                            <div class="fw-bold" x-text="selected?.power.count"></div>
+                                            <div class="small text-muted">$<span x-text="selected?.power.investment.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })"></span></div>
+                                        </td>
+                                        <td>
+                                            <div class="fw-bold" x-text="selected?.second.count"></div>
+                                            <div class="small text-muted">$<span x-text="selected?.second.investment.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })"></span></div>
+                                        </td>
+                                        <td>
+                                            <div class="fw-bold" x-text="selected?.rest.count"></div>
+                                            <div class="small text-muted">$<span x-text="selected?.rest.investment.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })"></span></div>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>

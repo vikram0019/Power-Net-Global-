@@ -5,9 +5,10 @@
                 name: @js($node['user']->name),
                 joined: @js($node['user']->created_at->format('d M Y')),
                 invested: {{ (float) $node['invested'] }},
-                power: {{ (int) $node['leg_counts']['power'] }},
-                second: {{ (int) $node['leg_counts']['second'] }},
-                rest: {{ (int) $node['leg_counts']['rest'] }}
+                rank: @js($node['user']->currentRank?->name ?? 'Unranked'),
+                power: { count: {{ (int) $node['leg_stats']['power']['count'] }}, investment: {{ (float) $node['leg_stats']['power']['investment'] }} },
+                second: { count: {{ (int) $node['leg_stats']['second']['count'] }}, investment: {{ (float) $node['leg_stats']['second']['investment'] }} },
+                rest: { count: {{ (int) $node['leg_stats']['rest']['count'] }}, investment: {{ (float) $node['leg_stats']['rest']['investment'] }} }
             }; popupOpen = true">
             <i class="bi bi-person-circle"></i>
             <span class="status-dot {{ $node['user']->investorStatus() }}" title="{{ $node['user']->investorStatusLabel() }}"></span>

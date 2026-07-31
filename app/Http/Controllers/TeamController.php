@@ -38,31 +38,47 @@ class TeamController extends Controller
             'user' => $user,
             'invested' => $user->totalInvested(),
             'children' => $childNodes,
-            'leg_counts' => $this->legMemberCounts($childNodes),
+            'leg_stats' => $this->legStats($childNodes),
         ];
     }
 
     /**
-     * Member-count version of the Power/2nd/rest-legs weighting used for $
-     * team business (TeamBusinessCalculator::weightedTeamBusiness) — counts
-     * people instead of dollars, per node, from the already-built subtree.
+     * Same Power/2nd/rest-legs ranking as $ team business
+     * (TeamBusinessCalculator::weightedTeamBusiness) — legs are ranked by
+     * $ business size (the canonical definition used everywhere else in the
+     * app), computed per node from the already-built subtree. Each leg
+     * reports both its member count and its total $ investment.
      */
-    private function nodeSize(array $node): int
+    private function nodeStats(array $node): array
     {
-        return 1 + array_sum(array_map(fn ($child) => $this->nodeSize($child), $node['children']));
+        $count = 1;
+        $investment = (float) $node['invested'];
+
+        foreach ($node['children'] as $child) {
+            $childStats = $this->nodeStats($child);
+            $count += $childStats['count'];
+            $investment += $childStats['investment'];
+        }
+
+        return ['count' => $count, 'investment' => $investment];
     }
 
-    private function legMemberCounts(array $childNodes): array
+    private function legStats(array $childNodes): array
     {
-        $sizes = collect($childNodes)
-            ->map(fn ($child) => $this->nodeSize($child))
-            ->sortDesc()
+        $legs = collect($childNodes)
+            ->map(fn ($child) => $this->nodeStats($child))
+            ->sortByDesc('investment')
             ->values();
 
+        $empty = ['count' => 0, 'investment' => 0.0];
+
         return [
-            'power' => $sizes->get(0, 0),
-            'second' => $sizes->get(1, 0),
-            'rest' => $sizes->slice(2)->sum(),
+            'power' => $legs->get(0, $empty),
+            'second' => $legs->get(1, $empty),
+            'rest' => [
+                'count' => $legs->slice(2)->sum('count'),
+                'investment' => $legs->slice(2)->sum('investment'),
+            ],
         ];
     }
 
