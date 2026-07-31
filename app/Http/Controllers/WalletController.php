@@ -80,7 +80,7 @@ class WalletController extends Controller
     {
         $validated = $request->validate([
             'wallet_type' => ['required', 'in:roi,working,rank_reward'],
-            'amount' => ['required', 'numeric', 'min:1'],
+            'amount' => ['required', 'numeric', 'min:' . config('mlm.minimum_withdrawal')],
             'bep20_address' => ['required', 'string', 'max:100'],
         ]);
 

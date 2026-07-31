@@ -96,10 +96,12 @@
             windowOpen: { roi: {{ $roiWindowOpen ? 'true' : 'false' }}, working: {{ $weeklyWindowOpen ? 'true' : 'false' }}, rank_reward: {{ $weeklyWindowOpen ? 'true' : 'false' }} },
             feeWalletTypes: @js(config('mlm.withdrawal_fee_wallet_types')),
             feePercent: {{ (float) config('mlm.withdrawal_fee_percent') }},
+            minWithdrawal: {{ (float) config('mlm.minimum_withdrawal') }},
             walletType: {{ $roiWindowOpen ? "'roi'" : ($weeklyWindowOpen ? "'working'" : "'roi'") }},
             amount: '',
             get balance() { return this.balances[this.walletType]; },
             get windowClosed() { return !this.windowOpen[this.walletType]; },
+            get belowMinimum() { return this.amount !== '' && Number(this.amount) < this.minWithdrawal; },
             get insufficient() { return this.balance <= 0 || (this.amount !== '' && Number(this.amount) > this.balance); },
             get feeApplies() { return this.feeWalletTypes.includes(this.walletType); },
             get feeAmount() { return this.feeApplies && this.amount !== '' ? Number(this.amount) * this.feePercent / 100 : 0; },
@@ -116,7 +118,7 @@
             <div class="alert alert-danger py-2 small mb-3">Please come back on the 1st/2nd of the month (ROI) or on Every Sunday for (Working &amp; Rank/Reward).</div>
         @endif
 
-        <form method="POST" action="{{ route('wallet.withdraw') }}" @submit="if (insufficient || windowClosed) $event.preventDefault()">
+        <form method="POST" action="{{ route('wallet.withdraw') }}" @submit="if (insufficient || windowClosed || belowMinimum) $event.preventDefault()">
             @csrf
             <div class="mb-2">
                 <label class="form-label small fw-semibold">Wallet</label>
@@ -131,7 +133,8 @@
             </div>
             <div class="mb-2">
                 <label class="form-label small fw-semibold">Amount (USD)</label>
-                <input type="number" step="0.01" min="1" name="amount" class="form-control" x-model="amount" required>
+                <input type="number" step="0.01" min="{{ config('mlm.minimum_withdrawal') }}" name="amount" class="form-control" x-model="amount" required>
+                <div class="small mt-1 text-muted">Minimum withdrawal: $<span x-text="minWithdrawal.toFixed(2)"></span></div>
                 <div class="small mt-1" x-show="feeApplies && amount !== ''" x-cloak>
                     <span class="text-muted">A <span x-text="feePercent"></span>% fee applies: -$<span x-text="feeAmount.toFixed(2)"></span></span>
                     — you'll receive <strong>$<span x-text="netAmount.toFixed(2)"></span></strong>
@@ -140,14 +143,17 @@
             <div class="mb-2" x-show="windowClosed" x-cloak>
                 <div class="alert alert-danger py-1 small mb-0">Check the withdrawal window above.</div>
             </div>
-            <div class="mb-2" x-show="!windowClosed && insufficient" x-cloak>
+            <div class="mb-2" x-show="!windowClosed && belowMinimum" x-cloak>
+                <div class="alert alert-danger py-1 small mb-0">Minimum withdrawal amount is $<span x-text="minWithdrawal.toFixed(2)"></span>.</div>
+            </div>
+            <div class="mb-2" x-show="!windowClosed && !belowMinimum && insufficient" x-cloak>
                 <div class="alert alert-danger py-1 small mb-0">Insufficient fund</div>
             </div>
             <div class="mb-3">
                 <label class="form-label small fw-semibold">Your BEP20 Address (to receive funds)</label>
                 <input type="text" name="bep20_address" class="form-control" required>
             </div>
-            <button type="submit" class="btn btn-navy w-100" :disabled="balance <= 0 || windowClosed">Request Withdrawal</button>
+            <button type="submit" class="btn btn-navy w-100" :disabled="balance <= 0 || windowClosed || belowMinimum">Request Withdrawal</button>
         </form>
     </div>
 
