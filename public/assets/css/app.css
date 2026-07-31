@@ -711,6 +711,11 @@ body {
   text-align: center;
 }
 
+.org-node-compact {
+  padding: 0.55rem 0.6rem;
+  min-width: 88px;
+}
+
 .org-node-root {
   border-color: var(--png-gold-400);
   box-shadow: 0 0 0 2px rgba(212, 169, 74, 0.25), var(--png-shadow);
@@ -735,6 +740,24 @@ body {
   bottom: 0;
   right: 0;
   border: 2px solid #fff;
+}
+
+.org-node-avatar-btn {
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+
+.org-node-avatar-btn:hover {
+  transform: scale(1.08);
+}
+
+.org-node-compact .org-node-avatar {
+  width: 38px;
+  height: 38px;
+  font-size: 1.1rem;
+  margin-bottom: 0.3rem;
 }
 
 .org-node-name {

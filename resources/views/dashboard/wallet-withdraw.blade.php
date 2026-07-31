@@ -103,7 +103,7 @@
         @enderror
 
         @if (!$roiWindowOpen && !$weeklyWindowOpen)
-            <div class="alert alert-danger py-2 small mb-3">Withdrawals are closed today. Please come back on the 1st/2nd of the month (ROI) or on Sunday (Working &amp; Rank/Reward).</div>
+            <div class="alert alert-danger py-2 small mb-3">Please come back on the 1st/2nd of the month (ROI) or on Every Sunday for (Working &amp; Rank/Reward).</div>
         @endif
 
         <form method="POST" action="{{ route('wallet.withdraw') }}" @submit="if (insufficient || windowClosed) $event.preventDefault()">
@@ -124,7 +124,7 @@
                 <input type="number" step="0.01" min="1" name="amount" class="form-control" x-model="amount" required>
             </div>
             <div class="mb-2" x-show="windowClosed" x-cloak>
-                <div class="alert alert-danger py-1 small mb-0">This wallet cannot be withdrawn today. Check the withdrawal window above.</div>
+                <div class="alert alert-danger py-1 small mb-0">Check the withdrawal window above.</div>
             </div>
             <div class="mb-2" x-show="!windowClosed && insufficient" x-cloak>
                 <div class="alert alert-danger py-1 small mb-0">Insufficient fund</div>

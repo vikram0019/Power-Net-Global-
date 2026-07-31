@@ -146,7 +146,7 @@
                                 <th style="width: 6%;">#</th>
                                 <th style="width: 14%;">Rank</th>
                                 <th style="width: 13%;">Own Investment</th>
-                                <th style="width: 14%;">Team Business (Total)</th>
+                                <th style="width: 14%;">Team Business</th>
                                 <th style="width: 12%;">Reward</th>
                                 <th style="width: 12%;">Direct</th>
                                 <th style="width: 29%;">Levels Unlocked</th>
@@ -158,7 +158,7 @@
                                     <td><div class="rank-badge" style="width: 34px; height: 34px; font-size: 0.85rem;">{{ $rank->sort_order }}</div></td>
                                     <td class="fw-semibold">{{ $rank->name }}</td>
                                     <td>${{ number_format($rank->own_invest_required, 0) }}</td>
-                                    <td>${{ number_format($rank->cumulative_team_business_required, 0) }}</td>
+                                    <td>{{ $loop->first ? '' : '+' }}${{ number_format($rank->team_business_required, 0) }}</td>
                                     <td class="fw-bold" style="color: var(--png-gold-500);">${{ number_format($rank->reward_amount, 0) }}</td>
                                     <td>{{ $rank->sort_order >= 5 ? '-' : ($rank->legs_open >= 255 ? 'No Limit' : $rank->legs_open) }}</td>
                                     <td>

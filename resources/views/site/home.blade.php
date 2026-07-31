@@ -15,20 +15,6 @@
                         <a href="{{ route('signup') }}" class="btn btn-gold btn-lg px-4 fw-bold">Join Now</a>
                         <a href="{{ route('plan') }}" class="btn btn-outline-light btn-lg px-4">View Plan</a>
                     </div>
-                    <div class="row mt-5 g-3">
-                        <div class="col-4">
-                            <div class="fs-3 fw-800" style="color: var(--png-gold-400);">{{ number_format($memberCount) }}+</div>
-                            <div class="small opacity-75">Members Worldwide</div>
-                        </div>
-                        <div class="col-4">
-                            <div class="fs-3 fw-800" style="color: var(--png-gold-400);">13</div>
-                            <div class="small opacity-75">Achievement Ranks</div>
-                        </div>
-                        <div class="col-4">
-                            <div class="fs-3 fw-800" style="color: var(--png-gold-400);">20</div>
-                            <div class="small opacity-75">Income Levels</div>
-                        </div>
-                    </div>
                 </div>
                 <div class="col-lg-5">
                     <div class="card-png p-4" style="background: rgba(255,255,255,0.06); backdrop-filter: blur(6px); border-color: rgba(255,255,255,0.15);">

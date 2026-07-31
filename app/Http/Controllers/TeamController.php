@@ -32,10 +32,37 @@ class TeamController extends Controller
             ? collect()
             : $user->directReferrals()->with('currentRank')->orderBy('created_at')->get();
 
+        $childNodes = $children->map(fn (User $child) => $this->buildTree($child, $depth + 1, $maxDepth))->all();
+
         return [
             'user' => $user,
             'invested' => $user->totalInvested(),
-            'children' => $children->map(fn (User $child) => $this->buildTree($child, $depth + 1, $maxDepth))->all(),
+            'children' => $childNodes,
+            'leg_counts' => $this->legMemberCounts($childNodes),
+        ];
+    }
+
+    /**
+     * Member-count version of the Power/2nd/rest-legs weighting used for $
+     * team business (TeamBusinessCalculator::weightedTeamBusiness) — counts
+     * people instead of dollars, per node, from the already-built subtree.
+     */
+    private function nodeSize(array $node): int
+    {
+        return 1 + array_sum(array_map(fn ($child) => $this->nodeSize($child), $node['children']));
+    }
+
+    private function legMemberCounts(array $childNodes): array
+    {
+        $sizes = collect($childNodes)
+            ->map(fn ($child) => $this->nodeSize($child))
+            ->sortDesc()
+            ->values();
+
+        return [
+            'power' => $sizes->get(0, 0),
+            'second' => $sizes->get(1, 0),
+            'rest' => $sizes->slice(2)->sum(),
         ];
     }
 

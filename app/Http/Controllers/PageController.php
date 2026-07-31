@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Rank;
-use App\Models\User;
 use Illuminate\Http\Request;
 
 class PageController extends Controller
@@ -11,9 +10,8 @@ class PageController extends Controller
     public function home()
     {
         $ranks = Rank::withCumulativeTeamBusiness();
-        $memberCount = User::where('is_admin', false)->count();
 
-        return view('site.home', compact('ranks', 'memberCount'));
+        return view('site.home', compact('ranks'));
     }
 
     public function about()

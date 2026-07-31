@@ -21,7 +21,7 @@
         <i class="bi bi-cash-coin"></i> Payment
     </a>
     <a href="{{ route('team.index') }}" class="nav-link {{ request()->routeIs('team.*') ? 'active' : '' }}">
-        <i class="bi bi-diagram-3"></i> Team
+        <i class="bi bi-diagram-3"></i> Team Network
     </a>
     <a href="{{ route('rank.index') }}" class="nav-link {{ request()->routeIs('rank.*') ? 'active' : '' }}">
         <i class="bi bi-trophy"></i> Rank &amp; Rewards Progress

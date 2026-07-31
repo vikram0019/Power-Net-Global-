@@ -1,15 +1,20 @@
 <li x-data="{ open: true }">
-    <div class="org-node">
-        <div class="org-node-avatar">
+    <div class="org-node org-node-compact">
+        <button type="button" class="org-node-avatar org-node-avatar-btn" title="View details"
+            @click="selected = {
+                name: @js($node['user']->name),
+                joined: @js($node['user']->created_at->format('d M Y')),
+                invested: {{ (float) $node['invested'] }},
+                power: {{ (int) $node['leg_counts']['power'] }},
+                second: {{ (int) $node['leg_counts']['second'] }},
+                rest: {{ (int) $node['leg_counts']['rest'] }}
+            }; popupOpen = true">
             <i class="bi bi-person-circle"></i>
             <span class="status-dot {{ $node['user']->investorStatus() }}" title="{{ $node['user']->investorStatusLabel() }}"></span>
-        </div>
-        <div class="org-node-name" title="{{ $node['user']->name }}">{{ $node['user']->name }}</div>
-        <div class="org-node-rank badge-group {{ strtolower($node['user']->currentRank?->package_group ?? 'unranked') }}">{{ $node['user']->currentRank?->name ?? 'Unranked' }}</div>
+        </button>
         <div class="org-node-referral">
             <span class="org-node-referral-chip"><i class="bi bi-link-45deg"></i>{{ $node['user']->referral_code }}</span>
         </div>
-        <div class="org-node-invested">${{ number_format($node['invested'], 2) }}</div>
         @if (count($node['children']))
             <button type="button" class="org-node-toggle" @click="open = !open">
                 <i class="bi" :class="open ? 'bi-dash-circle' : 'bi-plus-circle'"></i>

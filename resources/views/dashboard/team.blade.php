@@ -25,22 +25,27 @@
         <span class="d-inline-flex align-items-center gap-1"><span class="status-dot red"></span> Inactive — no investment yet</span>
     </div>
 
-    <div class="card-png p-4 mb-4">
+    <div class="card-png p-4 mb-4" x-data="{ popupOpen: false, selected: null }">
         <h6 class="fw-bold mb-3"><i class="bi bi-diagram-3 me-1"></i> Team Tree</h6>
         @if (count($tree['children']))
             <div class="org-tree-wrap">
                 <ul class="org-tree">
                     <li x-data="{ open: true }">
-                        <div class="org-node org-node-root">
-                            <div class="org-node-avatar">
+                        <div class="org-node org-node-root org-node-compact">
+                            <button type="button" class="org-node-avatar org-node-avatar-btn" title="View details"
+                                @click="selected = {
+                                    name: @js($tree['user']->name . ' (You)'),
+                                    joined: @js($tree['user']->created_at->format('d M Y')),
+                                    invested: {{ (float) $tree['invested'] }},
+                                    power: {{ (int) $tree['leg_counts']['power'] }},
+                                    second: {{ (int) $tree['leg_counts']['second'] }},
+                                    rest: {{ (int) $tree['leg_counts']['rest'] }}
+                                }; popupOpen = true">
                                 <i class="bi bi-person-circle"></i>
-                            </div>
-                            <div class="org-node-name">{{ $tree['user']->name }} (You)</div>
-                            <div class="org-node-rank badge-group {{ strtolower($tree['user']->currentRank?->package_group ?? 'unranked') }}">{{ $tree['user']->currentRank?->name ?? 'Unranked' }}</div>
+                            </button>
                             <div class="org-node-referral">
                                 <span class="org-node-referral-chip"><i class="bi bi-link-45deg"></i>{{ $tree['user']->referral_code }}</span>
                             </div>
-                            <div class="org-node-invested">${{ number_format($tree['invested'], 2) }}</div>
                             <button type="button" class="org-node-toggle" @click="open = !open">
                                 <i class="bi" :class="open ? 'bi-dash-circle' : 'bi-plus-circle'"></i>
                             </button>
@@ -56,6 +61,52 @@
         @else
             <p class="text-muted small mb-0">You haven't referred anyone yet. Share your referral code to build your team.</p>
         @endif
+
+        <div class="modal" :class="{ 'd-block': popupOpen }" x-show="popupOpen" x-cloak tabindex="-1" style="background: rgba(5,11,24,0.6);" @click.self="popupOpen = false">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" x-show="popupOpen" x-transition>
+                    <div class="modal-header">
+                        <h6 class="modal-title fw-bold">Member Detail</h6>
+                        <button type="button" class="btn-close" @click="popupOpen = false"></button>
+                    </div>
+                    <div class="modal-body" x-show="selected">
+                        <div class="d-flex justify-content-between mb-3">
+                            <div>
+                                <div class="small text-muted">Joining Date</div>
+                                <div class="fw-semibold" x-text="selected?.joined"></div>
+                                <div class="mt-2 small text-muted">Name</div>
+                                <div class="fw-semibold" x-text="selected?.name"></div>
+                            </div>
+                            <div class="text-end">
+                                <div class="small text-muted">Investment</div>
+                                <div class="fw-semibold">$<span x-text="selected?.invested.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })"></span></div>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-png text-center align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Team A<div class="small text-muted fw-normal">Power Leg</div></th>
+                                        <th>Team B<div class="small text-muted fw-normal">2nd Leg</div></th>
+                                        <th>Team C<div class="small text-muted fw-normal">3rd &amp; Other Legs</div></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="fw-bold" x-text="selected?.power"></td>
+                                        <td class="fw-bold" x-text="selected?.second"></td>
+                                        <td class="fw-bold" x-text="selected?.rest"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-navy" @click="popupOpen = false">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="card-png p-4">
