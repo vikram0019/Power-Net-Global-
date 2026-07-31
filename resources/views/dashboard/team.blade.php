@@ -59,7 +59,7 @@
                 <ul class="org-tree">
                     <li x-data="{ open: true }">
                         <div class="org-node org-node-root org-node-compact">
-                            <button type="button" class="org-node-avatar org-node-avatar-btn" title="View details"
+                            <button type="button" class="org-node-avatar org-node-avatar-btn" title="{{ $tree['user']->name }} (You)"
                                 @click="selected = {
                                     name: @js($tree['user']->name . ' (You)'),
                                     joined: @js($tree['user']->created_at->format('d M Y')),

@@ -1,6 +1,6 @@
 <li x-data="{ open: true }">
     <div class="org-node org-node-compact">
-        <button type="button" class="org-node-avatar org-node-avatar-btn" title="View details"
+        <button type="button" class="org-node-avatar org-node-avatar-btn" title="{{ $node['user']->name }}"
             @click="selected = {
                 name: @js($node['user']->name),
                 joined: @js($node['user']->created_at->format('d M Y')),
