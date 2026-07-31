@@ -20,7 +20,7 @@
     </div>
 
     <div class="row g-3 mb-4">
-        <div class="col-lg-4 col-md-4 col-6">
+        <div class="col-lg-4 col-md-4 col-sm-6 col-12">
             <div class="stat-card">
                 <div class="stat-label">Team A Investment</div>
                 <div class="stat-value">${{ number_format($tree['leg_stats']['power']['investment'], 2) }}</div>
@@ -28,7 +28,7 @@
                 <div class="fw-bold">{{ $tree['leg_stats']['power']['count'] }}</div>
             </div>
         </div>
-        <div class="col-lg-4 col-md-4 col-6">
+        <div class="col-lg-4 col-md-4 col-sm-6 col-12">
             <div class="stat-card gold">
                 <div class="stat-label">Team B Investment</div>
                 <div class="stat-value">${{ number_format($tree['leg_stats']['second']['investment'], 2) }}</div>
@@ -36,7 +36,7 @@
                 <div class="fw-bold">{{ $tree['leg_stats']['second']['count'] }}</div>
             </div>
         </div>
-        <div class="col-lg-4 col-md-4 col-6">
+        <div class="col-lg-4 col-md-4 col-sm-6 col-12">
             <div class="stat-card blue">
                 <div class="stat-label">Team C Investment</div>
                 <div class="stat-value">${{ number_format($tree['leg_stats']['rest']['investment'], 2) }}</div>
