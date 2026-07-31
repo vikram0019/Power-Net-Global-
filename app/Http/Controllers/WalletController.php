@@ -106,10 +106,18 @@ class WalletController extends Controller
 
         $otp = (string) random_int(100000, 999999);
 
+        $feePercent = in_array($validated['wallet_type'], config('mlm.withdrawal_fee_wallet_types'), true)
+            ? config('mlm.withdrawal_fee_percent')
+            : 0;
+        $feeAmount = round($validated['amount'] * $feePercent / 100, 2);
+        $netAmount = $validated['amount'] - $feeAmount;
+
         $withdrawal = Withdrawal::create([
             'user_id' => $user->id,
             'wallet_type' => $validated['wallet_type'],
             'amount' => $validated['amount'],
+            'fee_amount' => $feeAmount,
+            'net_amount' => $netAmount,
             'bep20_address' => $validated['bep20_address'],
             'status' => 'pending',
             'otp_code' => $otp,

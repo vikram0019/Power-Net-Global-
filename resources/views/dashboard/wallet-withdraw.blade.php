@@ -85,15 +85,25 @@
         Working Income and Rank &amp; Reward Income can only be withdrawn on <strong>Sundays</strong>. No withdrawals are accepted on any other day.
     </div>
 
+    <div class="alert alert-info small mb-4" style="max-width: 520px;">
+        <i class="bi bi-percent me-1"></i>
+        <strong>Handling fee:</strong> a <strong>{{ config('mlm.withdrawal_fee_percent') }}% fee</strong> applies to Working Income and Rank &amp; Reward Income withdrawals. ROI Income withdrawals have no fee.
+    </div>
+
     <div class="card-png p-4 mb-4" style="max-width: 520px;"
         x-data="{
             balances: { roi: {{ (float) $wallet->roi_balance }}, working: {{ (float) $wallet->working_balance }}, rank_reward: {{ (float) $wallet->rank_reward_balance }} },
             windowOpen: { roi: {{ $roiWindowOpen ? 'true' : 'false' }}, working: {{ $weeklyWindowOpen ? 'true' : 'false' }}, rank_reward: {{ $weeklyWindowOpen ? 'true' : 'false' }} },
+            feeWalletTypes: @js(config('mlm.withdrawal_fee_wallet_types')),
+            feePercent: {{ (float) config('mlm.withdrawal_fee_percent') }},
             walletType: {{ $roiWindowOpen ? "'roi'" : ($weeklyWindowOpen ? "'working'" : "'roi'") }},
             amount: '',
             get balance() { return this.balances[this.walletType]; },
             get windowClosed() { return !this.windowOpen[this.walletType]; },
-            get insufficient() { return this.balance <= 0 || (this.amount !== '' && Number(this.amount) > this.balance); }
+            get insufficient() { return this.balance <= 0 || (this.amount !== '' && Number(this.amount) > this.balance); },
+            get feeApplies() { return this.feeWalletTypes.includes(this.walletType); },
+            get feeAmount() { return this.feeApplies && this.amount !== '' ? Number(this.amount) * this.feePercent / 100 : 0; },
+            get netAmount() { return this.amount !== '' ? Number(this.amount) - this.feeAmount : 0; }
         }">
         <h6 class="fw-bold mb-3"><i class="bi bi-cash-stack me-1"></i> Withdraw</h6>
         <p class="small text-muted">Requires OTP verification, then admin approval. Funds are sent to the BEP20 address you provide below.</p>
@@ -111,9 +121,9 @@
             <div class="mb-2">
                 <label class="form-label small fw-semibold">Wallet</label>
                 <select name="wallet_type" class="form-select" x-model="walletType" required>
-                    <option value="roi" @if(!$roiWindowOpen) disabled @endif>ROI Income @if(!$roiWindowOpen)(closed today)@endif</option>
-                    <option value="working" @if(!$weeklyWindowOpen) disabled @endif>Working Income @if(!$weeklyWindowOpen)(closed today)@endif</option>
-                    <option value="rank_reward" @if(!$weeklyWindowOpen) disabled @endif>Rank &amp; Reward Income @if(!$weeklyWindowOpen)(closed today)@endif</option>
+                    <option value="roi">ROI Income @if(!$roiWindowOpen)(closed today)@endif</option>
+                    <option value="working">Working Income @if(!$weeklyWindowOpen)(closed today)@endif</option>
+                    <option value="rank_reward">Rank &amp; Reward Income @if(!$weeklyWindowOpen)(closed today)@endif</option>
                 </select>
                 <div class="small mt-1">
                     Available balance: <strong>$<span x-text="balance.toFixed(2)"></span></strong>
@@ -122,6 +132,10 @@
             <div class="mb-2">
                 <label class="form-label small fw-semibold">Amount (USD)</label>
                 <input type="number" step="0.01" min="1" name="amount" class="form-control" x-model="amount" required>
+                <div class="small mt-1" x-show="feeApplies && amount !== ''" x-cloak>
+                    <span class="text-muted">A <span x-text="feePercent"></span>% fee applies: -$<span x-text="feeAmount.toFixed(2)"></span></span>
+                    — you'll receive <strong>$<span x-text="netAmount.toFixed(2)"></span></strong>
+                </div>
             </div>
             <div class="mb-2" x-show="windowClosed" x-cloak>
                 <div class="alert alert-danger py-1 small mb-0">Check the withdrawal window above.</div>
