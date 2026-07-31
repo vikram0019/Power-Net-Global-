@@ -20,46 +20,28 @@
     </div>
 
     <div class="row g-3 mb-4">
-        <div class="col-lg-2 col-md-4 col-6">
+        <div class="col-lg-4 col-md-4 col-6">
             <div class="stat-card">
                 <div class="stat-label">Team A Investment</div>
                 <div class="stat-value">${{ number_format($tree['leg_stats']['power']['investment'], 2) }}</div>
-                <small class="opacity-75">Power Leg</small>
+                <div class="small opacity-75 mt-1">Total member</div>
+                <div class="fw-bold">{{ $tree['leg_stats']['power']['count'] }}</div>
             </div>
         </div>
-        <div class="col-lg-2 col-md-4 col-6">
-            <div class="stat-card">
-                <div class="stat-label">Team A Members</div>
-                <div class="stat-value">{{ $tree['leg_stats']['power']['count'] }}</div>
-                <small class="opacity-75">Power Leg</small>
-            </div>
-        </div>
-        <div class="col-lg-2 col-md-4 col-6">
+        <div class="col-lg-4 col-md-4 col-6">
             <div class="stat-card gold">
                 <div class="stat-label">Team B Investment</div>
                 <div class="stat-value">${{ number_format($tree['leg_stats']['second']['investment'], 2) }}</div>
-                <small class="opacity-75">2nd Leg</small>
+                <div class="small opacity-75 mt-1">Total member</div>
+                <div class="fw-bold">{{ $tree['leg_stats']['second']['count'] }}</div>
             </div>
         </div>
-        <div class="col-lg-2 col-md-4 col-6">
-            <div class="stat-card gold">
-                <div class="stat-label">Team B Members</div>
-                <div class="stat-value">{{ $tree['leg_stats']['second']['count'] }}</div>
-                <small class="opacity-75">2nd Leg</small>
-            </div>
-        </div>
-        <div class="col-lg-2 col-md-4 col-6">
+        <div class="col-lg-4 col-md-4 col-6">
             <div class="stat-card blue">
                 <div class="stat-label">Team C Investment</div>
                 <div class="stat-value">${{ number_format($tree['leg_stats']['rest']['investment'], 2) }}</div>
-                <small class="opacity-75">3rd &amp; Other Legs</small>
-            </div>
-        </div>
-        <div class="col-lg-2 col-md-4 col-6">
-            <div class="stat-card blue">
-                <div class="stat-label">Team C Members</div>
-                <div class="stat-value">{{ $tree['leg_stats']['rest']['count'] }}</div>
-                <small class="opacity-75">3rd &amp; Other Legs</small>
+                <div class="small opacity-75 mt-1">Total member</div>
+                <div class="fw-bold">{{ $tree['leg_stats']['rest']['count'] }}</div>
             </div>
         </div>
     </div>
