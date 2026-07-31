@@ -14,7 +14,7 @@
         <div class="col-md-6">
             <div class="stat-card gold">
                 <div class="stat-label">Weighted Team Business</div>
-                <div class="stat-value">${{ number_format($teamBusiness, 2) }}</div>
+                <div class="stat-value">${{ number_format($standardTeamBusiness, 2) }}</div>
                 <small class="opacity-75">Power leg 50% / 2nd leg 30% / all other legs combined 20%</small>
             </div>
         </div>
@@ -62,7 +62,7 @@
 
                         <div class="small text-muted mb-1">Team Business</div>
                         <div class="progress-png mb-1"><div class="bar" style="width: {{ $rank->team_progress }}%;"></div></div>
-                        <div class="small mb-3">${{ number_format($teamBusiness, 0) }} / ${{ number_format($rank->team_business_required, 0) }}</div>
+                        <div class="small mb-3">${{ number_format($rank->team_business_display, 0) }} / ${{ number_format($rank->team_business_required, 0) }}</div>
 
                         <hr>
                         <div class="d-flex justify-content-between small">

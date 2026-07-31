@@ -19,12 +19,18 @@ class RankService
     {
         $ranks = Rank::withCumulativeTeamBusiness();
         $ownInvest = $user->totalInvested();
-        $teamBusiness = $this->teamBusinessCalculator->weightedTeamBusiness($user);
+        $standardTeamBusiness = $this->teamBusinessCalculator->weightedTeamBusiness($user);
+        $startTeamBusiness = $this->teamBusinessCalculator->twoLegWeightedBusiness($user);
 
         $alreadyAchievedRankIds = $user->rankHistory()->pluck('rank_id')->all();
         $highestQualifyingRankId = $user->current_rank_id;
 
         foreach ($ranks as $rank) {
+            // Start only requires 2 legs open, so it qualifies off just the
+            // top 2 legs at 50/50 — every other rank uses the standard
+            // Power/2nd/rest 50/30/20 formula.
+            $teamBusiness = $rank->code === 'start' ? $startTeamBusiness : $standardTeamBusiness;
+
             $qualifies = $ownInvest >= (float) $rank->own_invest_required
                 && $teamBusiness >= $rank->cumulative_team_business_required;
 
