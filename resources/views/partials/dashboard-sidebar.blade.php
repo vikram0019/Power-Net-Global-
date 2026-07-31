@@ -11,11 +11,11 @@
     <a href="{{ route('wallet.withdraw.page') }}" class="nav-link {{ request()->routeIs('wallet.withdraw.page') || request()->routeIs('wallet.withdraw') || request()->routeIs('wallet.withdraw.verify-otp') ? 'active' : '' }}">
         <i class="bi bi-cash-stack"></i> Withdrawal
     </a>
-    <a href="{{ route('wallet.payment-history') }}" class="nav-link {{ request()->routeIs('wallet.payment-history') ? 'active' : '' }}">
-        <i class="bi bi-clock-history"></i> Payment History
-    </a>
     <a href="{{ route('wallet.withdrawal-requests') }}" class="nav-link {{ request()->routeIs('wallet.withdrawal-requests') ? 'active' : '' }}">
         <i class="bi bi-receipt-cutoff"></i> Withdrawal Requests
+    </a>
+    <a href="{{ route('wallet.payment-history') }}" class="nav-link {{ request()->routeIs('wallet.payment-history') ? 'active' : '' }}">
+        <i class="bi bi-clock-history"></i> Payment History
     </a>
     <a href="{{ route('payment.index') }}" class="nav-link {{ request()->routeIs('payment.*') ? 'active' : '' }}">
         <i class="bi bi-cash-coin"></i> Payment
