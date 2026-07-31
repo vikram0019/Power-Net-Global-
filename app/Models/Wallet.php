@@ -12,6 +12,7 @@ class Wallet extends Model
         'deposit_balance',
         'roi_balance',
         'working_balance',
+        'rank_reward_balance',
     ];
 
     protected function casts(): array
@@ -20,6 +21,7 @@ class Wallet extends Model
             'deposit_balance' => 'decimal:2',
             'roi_balance' => 'decimal:2',
             'working_balance' => 'decimal:2',
+            'rank_reward_balance' => 'decimal:2',
         ];
     }
 

@@ -15,28 +15,17 @@
                         <a href="{{ route('signup') }}" class="btn btn-gold btn-lg px-4 fw-bold">Join Now</a>
                         <a href="{{ route('plan') }}" class="btn btn-outline-light btn-lg px-4">View Plan</a>
                     </div>
-                    <div class="row mt-5 g-3">
-                        <div class="col-4">
-                            <div class="fs-3 fw-800" style="color: var(--png-gold-400);">{{ number_format($memberCount) }}+</div>
-                            <div class="small opacity-75">Members Worldwide</div>
-                        </div>
-                        <div class="col-4">
-                            <div class="fs-3 fw-800" style="color: var(--png-gold-400);">13</div>
-                            <div class="small opacity-75">Achievement Ranks</div>
-                        </div>
-                        <div class="col-4">
-                            <div class="fs-3 fw-800" style="color: var(--png-gold-400);">20</div>
-                            <div class="small opacity-75">Income Levels</div>
-                        </div>
-                    </div>
                 </div>
                 <div class="col-lg-5">
                     <div class="card-png p-4" style="background: rgba(255,255,255,0.06); backdrop-filter: blur(6px); border-color: rgba(255,255,255,0.15);">
                         <h5 class="text-white fw-bold mb-3">Quick Login</h5>
+                        @error('login')
+                            <div class="alert alert-danger py-2 small mb-3">{{ $message }}</div>
+                        @enderror
                         <form method="POST" action="{{ route('login.submit') }}">
                             @csrf
                             <div class="mb-3">
-                                <input type="text" name="login" class="form-control" placeholder="Email or Mobile" required>
+                                <input type="text" name="login" class="form-control" value="{{ old('login') }}" placeholder="Email or Mobile" required>
                             </div>
                             <div class="mb-3">
                                 <input type="password" name="password" class="form-control" placeholder="Password" required>
@@ -44,32 +33,6 @@
                             <button type="submit" class="btn btn-gold w-100 fw-bold">Login</button>
                         </form>
                         <p class="text-center small text-white-50 mt-3 mb-0">No account? <a href="{{ route('signup') }}" class="text-decoration-none" style="color: var(--png-gold-300);">Sign up free</a></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    {{-- Live Stats Band --}}
-    <section class="py-5">
-        <div class="container">
-            <div class="stats-band p-5">
-                <div class="row g-4 text-center position-relative" style="color: #fff;">
-                    <div class="col-6 col-lg-3">
-                        <div class="fs-2 fw-800" style="color: var(--png-gold-400);">{{ number_format($memberCount) }}+</div>
-                        <div class="small opacity-75 text-uppercase" style="letter-spacing: 0.5px;">Members Worldwide</div>
-                    </div>
-                    <div class="col-6 col-lg-3">
-                        <div class="fs-2 fw-800" style="color: var(--png-gold-400);">${{ number_format($totalInvested, 0) }}+</div>
-                        <div class="small opacity-75 text-uppercase" style="letter-spacing: 0.5px;">Total Invested</div>
-                    </div>
-                    <div class="col-6 col-lg-3">
-                        <div class="fs-2 fw-800" style="color: var(--png-gold-400);">${{ number_format($totalPaid, 0) }}+</div>
-                        <div class="small opacity-75 text-uppercase" style="letter-spacing: 0.5px;">Rewards Paid Out</div>
-                    </div>
-                    <div class="col-6 col-lg-3">
-                        <div class="fs-2 fw-800" style="color: var(--png-gold-400);">13</div>
-                        <div class="small opacity-75 text-uppercase" style="letter-spacing: 0.5px;">Achievement Ranks</div>
                     </div>
                 </div>
             </div>
@@ -159,7 +122,7 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="feature-card">
                         <div class="feature-icon"><i class="bi bi-trophy"></i></div>
-                        <h6 class="fw-bold">13 Ranks, 5 Packages</h6>
+                        <h6 class="fw-bold">13 Rank & Rewards</h6>
                         <p class="small text-muted mb-0">A clear, published path from Start all the way to Universal Crown, with a reward at every milestone.</p>
                     </div>
                 </div>
@@ -227,7 +190,7 @@
                         <div class="step-connector d-none d-lg-block"></div>
                         <div class="step-number mx-auto">1</div>
                         <h6 class="fw-bold">Create Your Account</h6>
-                        <p class="small text-muted mb-0">Sign up with a referral code, verify with OTP, and wait for a quick admin approval.</p>
+                        <p class="small text-muted mb-0">Sign up with a referral code and verify with a one-time code — your account is active instantly.</p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
@@ -280,14 +243,17 @@
                             </div>
                             <div class="rank-preview-stat">
                                 <span class="text-muted d-block">Team Business</span>
-                                <span class="fw-semibold">${{ number_format($entryRank->team_business_required, 0) }}</span>
+                                <span class="fw-semibold">${{ number_format($entryRank->cumulative_team_business_required, 0) }}</span>
                             </div>
                         </div>
                     </div>
                 @endforeach
             </div>
-            <div class="text-center mt-5">
+            <div class="text-center mt-5 d-flex gap-3 justify-content-center flex-wrap">
                 <a href="{{ route('plan') }}" class="btn btn-navy px-4">View Full Plan — All 13 Ranks</a>
+                <a href="{{ asset('assets/docs/Power-Net-Global-Plan.pdf') }}" class="btn btn-gold px-4 fw-bold" download>
+                    <i class="bi bi-file-earmark-arrow-down me-1"></i> Full Plan Download
+                </a>
             </div>
         </div>
     </section>

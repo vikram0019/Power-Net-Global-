@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Announcement;
 use App\Models\IncomeTransaction;
 use App\Services\TeamBusinessCalculator;
 use Illuminate\Http\Request;
@@ -30,11 +31,13 @@ class DashboardController extends Controller
             ->orderBy('ym')
             ->pluck('total', 'ym');
 
-        $recentIncome = IncomeTransaction::with('sourceUser')
-            ->where('user_id', $user->id)
-            ->latest()
-            ->take(8)
-            ->get();
+        $announcements = Announcement::active()->latest()->get();
+
+        $achievedToday = $user->rankHistory()
+            ->whereDate('achieved_at', now()->toDateString())
+            ->with('rank')
+            ->latest('achieved_at')
+            ->first();
 
         return view('dashboard.overview', compact(
             'totalInvested',
@@ -43,7 +46,8 @@ class DashboardController extends Controller
             'teamSize',
             'directCount',
             'monthly',
-            'recentIncome'
+            'announcements',
+            'achievedToday'
         ));
     }
 }

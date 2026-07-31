@@ -117,10 +117,10 @@
                     <table class="table table-png align-middle mb-0">
                         <thead><tr><th>Rank</th><th>Levels Unlocked</th></tr></thead>
                         <tbody>
-                            <tr><td>Start</td><td>Level 1 only</td></tr>
-                            <tr><td>Super Star</td><td>Levels 1–2</td></tr>
-                            <tr><td>Seven Star</td><td>Levels 1–3</td></tr>
-                            <tr><td>Eagle and above</td><td>All 20 levels</td></tr>
+                            <tr><td>Star</td><td>2 D - 1 level Open</td></tr>
+                            <tr><td>Super Star</td><td>+1 D, 2 Level Open</td></tr>
+                            <tr><td>Seven Star</td><td>+1 D, 3 Level Open</td></tr>
+                            <tr><td>Eagle and above</td><td>Total 10 D, Achieved Eagle Rank, All Level are opened</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -140,7 +140,7 @@
             @foreach ($ranks as $groupName => $groupRanks)
                 <h6 class="fw-bold text-uppercase small mb-3" style="letter-spacing: 1px; color: var(--png-ink-500);">{{ $groupName }}</h6>
                 <div class="table-responsive mb-5">
-                    <table class="table table-png align-middle" style="table-layout: fixed; width: 100%;">
+                    <table class="table table-png align-middle" style="table-layout: fixed; width: 100%; min-width: 700px;">
                         <thead>
                             <tr>
                                 <th style="width: 6%;">#</th>
@@ -148,7 +148,7 @@
                                 <th style="width: 13%;">Own Investment</th>
                                 <th style="width: 14%;">Team Business</th>
                                 <th style="width: 12%;">Reward</th>
-                                <th style="width: 12%;">Legs Open</th>
+                                <th style="width: 12%;">Direct</th>
                                 <th style="width: 29%;">Levels Unlocked</th>
                             </tr>
                         </thead>
@@ -158,7 +158,7 @@
                                     <td><div class="rank-badge" style="width: 34px; height: 34px; font-size: 0.85rem;">{{ $rank->sort_order }}</div></td>
                                     <td class="fw-semibold">{{ $rank->name }}</td>
                                     <td>${{ number_format($rank->own_invest_required, 0) }}</td>
-                                    <td>${{ number_format($rank->team_business_required, 0) }}</td>
+                                    <td>{{ $loop->first ? '' : '+' }}${{ number_format($rank->team_business_required, 0) }}</td>
                                     <td class="fw-bold" style="color: var(--png-gold-500);">${{ number_format($rank->reward_amount, 0) }}</td>
                                     <td>{{ $rank->sort_order >= 5 ? '-' : ($rank->legs_open >= 255 ? 'No Limit' : $rank->legs_open) }}</td>
                                     <td>
@@ -186,9 +186,9 @@
                 <ul class="small text-muted mb-0">
                     <li>Withdrawals are paid after admin approval and email OTP verification.</li>
                     <li>Monthly profit is 8% of the invested amount, paid monthly for up to {{ config('mlm.roi_max_months') }} months.</li>
-                    <li>New accounts require admin approval before their referral code can be used by others.</li>
                     <li>A minimum investment of ${{ number_format(config('mlm.minimum_investment')) }} is required to be eligible for the monthly profit, level income, and rank income benefits.</li>
                     <li>Every member has a wallet system to submit deposits and track all earnings.</li>
+                    <li>Team Business is a running total — each rank's requirement builds on top of the one before it (e.g. Super Star's total includes Star's), it isn't a separate fresh amount per rank.</li>
                 </ul>
             </div>
         </div>

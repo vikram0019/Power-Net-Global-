@@ -1,9 +1,34 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Overview')
-@section('page-title', 'Overview')
+@section('title', 'Dashboard')
+@section('page-title', 'Dashboard')
 
 @section('content')
+    @if ($achievedToday)
+        <div class="rank-celebrate-overlay" x-data="{ open: true }" x-show="open" x-cloak @click.self="open = false">
+            <div class="rank-celebrate-card">
+                <div class="rank-confetti">
+                    @for ($i = 0; $i < 30; $i++)
+                        @php
+                            $left = ($i * 37) % 100;
+                            $delay = ($i % 10) * 0.15;
+                            $duration = 2.5 + ($i % 5) * 0.3;
+                            $colors = ['#d4a94a', '#ffd97a', '#8ea6ff', '#ff8fa3', '#6ee7b7'];
+                            $color = $colors[$i % count($colors)];
+                            $rotate = ($i * 47) % 360;
+                        @endphp
+                        <span style="left: {{ $left }}%; background: {{ $color }}; animation-delay: {{ $delay }}s; animation-duration: {{ $duration }}s; transform: rotate({{ $rotate }}deg);"></span>
+                    @endfor
+                </div>
+                <button type="button" class="rank-celebrate-close" @click="open = false" aria-label="Close">&times;</button>
+                <i class="bi bi-trophy-fill rank-celebrate-trophy"></i>
+                <div class="rank-celebrate-name">{{ auth()->user()->name }}</div>
+                <div class="rank-celebrate-msg">🎉 Congratulations! You achieved <strong>{{ $achievedToday->rank->name }}</strong>!</div>
+                <button type="button" class="btn btn-gold fw-bold mt-3" @click="open = false">Awesome!</button>
+            </div>
+        </div>
+    @endif
+
     <div class="card-png p-4 mb-4" x-data="{ copiedCode: false, copiedLink: false }">
         <h6 class="fw-bold mb-3"><i class="bi bi-share me-1"></i> Your Referral</h6>
         <div class="row g-3">
@@ -67,46 +92,47 @@
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="card-png p-4 h-100">
-                <h6 class="fw-bold mb-3">Income Breakdown</h6>
-                @php
-                    $labels = ['direct_reward' => 'Direct Reward', 'direct_reward_upline' => 'Direct Reward (Upline)', 'level_income' => 'Level Income', 'monthly_roi' => 'Monthly ROI', 'rank_reward' => 'Rank Reward'];
-                @endphp
-                @forelse ($incomeByType as $type => $amount)
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="small text-muted">{{ $labels[$type] ?? $type }}</span>
-                        <span class="fw-semibold">${{ number_format($amount, 2) }}</span>
+            <div class="card-png p-4 h-100" x-data="{ open: false, selected: null }">
+                <h6 class="fw-bold mb-3"><i class="bi bi-megaphone me-1"></i> Announcements</h6>
+
+                @if ($announcements->isEmpty())
+                    <p class="text-muted small mb-0">No announcements right now.</p>
+                @else
+                    <div class="announcement-ticker">
+                        <div class="announcement-ticker-track" style="animation-duration: {{ max(10, $announcements->count() * 4) }}s;">
+                            @foreach ($announcements->concat($announcements) as $a)
+                                <div class="announcement-ticker-item">
+                                    <span class="small fw-semibold text-truncate">{{ $a->title }}</span>
+                                    <button type="button" class="btn btn-link btn-sm p-0 flex-shrink-0"
+                                        @click="open = true; selected = { title: @js($a->title), description: @js($a->description) }">
+                                        Read More
+                                    </button>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
-                @empty
-                    <p class="text-muted small mb-0">No income yet. Invest to start earning.</p>
-                @endforelse
+
+                    <div class="modal" :class="{ 'd-block': open }" x-show="open" x-cloak tabindex="-1" style="background: rgba(5,11,24,0.6);" @click.self="open = false">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h6 class="modal-title fw-bold" x-text="selected?.title"></h6>
+                                    <button type="button" class="btn-close" @click="open = false"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p class="mb-0" x-text="selected?.description" style="white-space: pre-line;"></p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-navy" @click="open = false">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
 
-    <div class="card-png p-4">
-        <h6 class="fw-bold mb-3">Recent Income</h6>
-        <div class="table-responsive">
-            <table class="table table-png align-middle">
-                <thead>
-                    <tr><th>Date</th><th>Type</th><th>From</th><th>Level</th><th>Amount</th></tr>
-                </thead>
-                <tbody>
-                    @forelse ($recentIncome as $income)
-                        <tr>
-                            <td>{{ $income->created_at->format('d M Y, H:i') }}</td>
-                            <td class="text-capitalize">{{ str_replace('_', ' ', $income->type) }}</td>
-                            <td>{{ $income->sourceUser->name ?? '—' }}</td>
-                            <td>{{ $income->level ?? '—' }}</td>
-                            <td class="fw-semibold">${{ number_format($income->amount, 2) }}</td>
-                        </tr>
-                    @empty
-                        <tr><td colspan="5" class="text-center text-muted py-4">No income transactions yet.</td></tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
 @endsection
 
 @push('scripts')

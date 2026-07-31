@@ -17,27 +17,36 @@ class RankService
 
     public function evaluateAndPromote(User $user): void
     {
-        $ranks = Rank::ordered()->get();
+        $ranks = Rank::withCumulativeTeamBusiness();
         $ownInvest = $user->totalInvested();
-        $teamBusiness = $this->teamBusinessCalculator->weightedTeamBusiness($user);
+        $standardTeamBusiness = $this->teamBusinessCalculator->weightedTeamBusiness($user);
+        $startTeamBusiness = $this->teamBusinessCalculator->twoLegWeightedBusiness($user);
 
-        $achievedRankIds = $user->rankHistory()->pluck('rank_id')->all();
+        $alreadyAchievedRankIds = $user->rankHistory()->pluck('rank_id')->all();
         $highestQualifyingRankId = $user->current_rank_id;
 
         foreach ($ranks as $rank) {
+            // Start only requires 2 legs open, so it qualifies off just the
+            // top 2 legs at 50/50 — every other rank uses the standard
+            // Power/2nd/rest 50/30/20 formula.
+            $teamBusiness = $rank->code === 'start' ? $startTeamBusiness : $standardTeamBusiness;
+
             $qualifies = $ownInvest >= (float) $rank->own_invest_required
-                && $teamBusiness >= (float) $rank->team_business_required;
+                && $teamBusiness >= $rank->cumulative_team_business_required;
 
-            if (! $qualifies) {
-                continue;
-            }
+            $alreadyAchieved = in_array($rank->id, $alreadyAchievedRankIds, true);
 
-            if (! in_array($rank->id, $achievedRankIds, true)) {
+            if ($qualifies && ! $alreadyAchieved) {
                 $this->promote($user, $rank);
-                $achievedRankIds[] = $rank->id;
             }
 
-            $highestQualifyingRankId = $rank->id;
+            // Grandfather ranks already achieved: raising a rank's cumulative
+            // threshold later must never demote a user's current rank below
+            // one they already earned (and were paid for) under an older,
+            // lower threshold.
+            if ($qualifies || $alreadyAchieved) {
+                $highestQualifyingRankId = $rank->id;
+            }
         }
 
         if ($highestQualifyingRankId !== $user->current_rank_id) {
@@ -57,7 +66,7 @@ class RankService
 
         $this->walletService->credit(
             $user,
-            'working',
+            'rank_reward',
             (float) $rank->reward_amount,
             "Rank reward — {$rank->name}",
             Rank::class,

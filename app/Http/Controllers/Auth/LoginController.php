@@ -29,10 +29,11 @@ class LoginController extends Controller
             return back()->withErrors(['login' => 'These credentials do not match our records.'])->onlyInput('login');
         }
 
+        // Signups are no longer saved until OTP verification succeeds, so a
+        // 'pending' row can only be leftover data from before that change —
+        // there's no in-progress session to resume, so send them to restart.
         if ($user->status === 'pending') {
-            session(['pending_user_id' => $user->id]);
-
-            return redirect()->route('signup.otp')->withErrors(['login' => 'Please verify your account with the OTP sent to your email.']);
+            return redirect()->route('signup')->withErrors(['login' => 'Your previous signup was never verified. Please sign up again.']);
         }
 
         if ($user->status === 'suspended') {

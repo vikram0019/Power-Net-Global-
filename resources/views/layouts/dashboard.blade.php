@@ -31,7 +31,7 @@
                     <h5 class="mb-0 fw-bold">@yield('page-title', 'Dashboard')</h5>
                 </div>
                 <div class="d-flex align-items-center gap-3">
-                    <span class="badge badge-group star text-uppercase">{{ auth()->user()->currentRank?->name ?? 'Unranked' }}</span>
+                    @include('partials.rank-badge', ['rank' => auth()->user()->currentRank, 'size' => 'lg'])
                     <div class="dropdown">
                         <button class="btn btn-sm btn-navy dropdown-toggle" data-bs-toggle="dropdown">
                             <i class="bi bi-person-circle me-1"></i>{{ auth()->user()->name }}

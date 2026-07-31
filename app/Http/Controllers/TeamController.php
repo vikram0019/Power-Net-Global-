@@ -32,10 +32,53 @@ class TeamController extends Controller
             ? collect()
             : $user->directReferrals()->with('currentRank')->orderBy('created_at')->get();
 
+        $childNodes = $children->map(fn (User $child) => $this->buildTree($child, $depth + 1, $maxDepth))->all();
+
         return [
             'user' => $user,
             'invested' => $user->totalInvested(),
-            'children' => $children->map(fn (User $child) => $this->buildTree($child, $depth + 1, $maxDepth))->all(),
+            'children' => $childNodes,
+            'leg_stats' => $this->legStats($childNodes),
+        ];
+    }
+
+    /**
+     * Same Power/2nd/rest-legs ranking as $ team business
+     * (TeamBusinessCalculator::weightedTeamBusiness) — legs are ranked by
+     * $ business size (the canonical definition used everywhere else in the
+     * app), computed per node from the already-built subtree. Each leg
+     * reports both its member count and its total $ investment.
+     */
+    private function nodeStats(array $node): array
+    {
+        $count = 1;
+        $investment = (float) $node['invested'];
+
+        foreach ($node['children'] as $child) {
+            $childStats = $this->nodeStats($child);
+            $count += $childStats['count'];
+            $investment += $childStats['investment'];
+        }
+
+        return ['count' => $count, 'investment' => $investment];
+    }
+
+    private function legStats(array $childNodes): array
+    {
+        $legs = collect($childNodes)
+            ->map(fn ($child) => $this->nodeStats($child))
+            ->sortByDesc('investment')
+            ->values();
+
+        $empty = ['count' => 0, 'investment' => 0.0];
+
+        return [
+            'power' => $legs->get(0, $empty),
+            'second' => $legs->get(1, $empty),
+            'rest' => [
+                'count' => $legs->slice(2)->sum('count'),
+                'investment' => $legs->slice(2)->sum('investment'),
+            ],
         ];
     }
 

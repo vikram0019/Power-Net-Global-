@@ -26,6 +26,9 @@
     <a href="{{ route('admin.roi.index') }}" class="nav-link {{ request()->routeIs('admin.roi.*') ? 'active' : '' }}">
         <i class="bi bi-graph-up-arrow"></i> Run ROI
     </a>
+    <a href="{{ route('admin.announcements.index') }}" class="nav-link {{ request()->routeIs('admin.announcements.*') ? 'active' : '' }}">
+        <i class="bi bi-megaphone"></i> Announcements
+    </a>
     <div class="mt-3 pt-3 border-top border-secondary border-opacity-25">
         <a href="{{ route('dashboard') }}" class="nav-link">
             <i class="bi bi-arrow-left-circle"></i> Member Dashboard

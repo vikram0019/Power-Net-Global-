@@ -12,6 +12,7 @@ class WalletService
         'deposit' => 'deposit_balance',
         'roi' => 'roi_balance',
         'working' => 'working_balance',
+        'rank_reward' => 'rank_reward_balance',
     ];
 
     public function credit(User $user, string $walletType, float $amount, string $description, ?string $referenceType = null, ?int $referenceId = null): WalletTransaction

@@ -27,7 +27,7 @@ class AdminDashboardController extends Controller
             ->orderBy('d')
             ->pluck('total', 'd');
 
-        $recentUsers = User::where('is_admin', false)->latest()->take(8)->get();
+        $recentUsers = User::where('is_admin', false)->where('status', '!=', 'pending')->latest()->take(8)->get();
         $recentWithdrawals = Withdrawal::with('user')->whereIn('status', ['otp_verified'])->latest()->take(8)->get();
 
         return view('admin.dashboard', compact(

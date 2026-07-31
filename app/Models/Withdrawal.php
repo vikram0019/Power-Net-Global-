@@ -11,6 +11,8 @@ class Withdrawal extends Model
         'user_id',
         'wallet_type',
         'amount',
+        'fee_amount',
+        'net_amount',
         'bep20_address',
         'status',
         'otp_code',
@@ -29,6 +31,8 @@ class Withdrawal extends Model
     {
         return [
             'amount' => 'decimal:2',
+            'fee_amount' => 'decimal:2',
+            'net_amount' => 'decimal:2',
             'otp_expires_at' => 'datetime',
             'otp_verified_at' => 'datetime',
             'processed_at' => 'datetime',

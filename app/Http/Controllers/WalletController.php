@@ -33,7 +33,10 @@ class WalletController extends Controller
         $user = $request->user();
         $wallet = $user->wallet;
 
-        return view('dashboard.wallet-withdraw', compact('wallet'));
+        $roiWindowOpen = in_array((int) now()->day, [1, 2], true);
+        $weeklyWindowOpen = now()->isSunday();
+
+        return view('dashboard.wallet-withdraw', compact('wallet', 'roiWindowOpen', 'weeklyWindowOpen'));
     }
 
     public function paymentHistory(Request $request)
@@ -76,14 +79,26 @@ class WalletController extends Controller
     public function requestWithdrawal(Request $request)
     {
         $validated = $request->validate([
-            'wallet_type' => ['required', 'in:roi,working'],
-            'amount' => ['required', 'numeric', 'min:1'],
+            'wallet_type' => ['required', 'in:roi,working,rank_reward'],
+            'amount' => ['required', 'numeric', 'min:' . config('mlm.minimum_withdrawal')],
             'bep20_address' => ['required', 'string', 'max:100'],
         ]);
 
+        if ($validated['wallet_type'] === 'roi') {
+            if (!in_array((int) now()->day, [1, 2], true)) {
+                return back()->withErrors(['amount' => 'ROI Income can only be withdrawn on the 1st or 2nd day of the month.'])->withInput();
+            }
+        } elseif (!now()->isSunday()) {
+            return back()->withErrors(['amount' => 'Working Income and Rank & Reward Income can only be withdrawn on Sundays.'])->withInput();
+        }
+
         $user = $request->user();
         $wallet = $user->wallet;
-        $column = $validated['wallet_type'] === 'roi' ? 'roi_balance' : 'working_balance';
+        $column = match ($validated['wallet_type']) {
+            'roi' => 'roi_balance',
+            'rank_reward' => 'rank_reward_balance',
+            default => 'working_balance',
+        };
 
         if ((float) $wallet->{$column} < (float) $validated['amount']) {
             return back()->withErrors(['amount' => 'Insufficient fund'])->withInput();
@@ -91,10 +106,18 @@ class WalletController extends Controller
 
         $otp = (string) random_int(100000, 999999);
 
+        $feePercent = in_array($validated['wallet_type'], config('mlm.withdrawal_fee_wallet_types'), true)
+            ? config('mlm.withdrawal_fee_percent')
+            : 0;
+        $feeAmount = round($validated['amount'] * $feePercent / 100, 2);
+        $netAmount = $validated['amount'] - $feeAmount;
+
         $withdrawal = Withdrawal::create([
             'user_id' => $user->id,
             'wallet_type' => $validated['wallet_type'],
             'amount' => $validated['amount'],
+            'fee_amount' => $feeAmount,
+            'net_amount' => $netAmount,
             'bep20_address' => $validated['bep20_address'],
             'status' => 'pending',
             'otp_code' => $otp,

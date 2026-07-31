@@ -28,13 +28,15 @@
                             <td>{{ $u->currentRank->name ?? 'Unranked' }}</td>
                             <td>@include('partials.investor-status', ['user' => $u])</td>
                             <td>
+                                @php
+                                    $accountState = $u->is_dummy ? 'Dummy' : ($u->totalInvested() > 0 ? 'Active' : 'Unactive');
+                                @endphp
                                 <span class="badge
                                     @class([
-                                        'bg-success' => $u->status === 'active',
-                                        'bg-info text-dark' => $u->status === 'approval_pending',
-                                        'bg-warning text-dark' => $u->status === 'pending',
-                                        'bg-danger' => $u->status === 'suspended',
-                                    ])">{{ str_replace('_', ' ', $u->status) }}</span>
+                                        'bg-warning text-dark' => $accountState === 'Dummy',
+                                        'bg-success' => $accountState === 'Active',
+                                        'bg-secondary' => $accountState === 'Unactive',
+                                    ])">{{ $accountState }}</span>
                             </td>
                             <td>
                                 <form method="POST" action="{{ route('admin.users.toggle-roi', $u) }}">
@@ -46,6 +48,7 @@
                             </td>
                             <td class="d-flex gap-1">
                                 <a href="{{ route('admin.users.show', $u) }}" class="btn btn-sm btn-navy">View</a>
+                                <a href="{{ route('admin.users.edit', $u) }}" class="btn btn-sm btn-outline-secondary">Edit</a>
                                 @if ($u->status === 'approval_pending')
                                     <form method="POST" action="{{ route('admin.users.approve', $u) }}">
                                         @csrf

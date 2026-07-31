@@ -30,4 +30,12 @@ return [
 
     // Sentinel value stored in ranks.legs_open meaning "no limit".
     'unlimited_legs' => 255,
+
+    // % fee deducted from a withdrawal request before it's sent to admin
+    // for approval — applies only to the wallet types listed here.
+    'withdrawal_fee_percent' => 5,
+    'withdrawal_fee_wallet_types' => ['working', 'rank_reward'],
+
+    // Smallest amount a member may request in a single withdrawal.
+    'minimum_withdrawal' => 20,
 ];

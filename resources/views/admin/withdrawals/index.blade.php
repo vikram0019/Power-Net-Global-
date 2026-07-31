@@ -18,7 +18,7 @@
         <div class="table-responsive">
             <table class="table table-png align-middle">
                 <thead>
-                    <tr><th>Date</th><th>Member</th><th>Referral Code</th><th>Wallet</th><th>Amount</th><th>BEP20 Address</th><th>Status</th><th>Action</th></tr>
+                    <tr><th>Date</th><th>Member</th><th>Referral Code</th><th>Wallet</th><th>Requested</th><th>Fee</th><th>Payable</th><th>BEP20 Address</th><th>Status</th><th>Action</th></tr>
                 </thead>
                 <tbody>
                     @forelse ($withdrawals as $w)
@@ -26,8 +26,10 @@
                             <td>{{ $w->created_at->format('d M Y, H:i') }}</td>
                             <td>{{ $w->user->name }}</td>
                             <td><code class="small">{{ $w->user->referral_code }}</code></td>
-                            <td class="text-capitalize">{{ $w->wallet_type }}</td>
-                            <td class="fw-semibold">${{ number_format($w->amount, 2) }}</td>
+                            <td class="text-capitalize">{{ str_replace('_', ' ', $w->wallet_type) }}</td>
+                            <td>${{ number_format($w->amount, 2) }}</td>
+                            <td>{{ $w->fee_amount > 0 ? '-$' . number_format($w->fee_amount, 2) : '—' }}</td>
+                            <td class="fw-bold" style="color: var(--png-gold-500);">${{ number_format($w->net_amount, 2) }}</td>
                             <td>
                                 @if ($w->bep20_address)
                                     <code class="small">{{ $w->bep20_address }}</code>
@@ -47,7 +49,7 @@
                             </td>
                             <td>
                                 @if ($w->status === 'otp_verified')
-                                    <form method="POST" action="{{ route('admin.withdrawals.approve', $w) }}" class="d-inline">
+                                    <form method="POST" action="{{ route('admin.withdrawals.approve', $w) }}" class="d-inline" onsubmit="return confirm('Approve this withdrawal for {{ $w->user->name }}? Requested: ${{ number_format($w->amount, 2) }}{{ $w->fee_amount > 0 ? ', fee: $' . number_format($w->fee_amount, 2) : '' }}, pay out: ${{ number_format($w->net_amount, 2) }} to their BEP20 address. This cannot be undone.');">
                                         @csrf
                                         <button type="submit" class="btn btn-sm btn-gold">Approve</button>
                                     </form>
@@ -79,7 +81,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="8" class="text-center text-muted py-4">No withdrawals in this category.</td></tr>
+                        <tr><td colspan="10" class="text-center text-muted py-4">No withdrawals in this category.</td></tr>
                     @endforelse
                 </tbody>
             </table>
