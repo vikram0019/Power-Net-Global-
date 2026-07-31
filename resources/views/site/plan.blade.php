@@ -117,7 +117,7 @@
                     <table class="table table-png align-middle mb-0">
                         <thead><tr><th>Rank</th><th>Levels Unlocked</th></tr></thead>
                         <tbody>
-                            <tr><td>Start</td><td>2 D - 1 level Open</td></tr>
+                            <tr><td>Star</td><td>2 D - 1 level Open</td></tr>
                             <tr><td>Super Star</td><td>+1 D, 2 Level Open</td></tr>
                             <tr><td>Seven Star</td><td>+1 D, 3 Level Open</td></tr>
                             <tr><td>Eagle and above</td><td>Total 10 D, Achieved Eagle Rank, All Level are opened</td></tr>
@@ -188,7 +188,7 @@
                     <li>Monthly profit is 8% of the invested amount, paid monthly for up to {{ config('mlm.roi_max_months') }} months.</li>
                     <li>A minimum investment of ${{ number_format(config('mlm.minimum_investment')) }} is required to be eligible for the monthly profit, level income, and rank income benefits.</li>
                     <li>Every member has a wallet system to submit deposits and track all earnings.</li>
-                    <li>Team Business is a running total — each rank's requirement builds on top of the one before it (e.g. Super Star's total includes Start's), it isn't a separate fresh amount per rank.</li>
+                    <li>Team Business is a running total — each rank's requirement builds on top of the one before it (e.g. Super Star's total includes Star's), it isn't a separate fresh amount per rank.</li>
                 </ul>
             </div>
         </div>

@@ -13,7 +13,7 @@ class RankSeeder extends Seeder
 
         $ranks = [
             // Star Package
-            ['code' => 'start', 'name' => 'Start', 'package_group' => 'Star', 'own_invest_required' => 100, 'team_business_required' => 2500, 'reward_amount' => 100, 'legs_open' => 2, 'levels_unlocked' => 1, 'sort_order' => 1],
+            ['code' => 'start', 'name' => 'Star', 'package_group' => 'Star', 'own_invest_required' => 100, 'team_business_required' => 2500, 'reward_amount' => 100, 'legs_open' => 2, 'levels_unlocked' => 1, 'sort_order' => 1],
             ['code' => 'super_star', 'name' => 'Super Star', 'package_group' => 'Star', 'own_invest_required' => 100, 'team_business_required' => 5000, 'reward_amount' => 200, 'legs_open' => 3, 'levels_unlocked' => 2, 'sort_order' => 2],
             ['code' => 'seven_star', 'name' => 'Seven Star', 'package_group' => 'Star', 'own_invest_required' => 100, 'team_business_required' => 10000, 'reward_amount' => 400, 'legs_open' => 4, 'levels_unlocked' => 3, 'sort_order' => 3],
 
