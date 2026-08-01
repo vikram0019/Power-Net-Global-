@@ -22,10 +22,12 @@ class RankController extends Controller
         // values, which come back as strings under some PDO configurations —
         // cast explicitly so strict comparisons below can't silently fail.
         $achievedRankIds = $user->rankHistory()->pluck('rank_id')->map(fn ($id) => (int) $id)->all();
+        $achievedAtByRankId = $user->rankHistory()->get()->keyBy(fn ($ur) => (int) $ur->rank_id)->map(fn ($ur) => $ur->achieved_at);
         $currentRankId = $user->current_rank_id !== null ? (int) $user->current_rank_id : null;
 
-        $ranks = $ranks->map(function (Rank $rank) use ($ownInvest, $legs, $directLegCount, $unlimitedLegs, $achievedRankIds, $currentRankId) {
+        $ranks = $ranks->map(function (Rank $rank) use ($ownInvest, $legs, $directLegCount, $unlimitedLegs, $achievedRankIds, $achievedAtByRankId, $currentRankId) {
             $rank->is_achieved = in_array($rank->id, $achievedRankIds, true);
+            $rank->achieved_at = $achievedAtByRankId->get($rank->id);
             $rank->is_current = $rank->id === $currentRankId;
             $rank->invest_progress = min(100, $rank->own_invest_required > 0 ? ($ownInvest / $rank->own_invest_required) * 100 : 100);
 
