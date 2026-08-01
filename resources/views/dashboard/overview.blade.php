@@ -86,7 +86,7 @@
             <div class="stat-card gold">
                 <div class="stat-label">MPG Income Wallet</div>
                 <div class="stat-value">${{ number_format($wallet?->roi_balance ?? 0, 2) }}</div>
-                <small class="opacity-75">Monthly profit earnings</small>
+                <small class="opacity-75">Monthly Profit Growth</small>
             </div>
         </div>
         <div class="col-md-3 col-6">
