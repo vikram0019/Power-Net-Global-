@@ -18,7 +18,7 @@
         <i class="bi bi-clock-history"></i> Payment History
     </a>
     <a href="{{ route('payment.index') }}" class="nav-link {{ request()->routeIs('payment.*') ? 'active' : '' }}">
-        <i class="bi bi-cash-coin"></i> Payment
+        <i class="bi bi-cash-coin"></i> Payment View
     </a>
     <a href="{{ route('team.index') }}" class="nav-link {{ request()->routeIs('team.*') ? 'active' : '' }}">
         <i class="bi bi-diagram-3"></i> Team Network
