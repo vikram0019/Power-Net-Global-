@@ -28,7 +28,7 @@
                         <div class="fw-bold">${{ number_format($legs['rest'], 0) }}</div>
                     </div>
                 </div>
-                <small class="opacity-75 d-block mt-1">Each rank's Team Business requirement is split into Power/2nd/Rest targets — all three must be cleared independently.</small>
+                <small class="opacity-75 d-block mt-1">Each bucket (Power/2nd/Rest) has its own running target that builds up rank by rank — all must be cleared independently.</small>
             </div>
         </div>
     </div>
@@ -73,22 +73,18 @@
                         <div class="progress-png mb-1"><div class="bar" style="width: {{ $rank->invest_progress }}%;"></div></div>
                         <div class="small mb-3">${{ number_format($ownInvest, 0) }} / ${{ number_format($rank->own_invest_required, 0) }}</div>
 
-                        @if ($rank->uses_buckets)
-                            <div class="small text-muted mb-1">Power Leg</div>
-                            <div class="progress-png mb-1"><div class="bar" style="width: {{ $rank->power_progress }}%;"></div></div>
-                            <div class="small mb-2">${{ number_format($rank->power_actual, 0) }} / ${{ number_format($rank->power_target, 0) }}</div>
+                        <div class="small text-muted mb-1">Power Leg</div>
+                        <div class="progress-png mb-1"><div class="bar" style="width: {{ $rank->power_progress }}%;"></div></div>
+                        <div class="small mb-2">${{ number_format($rank->power_actual, 0) }} / ${{ number_format($rank->power_target, 0) }}</div>
 
-                            <div class="small text-muted mb-1">2nd Leg</div>
-                            <div class="progress-png mb-1"><div class="bar" style="width: {{ $rank->second_progress }}%;"></div></div>
-                            <div class="small mb-2">${{ number_format($rank->second_actual, 0) }} / ${{ number_format($rank->second_target, 0) }}</div>
+                        <div class="small text-muted mb-1">2nd Leg</div>
+                        <div class="progress-png mb-1"><div class="bar" style="width: {{ $rank->second_progress }}%;"></div></div>
+                        <div class="small {{ $rank->has_rest_bucket ? 'mb-2' : 'mb-3' }}">${{ number_format($rank->second_actual, 0) }} / ${{ number_format($rank->second_target, 0) }}</div>
 
+                        @if ($rank->has_rest_bucket)
                             <div class="small text-muted mb-1">Rest Legs</div>
                             <div class="progress-png mb-1"><div class="bar" style="width: {{ $rank->rest_progress }}%;"></div></div>
                             <div class="small mb-3">${{ number_format($rank->rest_actual, 0) }} / ${{ number_format($rank->rest_target, 0) }}</div>
-                        @else
-                            <div class="small text-muted mb-1">Team Business</div>
-                            <div class="progress-png mb-1"><div class="bar" style="width: {{ $rank->team_progress }}%;"></div></div>
-                            <div class="small mb-3">${{ number_format($rank->team_business_display, 0) }} / ${{ number_format($rank->team_business_required, 0) }}</div>
                         @endif
 
                         <hr>

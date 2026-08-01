@@ -17,12 +17,9 @@ class RankService
 
     public function evaluateAndPromote(User $user): void
     {
-        $ranks = Rank::ordered()->get();
+        $ranks = Rank::withCumulativeBucketTargets();
         $ownInvest = $user->totalInvested();
         $legs = $this->teamBusinessCalculator->legBreakdown($user);
-        $startTeamBusiness = $this->teamBusinessCalculator->twoLegWeightedBusiness($user);
-
-        [$powerWeight, $secondWeight, $restWeight] = config('mlm.leg_weights');
 
         // pluck() bypasses Eloquent's attribute casting and returns raw driver
         // values (strings), while $rank->id below is a properly-cast int —
@@ -31,24 +28,17 @@ class RankService
         $highestQualifyingRankId = $user->current_rank_id;
 
         foreach ($ranks as $rank) {
-            if ($rank->code === 'start') {
-                // Start only requires 2 legs open, so it qualifies off just
-                // the top 2 legs combined at 50/50 against its own amount.
-                $qualifies = $ownInvest >= (float) $rank->own_invest_required
-                    && $startTeamBusiness >= (float) $rank->team_business_required;
-            } else {
-                // Every other rank's own stated amount is split into 3
-                // independent buckets (Power/2nd/Rest, weighted per
-                // config('mlm.leg_weights')) — each bucket must clear its
-                // own target on its own; a large Power leg can't cover for
-                // an empty Rest bucket.
-                $required = (float) $rank->team_business_required;
-
-                $qualifies = $ownInvest >= (float) $rank->own_invest_required
-                    && $legs['power'] >= $required * $powerWeight / 100
-                    && $legs['second'] >= $required * $secondWeight / 100
-                    && $legs['rest'] >= $required * $restWeight / 100;
-            }
+            // Power/2nd/Rest each have their own running cumulative target
+            // (see Rank::withCumulativeBucketTargets()) — a leg's raw dollar
+            // amount must clear the target for its own bucket independently;
+            // a large Power leg can't cover for a short Rest bucket, and
+            // vice versa. Start's Rest target is always 0 (it never
+            // contributes to that bucket), which is what makes it a
+            // 2-leg-only rank without needing any special-case comparison here.
+            $qualifies = $ownInvest >= (float) $rank->own_invest_required
+                && $legs['power'] >= $rank->power_target
+                && $legs['second'] >= $rank->second_target
+                && $legs['rest'] >= $rank->rest_target;
 
             $alreadyAchieved = in_array($rank->id, $alreadyAchievedRankIds, true);
 
