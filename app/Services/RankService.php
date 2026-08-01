@@ -20,6 +20,8 @@ class RankService
         $ranks = Rank::withCumulativeBucketTargets();
         $ownInvest = $user->totalInvested();
         $legs = $this->teamBusinessCalculator->legBreakdown($user);
+        $directLegCount = $user->directReferrals()->count();
+        $unlimitedLegs = (int) config('mlm.unlimited_legs');
 
         // pluck() bypasses Eloquent's attribute casting and returns raw driver
         // values (strings), while $rank->id below is a properly-cast int —
@@ -35,7 +37,10 @@ class RankService
             // vice versa. Start's Rest target is always 0 (it never
             // contributes to that bucket), which is what makes it a
             // 2-leg-only rank without needing any special-case comparison here.
+            $legsOpenSatisfied = $rank->legs_open >= $unlimitedLegs || $directLegCount >= $rank->legs_open;
+
             $qualifies = $ownInvest >= (float) $rank->own_invest_required
+                && $legsOpenSatisfied
                 && $legs['power'] >= $rank->power_target
                 && $legs['second'] >= $rank->second_target
                 && $legs['rest'] >= $rank->rest_target;

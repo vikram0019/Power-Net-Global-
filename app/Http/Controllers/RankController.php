@@ -15,6 +15,8 @@ class RankController extends Controller
 
         $ownInvest = $user->totalInvested();
         $legs = $calculator->legBreakdown($user);
+        $directLegCount = $user->directReferrals()->count();
+        $unlimitedLegs = (int) config('mlm.unlimited_legs');
 
         // pluck() and plain (uncast) integer attributes return raw driver
         // values, which come back as strings under some PDO configurations —
@@ -22,10 +24,16 @@ class RankController extends Controller
         $achievedRankIds = $user->rankHistory()->pluck('rank_id')->map(fn ($id) => (int) $id)->all();
         $currentRankId = $user->current_rank_id !== null ? (int) $user->current_rank_id : null;
 
-        $ranks = $ranks->map(function (Rank $rank) use ($ownInvest, $legs, $achievedRankIds, $currentRankId) {
+        $ranks = $ranks->map(function (Rank $rank) use ($ownInvest, $legs, $directLegCount, $unlimitedLegs, $achievedRankIds, $currentRankId) {
             $rank->is_achieved = in_array($rank->id, $achievedRankIds, true);
             $rank->is_current = $rank->id === $currentRankId;
             $rank->invest_progress = min(100, $rank->own_invest_required > 0 ? ($ownInvest / $rank->own_invest_required) * 100 : 100);
+
+            $rank->direct_legs_actual = $directLegCount;
+            $rank->direct_legs_unlimited = $rank->legs_open >= $unlimitedLegs;
+            $rank->direct_legs_progress = $rank->direct_legs_unlimited
+                ? 100
+                : min(100, $rank->legs_open > 0 ? ($directLegCount / $rank->legs_open) * 100 : 100);
 
             // Start's rest_target is always 0 (see Rank::withCumulativeBucketTargets()),
             // so it never shows a Rest Legs row — that's what makes it a

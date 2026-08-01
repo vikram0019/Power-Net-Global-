@@ -45,7 +45,7 @@
                     $iconSize = $tierSizes[$tierIndex - 1];
                 @endphp
                 <div class="col-lg-4 col-md-6">
-                    <div class="rank-card p-4 @if($rank->is_achieved) achieved @elseif(!$rank->is_current && ($rank->invest_progress < 100 || $rank->team_progress < 100)) locked @endif @if($rank->is_current) current @endif">
+                    <div class="rank-card p-4 @if($rank->is_achieved) achieved @elseif(!$rank->is_current && ($rank->invest_progress < 100 || $rank->direct_legs_progress < 100 || $rank->team_progress < 100)) locked @endif @if($rank->is_current) current @endif">
                         <div class="d-flex align-items-center gap-3 mb-3">
                             <div class="rank-badge">{{ $rank->sort_order }}</div>
                             <div>
@@ -73,6 +73,10 @@
                         <div class="progress-png mb-1"><div class="bar" style="width: {{ $rank->invest_progress }}%;"></div></div>
                         <div class="small mb-3">${{ number_format($ownInvest, 0) }} / ${{ number_format($rank->own_invest_required, 0) }}</div>
 
+                        <div class="small text-muted mb-1">Direct Legs</div>
+                        <div class="progress-png mb-1"><div class="bar" style="width: {{ $rank->direct_legs_progress }}%;"></div></div>
+                        <div class="small mb-3">{{ $rank->direct_legs_unlimited ? $rank->direct_legs_actual . ' (no limit)' : $rank->direct_legs_actual . ' / ' . $rank->legs_open }}</div>
+
                         <div class="small text-muted mb-1">Power Leg</div>
                         <div class="progress-png mb-1"><div class="bar" style="width: {{ $rank->power_progress }}%;"></div></div>
                         <div class="small mb-2">${{ number_format($rank->power_actual, 0) }} / ${{ number_format($rank->power_target, 0) }}</div>
@@ -91,10 +95,6 @@
                         <div class="d-flex justify-content-between small">
                             <span class="text-muted">Reward</span>
                             <span class="fw-bold">${{ number_format($rank->reward_amount, 0) }}</span>
-                        </div>
-                        <div class="d-flex justify-content-between small">
-                            <span class="text-muted">Direct</span>
-                            <span class="fw-semibold">{{ $rank->sort_order >= 5 ? '-' : ($rank->legs_open >= 255 ? 'No Limit' : $rank->legs_open) }}</span>
                         </div>
                         <div class="d-flex justify-content-between small">
                             <span class="text-muted">Levels Unlocked</span>

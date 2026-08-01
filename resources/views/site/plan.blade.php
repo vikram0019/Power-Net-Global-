@@ -134,7 +134,7 @@
             <div class="text-center mb-5">
                 <div class="eyebrow-gold mb-2">Rank &amp; Rewards</div>
                 <h2 class="section-title">13 Ranks Across 5 Packages</h2>
-                <p class="text-muted col-lg-7 mx-auto">Ranks are earned through your own investment plus your team business, split into three independent targets: your single largest leg (Power) must clear 50% of the Team Business amount, your next largest (2nd) must clear 30%, and every other leg combined (Rest) must clear the remaining 20% — all three on their own. Every leg still earns its own normal direct, level, and profit-sharing income regardless.</p>
+                <p class="text-muted col-lg-7 mx-auto">Ranks are earned through your own investment, the required number of direct legs, and your team business — split into three independent targets: your single largest leg (Power) must clear 50% of the Team Business amount, your next largest (2nd) must clear 30%, and every other leg combined (Rest) must clear the remaining 20% — all three on their own. Every leg still earns its own normal direct, level, and profit-sharing income regardless.</p>
             </div>
 
             @foreach ($ranks as $groupName => $groupRanks)
