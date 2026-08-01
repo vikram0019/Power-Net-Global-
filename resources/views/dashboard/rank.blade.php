@@ -67,9 +67,6 @@
                                         <span class="badge bg-secondary">Locked</span>
                                     @endif
                                 </div>
-                                @if ($rank->is_achieved && $rank->achieved_at)
-                                    <div class="small text-muted mt-1">Achieved on {{ $rank->achieved_at->format('d M Y') }}</div>
-                                @endif
                             </div>
                         </div>
                         <div class="small text-muted mb-1">Own Investment</div>
@@ -111,6 +108,12 @@
                                 @endif
                             </span>
                         </div>
+                        @if ($rank->is_achieved && $rank->achieved_at)
+                            <div class="d-flex justify-content-between small">
+                                <span class="text-muted">Rank Achieved Date</span>
+                                <span class="fw-semibold">{{ $rank->achieved_at->format('d M Y') }}</span>
+                            </div>
+                        @endif
                     </div>
                 </div>
             @endforeach
