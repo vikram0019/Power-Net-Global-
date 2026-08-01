@@ -1,6 +1,6 @@
 <div class="d-flex flex-wrap gap-2 mb-4">
     <a href="{{ route('payment.roi') }}" class="wallet-tab-btn {{ request()->routeIs('payment.roi') ? 'active' : '' }} text-decoration-none">
-        <i class="bi bi-graph-up-arrow me-1"></i> Monthly ROI Income
+        <i class="bi bi-graph-up-arrow me-1"></i> Monthly MPG Income
     </a>
     <a href="{{ route('payment.rank-reward') }}" class="wallet-tab-btn {{ request()->routeIs('payment.rank-reward') ? 'active' : '' }} text-decoration-none">
         <i class="bi bi-trophy me-1"></i> Ranks &amp; Reward Income

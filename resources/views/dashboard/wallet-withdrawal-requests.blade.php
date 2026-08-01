@@ -14,7 +14,7 @@
                     @forelse ($withdrawals as $w)
                         <tr>
                             <td>{{ $w->created_at->format('d M Y, H:i') }}</td>
-                            <td class="text-capitalize">{{ str_replace('_', ' ', $w->wallet_type) }}</td>
+                            <td class="text-capitalize">{{ $w->wallet_type === 'roi' ? 'MPG' : str_replace('_', ' ', $w->wallet_type) }}</td>
                             <td>${{ number_format($w->amount, 2) }}</td>
                             <td>{{ $w->fee_amount > 0 ? '-$' . number_format($w->fee_amount, 2) : '—' }}</td>
                             <td class="fw-semibold">${{ number_format($w->net_amount, 2) }}</td>

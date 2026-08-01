@@ -7,7 +7,7 @@
     <div class="card-png p-4" style="max-width: 640px;">
         <p class="text-muted small mb-4">
             Dummy users are activated immediately (no OTP/approval flow) but do <strong>not</strong> earn the
-            8% monthly ROI benefit by default. You can enable it for this user at any time from their profile page.
+            8% monthly MPG benefit by default. You can enable it for this user at any time from their profile page.
         </p>
 
         @if ($errors->any())
@@ -56,7 +56,7 @@
             </div>
             <div class="form-check mb-4">
                 <input class="form-check-input" type="checkbox" name="roi_enabled" value="1" id="roiEnabled" {{ old('roi_enabled') ? 'checked' : '' }}>
-                <label class="form-check-label small" for="roiEnabled">Enable 8% monthly ROI benefit for this user</label>
+                <label class="form-check-label small" for="roiEnabled">Enable 8% monthly MPG benefit for this user</label>
             </div>
             <button type="submit" class="btn btn-gold fw-bold px-4">Create Dummy User</button>
         </form>
