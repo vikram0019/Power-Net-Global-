@@ -19,7 +19,9 @@
 
         <div class="offcanvas offcanvas-start d-lg-none" style="background: var(--png-navy-950);" tabindex="-1" id="mobileSidebar">
             <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" data-bs-dismiss="offcanvas"></button>
-            @include('partials.dashboard-sidebar')
+            <div class="offcanvas-body p-0">
+                @include('partials.dashboard-sidebar')
+            </div>
         </div>
 
         <div class="app-main">
