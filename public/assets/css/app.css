@@ -488,7 +488,7 @@ body {
 }
 
 .status-dot.green { background: var(--png-green-500); }
-.status-dot.yellow { background: var(--png-gold-500); }
+.status-dot.yellow { background: var(--png-green-500); }
 .status-dot.red { background: var(--png-red-500); }
 
 /* Home page — feature / why-choose-us cards */
