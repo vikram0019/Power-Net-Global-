@@ -723,6 +723,12 @@ body {
   box-shadow: 0 0 0 2px rgba(212, 169, 74, 0.25), var(--png-shadow);
 }
 
+/* Team A/B/C border coloring — every node inherits the color of whichever
+   top-level direct leg (Power/2nd/Rest) it descends from. */
+.org-node-team-a { border-width: 2px; border-color: var(--png-green-500); }
+.org-node-team-b { border-width: 2px; border-color: var(--png-gold-500); }
+.org-node-team-c { border-width: 2px; border-color: var(--png-blue-500); }
+
 .org-node-avatar {
   width: 46px;
   height: 46px;

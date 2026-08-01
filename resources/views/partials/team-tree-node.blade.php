@@ -1,5 +1,5 @@
 <li x-data="{ open: true }">
-    <div class="org-node org-node-compact">
+    <div class="org-node org-node-compact @if(($node['team'] ?? null) === 'A') org-node-team-a @elseif(($node['team'] ?? null) === 'B') org-node-team-b @elseif(($node['team'] ?? null) === 'C') org-node-team-c @endif">
         <button type="button" class="org-node-avatar org-node-avatar-btn" title="{{ $node['user']->name }}"
             @click="selected = {
                 name: @js($node['user']->name),
