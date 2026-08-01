@@ -23,6 +23,7 @@ class DashboardController extends Controller
 
         $teamSize = $calculator->totalTeamSize($user);
         $directCount = $user->directReferrals()->count();
+        $wallet = $user->wallet;
 
         $monthly = IncomeTransaction::where('user_id', $user->id)
             ->where('created_at', '>=', now()->subMonths(6)->startOfMonth())
@@ -45,6 +46,7 @@ class DashboardController extends Controller
             'incomeByType',
             'teamSize',
             'directCount',
+            'wallet',
             'monthly',
             'announcements',
             'achievedToday'

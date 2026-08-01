@@ -82,6 +82,20 @@
                 <div class="stat-value">{{ $directCount }}</div>
             </div>
         </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card gold">
+                <div class="stat-label">MPG Income Wallet</div>
+                <div class="stat-value">${{ number_format($wallet?->roi_balance ?? 0, 2) }}</div>
+                <small class="opacity-75">Monthly profit earnings</small>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card green">
+                <div class="stat-label">Working Income Wallet</div>
+                <div class="stat-value">${{ number_format($wallet?->working_balance ?? 0, 2) }}</div>
+                <small class="opacity-75">Direct, level &amp; rank rewards</small>
+            </div>
+        </div>
     </div>
 
     <div class="row g-3 mb-4">
