@@ -9,7 +9,7 @@ class PageController extends Controller
 {
     public function home()
     {
-        $ranks = Rank::withCumulativeTeamBusiness();
+        $ranks = Rank::ordered()->get();
 
         return view('site.home', compact('ranks'));
     }
@@ -26,7 +26,7 @@ class PageController extends Controller
 
     public function plan()
     {
-        $ranks = Rank::withCumulativeTeamBusiness()->groupBy('package_group');
+        $ranks = Rank::ordered()->get()->groupBy('package_group');
 
         return view('site.plan', compact('ranks'));
     }

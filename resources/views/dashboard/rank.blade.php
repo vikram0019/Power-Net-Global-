@@ -13,9 +13,22 @@
         </div>
         <div class="col-md-6">
             <div class="stat-card gold">
-                <div class="stat-label">Weighted Team Business</div>
-                <div class="stat-value">${{ number_format($standardTeamBusiness, 2) }}</div>
-                <small class="opacity-75">Power leg 50% / 2nd leg 30% / all other legs combined 20%</small>
+                <div class="stat-label">Your Team Legs</div>
+                <div class="d-flex gap-4 mt-1">
+                    <div>
+                        <div class="small opacity-75">Power</div>
+                        <div class="fw-bold">${{ number_format($legs['power'], 0) }}</div>
+                    </div>
+                    <div>
+                        <div class="small opacity-75">2nd</div>
+                        <div class="fw-bold">${{ number_format($legs['second'], 0) }}</div>
+                    </div>
+                    <div>
+                        <div class="small opacity-75">Rest</div>
+                        <div class="fw-bold">${{ number_format($legs['rest'], 0) }}</div>
+                    </div>
+                </div>
+                <small class="opacity-75 d-block mt-1">Each rank's Team Business requirement is split into Power/2nd/Rest targets — all three must be cleared independently.</small>
             </div>
         </div>
     </div>
@@ -60,9 +73,23 @@
                         <div class="progress-png mb-1"><div class="bar" style="width: {{ $rank->invest_progress }}%;"></div></div>
                         <div class="small mb-3">${{ number_format($ownInvest, 0) }} / ${{ number_format($rank->own_invest_required, 0) }}</div>
 
-                        <div class="small text-muted mb-1">Team Business</div>
-                        <div class="progress-png mb-1"><div class="bar" style="width: {{ $rank->team_progress }}%;"></div></div>
-                        <div class="small mb-3">${{ number_format($rank->team_business_display, 0) }} / ${{ number_format($rank->team_business_required, 0) }}</div>
+                        @if ($rank->uses_buckets)
+                            <div class="small text-muted mb-1">Power Leg</div>
+                            <div class="progress-png mb-1"><div class="bar" style="width: {{ $rank->power_progress }}%;"></div></div>
+                            <div class="small mb-2">${{ number_format($rank->power_actual, 0) }} / ${{ number_format($rank->power_target, 0) }}</div>
+
+                            <div class="small text-muted mb-1">2nd Leg</div>
+                            <div class="progress-png mb-1"><div class="bar" style="width: {{ $rank->second_progress }}%;"></div></div>
+                            <div class="small mb-2">${{ number_format($rank->second_actual, 0) }} / ${{ number_format($rank->second_target, 0) }}</div>
+
+                            <div class="small text-muted mb-1">Rest Legs</div>
+                            <div class="progress-png mb-1"><div class="bar" style="width: {{ $rank->rest_progress }}%;"></div></div>
+                            <div class="small mb-3">${{ number_format($rank->rest_actual, 0) }} / ${{ number_format($rank->rest_target, 0) }}</div>
+                        @else
+                            <div class="small text-muted mb-1">Team Business</div>
+                            <div class="progress-png mb-1"><div class="bar" style="width: {{ $rank->team_progress }}%;"></div></div>
+                            <div class="small mb-3">${{ number_format($rank->team_business_display, 0) }} / ${{ number_format($rank->team_business_required, 0) }}</div>
+                        @endif
 
                         <hr>
                         <div class="d-flex justify-content-between small">

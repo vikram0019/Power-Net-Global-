@@ -17,10 +17,12 @@ class RankService
 
     public function evaluateAndPromote(User $user): void
     {
-        $ranks = Rank::withCumulativeTeamBusiness();
+        $ranks = Rank::ordered()->get();
         $ownInvest = $user->totalInvested();
-        $standardTeamBusiness = $this->teamBusinessCalculator->weightedTeamBusiness($user);
+        $legs = $this->teamBusinessCalculator->legBreakdown($user);
         $startTeamBusiness = $this->teamBusinessCalculator->twoLegWeightedBusiness($user);
+
+        [$powerWeight, $secondWeight, $restWeight] = config('mlm.leg_weights');
 
         // pluck() bypasses Eloquent's attribute casting and returns raw driver
         // values (strings), while $rank->id below is a properly-cast int —
@@ -29,13 +31,24 @@ class RankService
         $highestQualifyingRankId = $user->current_rank_id;
 
         foreach ($ranks as $rank) {
-            // Start only requires 2 legs open, so it qualifies off just the
-            // top 2 legs at 50/50 — every other rank uses the standard
-            // Power/2nd/rest 50/30/20 formula.
-            $teamBusiness = $rank->code === 'start' ? $startTeamBusiness : $standardTeamBusiness;
+            if ($rank->code === 'start') {
+                // Start only requires 2 legs open, so it qualifies off just
+                // the top 2 legs combined at 50/50 against its own amount.
+                $qualifies = $ownInvest >= (float) $rank->own_invest_required
+                    && $startTeamBusiness >= (float) $rank->team_business_required;
+            } else {
+                // Every other rank's own stated amount is split into 3
+                // independent buckets (Power/2nd/Rest, weighted per
+                // config('mlm.leg_weights')) — each bucket must clear its
+                // own target on its own; a large Power leg can't cover for
+                // an empty Rest bucket.
+                $required = (float) $rank->team_business_required;
 
-            $qualifies = $ownInvest >= (float) $rank->own_invest_required
-                && $teamBusiness >= $rank->cumulative_team_business_required;
+                $qualifies = $ownInvest >= (float) $rank->own_invest_required
+                    && $legs['power'] >= $required * $powerWeight / 100
+                    && $legs['second'] >= $required * $secondWeight / 100
+                    && $legs['rest'] >= $required * $restWeight / 100;
+            }
 
             $alreadyAchieved = in_array($rank->id, $alreadyAchievedRankIds, true);
 
@@ -43,10 +56,9 @@ class RankService
                 $this->promote($user, $rank);
             }
 
-            // Grandfather ranks already achieved: raising a rank's cumulative
-            // threshold later must never demote a user's current rank below
-            // one they already earned (and were paid for) under an older,
-            // lower threshold.
+            // Grandfather ranks already achieved: a formula change must
+            // never demote a user's current rank below one they already
+            // earned (and were paid for) under the rules in effect then.
             if ($qualifies || $alreadyAchieved) {
                 $highestQualifyingRankId = $rank->id;
             }
