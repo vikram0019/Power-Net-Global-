@@ -54,41 +54,44 @@
 
     <div class="card-png p-4 mb-4" x-data="{ popupOpen: false, selected: null }">
         <h6 class="fw-bold mb-3"><i class="bi bi-diagram-3 me-1"></i> Team Tree</h6>
-        @if (count($tree['children']))
-            <div class="org-tree-wrap">
-                <ul class="org-tree">
-                    <li x-data="{ open: true }">
-                        <div class="org-node org-node-root org-node-compact">
-                            <button type="button" class="org-node-avatar org-node-avatar-btn" title="{{ $tree['user']->name }} (You)"
-                                @click="selected = {
-                                    name: @js($tree['user']->name . ' (You)'),
-                                    joined: @js($tree['user']->created_at->format('d M Y')),
-                                    invested: {{ (float) $tree['invested'] }},
-                                    rank: @js($tree['user']->currentRank?->name ?? 'Unranked'),
-                                    power: { count: {{ (int) $tree['leg_stats']['power']['count'] }}, investment: {{ (float) $tree['leg_stats']['power']['investment'] }} },
-                                    second: { count: {{ (int) $tree['leg_stats']['second']['count'] }}, investment: {{ (float) $tree['leg_stats']['second']['investment'] }} },
-                                    rest: { count: {{ (int) $tree['leg_stats']['rest']['count'] }}, investment: {{ (float) $tree['leg_stats']['rest']['investment'] }} }
-                                }; popupOpen = true">
-                                <i class="bi bi-person-circle"></i>
-                            </button>
-                            <div class="org-node-referral">
-                                <span class="org-node-referral-chip"><i class="bi bi-link-45deg"></i>{{ $tree['user']->referral_code }}</span>
-                            </div>
+        <div class="org-tree-wrap">
+            <ul class="org-tree">
+                <li x-data="{ open: true }">
+                    <div class="org-node org-node-root org-node-compact">
+                        <button type="button" class="org-node-avatar org-node-avatar-btn" title="{{ $tree['user']->name }} (You)"
+                            @click="selected = {
+                                name: @js($tree['user']->name . ' (You)'),
+                                joined: @js($tree['user']->created_at->format('d M Y')),
+                                invested: {{ (float) $tree['invested'] }},
+                                rank: @js($tree['user']->currentRank?->name ?? 'Unranked'),
+                                power: { count: {{ (int) $tree['leg_stats']['power']['count'] }}, investment: {{ (float) $tree['leg_stats']['power']['investment'] }} },
+                                second: { count: {{ (int) $tree['leg_stats']['second']['count'] }}, investment: {{ (float) $tree['leg_stats']['second']['investment'] }} },
+                                rest: { count: {{ (int) $tree['leg_stats']['rest']['count'] }}, investment: {{ (float) $tree['leg_stats']['rest']['investment'] }} }
+                            }; popupOpen = true">
+                            <i class="bi bi-person-circle"></i>
+                        </button>
+                        <div class="org-node-referral">
+                            <span class="org-node-referral-chip"><i class="bi bi-link-45deg"></i>{{ $tree['user']->referral_code }}</span>
+                        </div>
+                        @if (count($tree['children']))
                             <button type="button" class="org-node-toggle" @click="open = !open">
                                 <i class="bi" :class="open ? 'bi-dash-circle' : 'bi-plus-circle'"></i>
                             </button>
-                        </div>
+                        @endif
+                    </div>
+                    @if (count($tree['children']))
                         <ul x-show="open">
                             @foreach ($tree['children'] as $child)
                                 @include('partials.team-tree-node', ['node' => $child])
                             @endforeach
                         </ul>
-                    </li>
-                </ul>
-            </div>
-        @else
-            <p class="text-muted small mb-0">You haven't referred anyone yet. Share your referral code to build your team.</p>
-        @endif
+                    @endif
+                </li>
+            </ul>
+        </div>
+        @unless (count($tree['children']))
+            <p class="text-muted small mt-2 mb-0">You haven't referred anyone yet. Share your referral code to build your team.</p>
+        @endunless
 
         <div class="modal" :class="{ 'd-block': popupOpen }" x-show="popupOpen" x-cloak tabindex="-1" style="background: rgba(5,11,24,0.6);" @click.self="popupOpen = false">
             <div class="modal-dialog modal-dialog-centered">
