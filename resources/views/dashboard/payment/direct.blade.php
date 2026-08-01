@@ -29,6 +29,7 @@
 
     <div class="card-png p-4">
         <h6 class="fw-bold mb-3">Direct Income History</h6>
+        @include('partials.payment-date-filter')
         <div class="table-responsive">
             <table class="table table-png align-middle">
                 <thead><tr><th>Date</th><th>Type</th><th>From</th><th>Amount</th></tr></thead>

@@ -11,6 +11,8 @@
         <div class="stat-value">${{ number_format($totalRoi, 2) }}</div>
     </div>
 
+    @include('partials.payment-date-filter')
+
     @forelse ($investments as $investment)
         @php $rows = $roiTransactions->get($investment->id, collect()); @endphp
         <div class="card-png p-4 mb-3">
