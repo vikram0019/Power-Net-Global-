@@ -122,7 +122,11 @@ class PaymentController extends Controller
                 ->orWhereRaw("DATE_FORMAT(created_at, '%d %b %Y') LIKE ?", ["%{$term}%"]);
 
             if ($level) {
-                $q->orWhere('level', 'like', "%{$term}%");
+                // The table displays "Level {n}", not the raw number, so
+                // match against that same formatted string — otherwise
+                // searching "Level 2" (matching what's on screen) never
+                // matches a level column that only stores "2".
+                $q->orWhereRaw("CONCAT('Level ', level) LIKE ?", ["%{$term}%"]);
             }
 
             if ($sourceUser) {
