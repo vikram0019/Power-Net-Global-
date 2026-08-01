@@ -48,7 +48,6 @@
 
     <div class="d-flex flex-wrap gap-3 mb-4 small text-muted">
         <span class="d-inline-flex align-items-center gap-1"><span class="status-dot green"></span> Active — invested</span>
-        <span class="d-inline-flex align-items-center gap-1"><span class="status-dot yellow"></span> Dummy — admin-created</span>
         <span class="d-inline-flex align-items-center gap-1"><span class="status-dot red"></span> Inactive — no investment yet</span>
     </div>
 
