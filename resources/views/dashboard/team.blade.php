@@ -53,6 +53,11 @@
 
     <div class="card-png p-4 mb-4" x-data="{ popupOpen: false, selected: null }">
         <h6 class="fw-bold mb-3"><i class="bi bi-diagram-3 me-1"></i> Team Tree</h6>
+        <div class="d-flex flex-wrap gap-3 mb-3 small text-muted">
+            <span class="d-inline-flex align-items-center gap-1"><span class="tree-legend-swatch team-a"></span> Team A (Power leg)</span>
+            <span class="d-inline-flex align-items-center gap-1"><span class="tree-legend-swatch team-b"></span> Team B (2nd leg)</span>
+            <span class="d-inline-flex align-items-center gap-1"><span class="tree-legend-swatch team-c"></span> Team C (Rest legs)</span>
+        </div>
         <div class="org-tree-wrap">
             <ul class="org-tree">
                 <li x-data="{ open: true }">
