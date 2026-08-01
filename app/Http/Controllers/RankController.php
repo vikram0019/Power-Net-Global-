@@ -17,9 +17,13 @@ class RankController extends Controller
         $standardTeamBusiness = $calculator->weightedTeamBusiness($user);
         $startTeamBusiness = $calculator->twoLegWeightedBusiness($user);
 
-        $achievedRankIds = $user->rankHistory()->pluck('rank_id')->all();
+        // pluck() and plain (uncast) integer attributes return raw driver
+        // values, which come back as strings under some PDO configurations —
+        // cast explicitly so strict comparisons below can't silently fail.
+        $achievedRankIds = $user->rankHistory()->pluck('rank_id')->map(fn ($id) => (int) $id)->all();
+        $currentRankId = $user->current_rank_id !== null ? (int) $user->current_rank_id : null;
 
-        $ranks = $ranks->map(function (Rank $rank) use ($ownInvest, $standardTeamBusiness, $startTeamBusiness, $achievedRankIds, $user) {
+        $ranks = $ranks->map(function (Rank $rank) use ($ownInvest, $standardTeamBusiness, $startTeamBusiness, $achievedRankIds, $currentRankId) {
             // Start only requires 2 legs open, so its progress/display uses
             // just the top 2 legs at 50/50 — matches RankService's actual
             // qualification rule. Every other rank uses the standard
@@ -27,7 +31,7 @@ class RankController extends Controller
             $teamBusiness = $rank->code === 'start' ? $startTeamBusiness : $standardTeamBusiness;
 
             $rank->is_achieved = in_array($rank->id, $achievedRankIds, true);
-            $rank->is_current = $rank->id === $user->current_rank_id;
+            $rank->is_current = $rank->id === $currentRankId;
             $rank->invest_progress = min(100, $rank->own_invest_required > 0 ? ($ownInvest / $rank->own_invest_required) * 100 : 100);
             // Display uses each rank's own stated amount, not the cumulative total
             // that RankService actually qualifies against — keeps the card matching

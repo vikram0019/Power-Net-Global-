@@ -22,7 +22,10 @@ class RankService
         $standardTeamBusiness = $this->teamBusinessCalculator->weightedTeamBusiness($user);
         $startTeamBusiness = $this->teamBusinessCalculator->twoLegWeightedBusiness($user);
 
-        $alreadyAchievedRankIds = $user->rankHistory()->pluck('rank_id')->all();
+        // pluck() bypasses Eloquent's attribute casting and returns raw driver
+        // values (strings), while $rank->id below is a properly-cast int —
+        // cast explicitly so the strict in_array() comparison actually matches.
+        $alreadyAchievedRankIds = $user->rankHistory()->pluck('rank_id')->map(fn ($id) => (int) $id)->all();
         $highestQualifyingRankId = $user->current_rank_id;
 
         foreach ($ranks as $rank) {
