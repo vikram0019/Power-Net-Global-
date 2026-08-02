@@ -11,33 +11,58 @@ class RankController extends Controller
     public function index(Request $request, TeamBusinessCalculator $calculator)
     {
         $user = $request->user();
-        $ranks = Rank::ordered()->get();
+        $ranks = Rank::withCumulativeBucketTargets();
 
         $ownInvest = $user->totalInvested();
-        $standardTeamBusiness = $calculator->weightedTeamBusiness($user);
-        $startTeamBusiness = $calculator->twoLegWeightedBusiness($user);
+        $legs = $calculator->legBreakdown($user);
+        $directLegCount = $user->directReferrals()->count();
+        $unlimitedLegs = (int) config('mlm.unlimited_legs');
 
-        $achievedRankIds = $user->rankHistory()->pluck('rank_id')->all();
+        // pluck() and plain (uncast) integer attributes return raw driver
+        // values, which come back as strings under some PDO configurations —
+        // cast explicitly so strict comparisons below can't silently fail.
+        $achievedRankIds = $user->rankHistory()->pluck('rank_id')->map(fn ($id) => (int) $id)->all();
+        $achievedAtByRankId = $user->rankHistory()->get()->keyBy(fn ($ur) => (int) $ur->rank_id)->map(fn ($ur) => $ur->achieved_at);
+        $currentRankId = $user->current_rank_id !== null ? (int) $user->current_rank_id : null;
 
-        $ranks = $ranks->map(function (Rank $rank) use ($ownInvest, $standardTeamBusiness, $startTeamBusiness, $achievedRankIds, $user) {
-            // Start only requires 2 legs open, so its progress/display uses
-            // just the top 2 legs at 50/50 — matches RankService's actual
-            // qualification rule. Every other rank uses the standard
-            // Power/2nd/rest 50/30/20 figure.
-            $teamBusiness = $rank->code === 'start' ? $startTeamBusiness : $standardTeamBusiness;
-
+        $ranks = $ranks->map(function (Rank $rank) use ($ownInvest, $legs, $directLegCount, $unlimitedLegs, $achievedRankIds, $achievedAtByRankId, $currentRankId) {
             $rank->is_achieved = in_array($rank->id, $achievedRankIds, true);
-            $rank->is_current = $rank->id === $user->current_rank_id;
+            $rank->achieved_at = $achievedAtByRankId->get($rank->id);
+            $rank->is_current = $rank->id === $currentRankId;
             $rank->invest_progress = min(100, $rank->own_invest_required > 0 ? ($ownInvest / $rank->own_invest_required) * 100 : 100);
-            // Display uses each rank's own stated amount, not the cumulative total
-            // that RankService actually qualifies against — keeps the card matching
-            // the number members have always seen; only the promotion logic is cumulative.
-            $rank->team_progress = min(100, $rank->team_business_required > 0 ? ($teamBusiness / $rank->team_business_required) * 100 : 100);
-            $rank->team_business_display = $teamBusiness;
+
+            $rank->direct_legs_actual = $directLegCount;
+            $rank->direct_legs_unlimited = $rank->legs_open >= $unlimitedLegs;
+            $rank->direct_legs_progress = $rank->direct_legs_unlimited
+                ? 100
+                : min(100, $rank->legs_open > 0 ? ($directLegCount / $rank->legs_open) * 100 : 100);
+
+            // Start's rest_target is always 0 (see Rank::withCumulativeBucketTargets()),
+            // so it never shows a Rest Legs row — that's what makes it a
+            // 2-leg-only rank without any special-case display logic here.
+            $rank->has_rest_bucket = $rank->rest_target > 0;
+
+            $rank->power_actual = $legs['power'];
+            $rank->second_actual = $legs['second'];
+            $rank->rest_actual = $legs['rest'];
+
+            $powerProgress = min(100, $rank->power_target > 0 ? ($legs['power'] / $rank->power_target) * 100 : 100);
+            $secondProgress = min(100, $rank->second_target > 0 ? ($legs['second'] / $rank->second_target) * 100 : 100);
+            $restProgress = min(100, $rank->rest_target > 0 ? ($legs['rest'] / $rank->rest_target) * 100 : 100);
+
+            $rank->power_progress = $powerProgress;
+            $rank->second_progress = $secondProgress;
+            $rank->rest_progress = $restProgress;
+
+            // All buckets must independently clear 100% to qualify, so
+            // overall progress is whichever is furthest behind.
+            $rank->team_progress = $rank->has_rest_bucket
+                ? min($powerProgress, $secondProgress, $restProgress)
+                : min($powerProgress, $secondProgress);
 
             return $rank;
         });
 
-        return view('dashboard.rank', compact('ranks', 'ownInvest', 'standardTeamBusiness'));
+        return view('dashboard.rank', compact('ranks', 'ownInvest', 'legs'));
     }
 }

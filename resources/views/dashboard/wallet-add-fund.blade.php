@@ -12,20 +12,6 @@
                 <small class="opacity-75">In-transit balance while a deposit is being processed</small>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="stat-card gold">
-                <div class="stat-label">ROI Income Wallet</div>
-                <div class="stat-value">${{ number_format($wallet->roi_balance, 2) }}</div>
-                <small class="opacity-75">Monthly profit earnings</small>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="stat-card green">
-                <div class="stat-label">Working Income Wallet</div>
-                <div class="stat-value">${{ number_format($wallet->working_balance, 2) }}</div>
-                <small class="opacity-75">Direct, level &amp; rank rewards</small>
-            </div>
-        </div>
     </div>
 
     <div class="card-png p-4 mb-4" x-data="{ copied: false }">

@@ -51,7 +51,7 @@
             <div class="form-check mb-4">
                 <input class="form-check-input" type="checkbox" name="roi_enabled" id="roi_enabled" value="1" {{ old('roi_enabled', $user->roi_enabled) ? 'checked' : '' }}>
                 <label class="form-check-label small" for="roi_enabled">
-                    Enable 8% monthly ROI benefit for this user
+                    Enable 8% monthly MPG benefit for this user
                 </label>
             </div>
 

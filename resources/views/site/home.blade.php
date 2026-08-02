@@ -243,7 +243,7 @@
                             </div>
                             <div class="rank-preview-stat">
                                 <span class="text-muted d-block">Team Business</span>
-                                <span class="fw-semibold">${{ number_format($entryRank->cumulative_team_business_required, 0) }}</span>
+                                <span class="fw-semibold">${{ number_format($entryRank->team_business_required, 0) }}</span>
                             </div>
                         </div>
                     </div>

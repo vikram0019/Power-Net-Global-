@@ -32,7 +32,7 @@
                 <form method="POST" action="{{ route('admin.users.toggle-roi', $user) }}">
                     @csrf
                     <button type="submit" class="btn btn-sm {{ $user->roi_enabled ? 'btn-gold' : 'btn-outline-secondary' }}">
-                        Monthly ROI: {{ $user->roi_enabled ? 'On' : 'Off' }}
+                        Monthly MPG: {{ $user->roi_enabled ? 'On' : 'Off' }}
                     </button>
                 </form>
             </div>
@@ -48,7 +48,7 @@
         </div>
         <div class="col-md-3 col-6">
             <div class="stat-card gold">
-                <div class="stat-label">Deposit / ROI / Working / Rank</div>
+                <div class="stat-label">Deposit / MPG / Working / Rank</div>
                 <div class="stat-value" style="font-size:0.95rem;">
                     ${{ number_format($user->wallet->deposit_balance ?? 0, 0) }} / ${{ number_format($user->wallet->roi_balance ?? 0, 0) }} / ${{ number_format($user->wallet->working_balance ?? 0, 0) }} / ${{ number_format($user->wallet->rank_reward_balance ?? 0, 0) }}
                 </div>
@@ -74,7 +74,7 @@
                 <h6 class="fw-bold mb-3">Investments</h6>
                 <div class="table-responsive">
                     <table class="table table-png align-middle">
-                        <thead><tr><th>Date</th><th>Amount</th><th>ROI Paid</th><th>Status</th></tr></thead>
+                        <thead><tr><th>Date</th><th>Amount</th><th>MPG Paid</th><th>Status</th></tr></thead>
                         <tbody>
                             @forelse ($investments as $inv)
                                 <tr>

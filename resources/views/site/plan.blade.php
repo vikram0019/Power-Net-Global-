@@ -134,7 +134,7 @@
             <div class="text-center mb-5">
                 <div class="eyebrow-gold mb-2">Rank &amp; Rewards</div>
                 <h2 class="section-title">13 Ranks Across 5 Packages</h2>
-                <p class="text-muted col-lg-7 mx-auto">Ranks are earned through your own investment plus your weighted team business: your single largest leg (Power) counts 50%, your next largest (2nd) counts 30%, and every other leg combined counts the remaining 20%. Every leg still earns its own normal direct, level, and profit-sharing income regardless of this weighting.</p>
+                <p class="text-muted col-lg-7 mx-auto">Ranks are earned through your own investment, the required number of direct legs, and your team business — split into three independent targets: your single largest leg (Power) must clear 50% of the Team Business amount, your next largest (2nd) must clear 30%, and every other leg combined (Rest) must clear the remaining 20% — all three on their own. Every leg still earns its own normal direct, level, and profit-sharing income regardless.</p>
             </div>
 
             @foreach ($ranks as $groupName => $groupRanks)
@@ -188,7 +188,7 @@
                     <li>Monthly profit is 8% of the invested amount, paid monthly for up to {{ config('mlm.roi_max_months') }} months.</li>
                     <li>A minimum investment of ${{ number_format(config('mlm.minimum_investment')) }} is required to be eligible for the monthly profit, level income, and rank income benefits.</li>
                     <li>Every member has a wallet system to submit deposits and track all earnings.</li>
-                    <li>Team Business is a running total — each rank's requirement builds on top of the one before it (e.g. Super Star's total includes Star's), it isn't a separate fresh amount per rank.</li>
+                    <li>Team Business requires all three legs (Power/2nd/Rest) to independently clear their own share — a large Power leg can't make up for an empty Rest bucket.</li>
                 </ul>
             </div>
         </div>

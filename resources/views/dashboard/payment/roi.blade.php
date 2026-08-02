@@ -1,15 +1,17 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Monthly ROI Income')
+@section('title', 'Monthly MPG Income')
 @section('page-title', 'Payment')
 
 @section('content')
     @include('partials.payment-tabs')
 
     <div class="stat-card gold mb-4" style="max-width: 320px;">
-        <div class="stat-label">Total Monthly ROI Earned</div>
+        <div class="stat-label">Total Monthly MPG Earned</div>
         <div class="stat-value">${{ number_format($totalRoi, 2) }}</div>
     </div>
+
+    @include('partials.payment-date-filter')
 
     @forelse ($investments as $investment)
         @php $rows = $roiTransactions->get($investment->id, collect()); @endphp
@@ -42,10 +44,10 @@
                     </table>
                 </div>
             @else
-                <p class="text-muted small mb-0">No ROI paid yet for this investment.</p>
+                <p class="text-muted small mb-0">No MPG paid yet for this investment.</p>
             @endif
         </div>
     @empty
-        <div class="card-png p-4 text-center text-muted">No investments yet — invest to start earning monthly ROI.</div>
+        <div class="card-png p-4 text-center text-muted">No investments yet — invest to start earning monthly MPG.</div>
     @endforelse
 @endsection

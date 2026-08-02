@@ -488,7 +488,7 @@ body {
 }
 
 .status-dot.green { background: var(--png-green-500); }
-.status-dot.yellow { background: var(--png-gold-500); }
+.status-dot.yellow { background: var(--png-green-500); }
 .status-dot.red { background: var(--png-red-500); }
 
 /* Home page — feature / why-choose-us cards */
@@ -722,6 +722,24 @@ body {
   border-color: var(--png-gold-400);
   box-shadow: 0 0 0 2px rgba(212, 169, 74, 0.25), var(--png-shadow);
 }
+
+/* Team A/B/C border coloring — every node inherits the color of whichever
+   top-level direct leg (Power/2nd/Rest) it descends from. */
+.org-node-team-a { border-width: 2px; border-color: var(--png-green-500); }
+.org-node-team-b { border-width: 2px; border-color: var(--png-gold-500); }
+.org-node-team-c { border-width: 2px; border-color: var(--png-blue-500); }
+
+.tree-legend-swatch {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  border: 2px solid;
+  background: #fff;
+}
+.tree-legend-swatch.team-a { border-color: var(--png-green-500); }
+.tree-legend-swatch.team-b { border-color: var(--png-gold-500); }
+.tree-legend-swatch.team-c { border-color: var(--png-blue-500); }
 
 .org-node-avatar {
   width: 46px;

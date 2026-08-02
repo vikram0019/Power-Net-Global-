@@ -16,10 +16,10 @@
             <h6 class="fw-bold mb-3">Level-wise Breakdown</h6>
             <div class="row g-2">
                 @foreach ($levelBreakdown as $lvl)
-                    <div class="col-md-2 col-4">
+                    <div class="col-md-2 col-sm-4 col-6">
                         <div class="border rounded-3 p-3 text-center">
                             <div class="small text-muted">Level {{ $lvl->level }}</div>
-                            <div class="fw-bold">${{ number_format($lvl->total, 2) }}</div>
+                            <div class="fw-bold" style="overflow-wrap: break-word;">${{ number_format($lvl->total, 2) }}</div>
                             <div class="small text-muted">{{ $lvl->count }} payout(s)</div>
                         </div>
                     </div>
@@ -30,6 +30,7 @@
 
     <div class="card-png p-4">
         <h6 class="fw-bold mb-3">Level Income History</h6>
+        @include('partials.payment-date-filter')
         <div class="table-responsive">
             <table class="table table-png align-middle">
                 <thead><tr><th>Date</th><th>From</th><th>Level</th><th>Amount</th></tr></thead>

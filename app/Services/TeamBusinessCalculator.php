@@ -72,12 +72,14 @@ class TeamBusinessCalculator
     }
 
     /**
-     * Start-rank-only qualification business: the Start rank requires just
-     * 2 direct legs open, so only the top 2 legs count, weighted 50%/50%
-     * each — a 3rd+ leg contributes nothing here (unlike the standard
-     * weightedTeamBusiness() formula used by every other rank).
+     * Raw per-bucket leg amounts (unweighted): Power (largest leg), 2nd
+     * (next largest), and Rest (every remaining leg summed). Used by the
+     * 3-bucket rank qualification model — a rank's requirement is split
+     * into independent Power/2nd/Rest targets (config('mlm.leg_weights')),
+     * and each bucket must clear its own target rather than being blended
+     * into one number the way weightedTeamBusiness() does.
      */
-    public function twoLegWeightedBusiness(User $user): float
+    public function legBreakdown(User $user): array
     {
         $legTotals = $user->directReferrals()
             ->get()
@@ -85,9 +87,10 @@ class TeamBusinessCalculator
             ->sortDesc()
             ->values();
 
-        $firstLeg = $legTotals->get(0, 0);
-        $secondLeg = $legTotals->get(1, 0);
-
-        return ($firstLeg * 0.5) + ($secondLeg * 0.5);
+        return [
+            'power' => $legTotals->get(0, 0),
+            'second' => $legTotals->get(1, 0),
+            'rest' => $legTotals->slice(2)->sum(),
+        ];
     }
 }

@@ -12,6 +12,7 @@ class TeamController extends Controller
         $user = $request->user();
 
         $tree = $this->buildTree($user);
+        $this->tagTeams($tree);
 
         $rows = $this->flattenTree($tree);
         usort($rows, fn ($a, $b) => $a->depth <=> $b->depth ?: $a->created_at <=> $b->created_at);
@@ -80,6 +81,39 @@ class TeamController extends Controller
                 'investment' => $legs->slice(2)->sum('investment'),
             ],
         ];
+    }
+
+    /**
+     * Tags every node with the team letter (A/B/C) of whichever top-level
+     * direct leg it descends from — A is the root's largest ($) direct leg
+     * (Power), B is the next largest (2nd), C is every leg beyond that
+     * (Rest). The whole subtree under a given direct leg shares its letter,
+     * so the tree can be colored consistently by leg regardless of depth.
+     */
+    private function tagTeams(array &$tree): void
+    {
+        $order = collect($tree['children'])
+            ->map(fn ($child, $i) => ['i' => $i, 'investment' => $this->nodeStats($child)['investment']])
+            ->sortByDesc('investment')
+            ->values();
+
+        foreach ($order as $rank => $entry) {
+            $team = match (true) {
+                $rank === 0 => 'A',
+                $rank === 1 => 'B',
+                default => 'C',
+            };
+            $this->propagateTeam($tree['children'][$entry['i']], $team);
+        }
+    }
+
+    private function propagateTeam(array &$node, string $team): void
+    {
+        $node['team'] = $team;
+
+        foreach ($node['children'] as &$child) {
+            $this->propagateTeam($child, $team);
+        }
     }
 
     /**

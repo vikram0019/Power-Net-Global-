@@ -24,7 +24,7 @@
         <i class="bi bi-trophy"></i> Rank Log
     </a>
     <a href="{{ route('admin.roi.index') }}" class="nav-link {{ request()->routeIs('admin.roi.*') ? 'active' : '' }}">
-        <i class="bi bi-graph-up-arrow"></i> Run ROI
+        <i class="bi bi-graph-up-arrow"></i> Run MPG
     </a>
     <a href="{{ route('admin.announcements.index') }}" class="nav-link {{ request()->routeIs('admin.announcements.*') ? 'active' : '' }}">
         <i class="bi bi-megaphone"></i> Announcements

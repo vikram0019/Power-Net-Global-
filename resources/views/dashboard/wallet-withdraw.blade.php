@@ -58,9 +58,9 @@
     <div class="row g-3 mb-4">
         <div class="col-md-4">
             <div class="stat-card gold">
-                <div class="stat-label">ROI Income Wallet</div>
+                <div class="stat-label">MPG Income Wallet</div>
                 <div class="stat-value">${{ number_format($wallet->roi_balance, 2) }}</div>
-                <small class="opacity-75">Monthly profit earnings</small>
+                <small class="opacity-75">Monthly Profit Growth</small>
             </div>
         </div>
         <div class="col-md-4">
@@ -81,13 +81,13 @@
 
     <div class="alert alert-warning small mb-4" style="max-width: 520px;">
         <i class="bi bi-calendar-event me-1"></i>
-        <strong>Withdrawal windows:</strong> ROI Income can only be withdrawn on the <strong>1st &amp; 2nd of every month</strong>.
+        <strong>Withdrawal windows:</strong> MPG Income can only be withdrawn on the <strong>1st &amp; 2nd of every month</strong>.
         Working Income and Rank &amp; Reward Income can only be withdrawn on <strong>Sundays</strong>. No withdrawals are accepted on any other day.
     </div>
 
     <div class="alert alert-info small mb-4" style="max-width: 520px;">
         <i class="bi bi-percent me-1"></i>
-        <strong>Handling fee:</strong> a <strong>{{ config('mlm.withdrawal_fee_percent') }}% fee</strong> applies to Working Income and Rank &amp; Reward Income withdrawals. ROI Income withdrawals have no fee.
+        <strong>Handling fee:</strong> a <strong>{{ config('mlm.withdrawal_fee_percent') }}% fee</strong> applies to Working Income and Rank &amp; Reward Income withdrawals. MPG Income withdrawals have no fee.
     </div>
 
     <div class="card-png p-4 mb-4" style="max-width: 520px;"
@@ -115,7 +115,7 @@
         @enderror
 
         @if (!$roiWindowOpen && !$weeklyWindowOpen)
-            <div class="alert alert-danger py-2 small mb-3">Please come back on the 1st/2nd of the month (ROI) or on Every Sunday for (Working &amp; Rank/Reward).</div>
+            <div class="alert alert-danger py-2 small mb-3">Please come back on the 1st/2nd of the month (MPG) or on Every Sunday for (Working &amp; Rank/Reward).</div>
         @endif
 
         <form method="POST" action="{{ route('wallet.withdraw') }}" @submit="if (insufficient || windowClosed || belowMinimum) $event.preventDefault()">
@@ -123,7 +123,7 @@
             <div class="mb-2">
                 <label class="form-label small fw-semibold">Wallet</label>
                 <select name="wallet_type" class="form-select" x-model="walletType" required>
-                    <option value="roi">ROI Income @if(!$roiWindowOpen)(closed today)@endif</option>
+                    <option value="roi">MPG Income @if(!$roiWindowOpen)(closed today)@endif</option>
                     <option value="working">Working Income @if(!$weeklyWindowOpen)(closed today)@endif</option>
                     <option value="rank_reward">Rank &amp; Reward Income @if(!$weeklyWindowOpen)(closed today)@endif</option>
                 </select>

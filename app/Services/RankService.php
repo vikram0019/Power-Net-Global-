@@ -17,22 +17,33 @@ class RankService
 
     public function evaluateAndPromote(User $user): void
     {
-        $ranks = Rank::withCumulativeTeamBusiness();
+        $ranks = Rank::withCumulativeBucketTargets();
         $ownInvest = $user->totalInvested();
-        $standardTeamBusiness = $this->teamBusinessCalculator->weightedTeamBusiness($user);
-        $startTeamBusiness = $this->teamBusinessCalculator->twoLegWeightedBusiness($user);
+        $legs = $this->teamBusinessCalculator->legBreakdown($user);
+        $directLegCount = $user->directReferrals()->count();
+        $unlimitedLegs = (int) config('mlm.unlimited_legs');
 
-        $alreadyAchievedRankIds = $user->rankHistory()->pluck('rank_id')->all();
+        // pluck() bypasses Eloquent's attribute casting and returns raw driver
+        // values (strings), while $rank->id below is a properly-cast int —
+        // cast explicitly so the strict in_array() comparison actually matches.
+        $alreadyAchievedRankIds = $user->rankHistory()->pluck('rank_id')->map(fn ($id) => (int) $id)->all();
         $highestQualifyingRankId = $user->current_rank_id;
 
         foreach ($ranks as $rank) {
-            // Start only requires 2 legs open, so it qualifies off just the
-            // top 2 legs at 50/50 — every other rank uses the standard
-            // Power/2nd/rest 50/30/20 formula.
-            $teamBusiness = $rank->code === 'start' ? $startTeamBusiness : $standardTeamBusiness;
+            // Power/2nd/Rest each have their own running cumulative target
+            // (see Rank::withCumulativeBucketTargets()) — a leg's raw dollar
+            // amount must clear the target for its own bucket independently;
+            // a large Power leg can't cover for a short Rest bucket, and
+            // vice versa. Start's Rest target is always 0 (it never
+            // contributes to that bucket), which is what makes it a
+            // 2-leg-only rank without needing any special-case comparison here.
+            $legsOpenSatisfied = $rank->legs_open >= $unlimitedLegs || $directLegCount >= $rank->legs_open;
 
             $qualifies = $ownInvest >= (float) $rank->own_invest_required
-                && $teamBusiness >= $rank->cumulative_team_business_required;
+                && $legsOpenSatisfied
+                && $legs['power'] >= $rank->power_target
+                && $legs['second'] >= $rank->second_target
+                && $legs['rest'] >= $rank->rest_target;
 
             $alreadyAchieved = in_array($rank->id, $alreadyAchievedRankIds, true);
 
@@ -40,10 +51,9 @@ class RankService
                 $this->promote($user, $rank);
             }
 
-            // Grandfather ranks already achieved: raising a rank's cumulative
-            // threshold later must never demote a user's current rank below
-            // one they already earned (and were paid for) under an older,
-            // lower threshold.
+            // Grandfather ranks already achieved: a formula change must
+            // never demote a user's current rank below one they already
+            // earned (and were paid for) under the rules in effect then.
             if ($qualifies || $alreadyAchieved) {
                 $highestQualifyingRankId = $rank->id;
             }

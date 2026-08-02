@@ -12,32 +12,8 @@
 
     <section class="py-5">
         <div class="container py-4">
-            <div class="row g-5">
-                <div class="col-lg-5">
-                    <h5 class="fw-bold mb-4">Get in Touch</h5>
-                    <div class="d-flex gap-3 mb-4">
-                        <i class="bi bi-envelope fs-4" style="color: var(--png-gold-500);"></i>
-                        <div>
-                            <div class="fw-semibold">Email</div>
-                            <div class="text-muted small">support@powernetglobal.com</div>
-                        </div>
-                    </div>
-                    <div class="d-flex gap-3 mb-4">
-                        <i class="bi bi-telephone fs-4" style="color: var(--png-gold-500);"></i>
-                        <div>
-                            <div class="fw-semibold">Phone</div>
-                            <div class="text-muted small">+1 (000) 000-0000</div>
-                        </div>
-                    </div>
-                    <div class="d-flex gap-3 mb-4">
-                        <i class="bi bi-geo-alt fs-4" style="color: var(--png-gold-500);"></i>
-                        <div>
-                            <div class="fw-semibold">Address</div>
-                            <div class="text-muted small">Global Business Center</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-7">
+            <div class="row g-5 justify-content-center">
+                <div class="col-lg-8">
                     <div class="card-png p-4">
                         @if (session('status'))
                             <div class="alert alert-success">{{ session('status') }}</div>

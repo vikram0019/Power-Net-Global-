@@ -16,7 +16,7 @@
         <div class="table-responsive">
             <table class="table table-png align-middle">
                 <thead>
-                    <tr><th>Name</th><th>Contact</th><th>Referral Code</th><th>Sponsor</th><th>Rank</th><th>Investor Status</th><th>Account Status</th><th>ROI</th><th></th></tr>
+                    <tr><th>Name</th><th>Contact</th><th>Referral Code</th><th>Sponsor</th><th>Rank</th><th>Investor Status</th><th>Account Status</th><th>MPG</th><th></th></tr>
                 </thead>
                 <tbody>
                     @forelse ($users as $u)

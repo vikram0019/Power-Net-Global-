@@ -13,9 +13,22 @@
         </div>
         <div class="col-md-6">
             <div class="stat-card gold">
-                <div class="stat-label">Weighted Team Business</div>
-                <div class="stat-value">${{ number_format($standardTeamBusiness, 2) }}</div>
-                <small class="opacity-75">Power leg 50% / 2nd leg 30% / all other legs combined 20%</small>
+                <div class="stat-label">Your Team Legs</div>
+                <div class="d-flex gap-4 mt-1">
+                    <div>
+                        <div class="small opacity-75">Power</div>
+                        <div class="fw-bold">${{ number_format($legs['power'], 0) }}</div>
+                    </div>
+                    <div>
+                        <div class="small opacity-75">2nd</div>
+                        <div class="fw-bold">${{ number_format($legs['second'], 0) }}</div>
+                    </div>
+                    <div>
+                        <div class="small opacity-75">Rest</div>
+                        <div class="fw-bold">${{ number_format($legs['rest'], 0) }}</div>
+                    </div>
+                </div>
+                <small class="opacity-75 d-block mt-1">Each bucket (Power/2nd/Rest) has its own running target that builds up rank by rank — all must be cleared independently.</small>
             </div>
         </div>
     </div>
@@ -32,7 +45,7 @@
                     $iconSize = $tierSizes[$tierIndex - 1];
                 @endphp
                 <div class="col-lg-4 col-md-6">
-                    <div class="rank-card p-4 @if($rank->is_achieved) achieved @elseif(!$rank->is_current && ($rank->invest_progress < 100 || $rank->team_progress < 100)) locked @endif @if($rank->is_current) current @endif">
+                    <div class="rank-card p-4 @if($rank->is_achieved) achieved @elseif(!$rank->is_current && ($rank->invest_progress < 100 || $rank->direct_legs_progress < 100 || $rank->team_progress < 100)) locked @endif @if($rank->is_current) current @endif">
                         <div class="d-flex align-items-center gap-3 mb-3">
                             <div class="rank-badge">{{ $rank->sort_order }}</div>
                             <div>
@@ -60,18 +73,28 @@
                         <div class="progress-png mb-1"><div class="bar" style="width: {{ $rank->invest_progress }}%;"></div></div>
                         <div class="small mb-3">${{ number_format($ownInvest, 0) }} / ${{ number_format($rank->own_invest_required, 0) }}</div>
 
-                        <div class="small text-muted mb-1">Team Business</div>
-                        <div class="progress-png mb-1"><div class="bar" style="width: {{ $rank->team_progress }}%;"></div></div>
-                        <div class="small mb-3">${{ number_format($rank->team_business_display, 0) }} / ${{ number_format($rank->team_business_required, 0) }}</div>
+                        <div class="small text-muted mb-1">Direct Legs</div>
+                        <div class="progress-png mb-1"><div class="bar" style="width: {{ $rank->direct_legs_progress }}%;"></div></div>
+                        <div class="small mb-3">{{ $rank->direct_legs_unlimited ? $rank->direct_legs_actual . ' (no limit)' : $rank->direct_legs_actual . ' / ' . $rank->legs_open }}</div>
+
+                        <div class="small text-muted mb-1">Power Leg</div>
+                        <div class="progress-png mb-1"><div class="bar" style="width: {{ $rank->power_progress }}%;"></div></div>
+                        <div class="small mb-2">${{ number_format($rank->power_actual, 0) }} / ${{ number_format($rank->power_target, 0) }}</div>
+
+                        <div class="small text-muted mb-1">2nd Leg</div>
+                        <div class="progress-png mb-1"><div class="bar" style="width: {{ $rank->second_progress }}%;"></div></div>
+                        <div class="small {{ $rank->has_rest_bucket ? 'mb-2' : 'mb-3' }}">${{ number_format($rank->second_actual, 0) }} / ${{ number_format($rank->second_target, 0) }}</div>
+
+                        @if ($rank->has_rest_bucket)
+                            <div class="small text-muted mb-1">Rest Legs</div>
+                            <div class="progress-png mb-1"><div class="bar" style="width: {{ $rank->rest_progress }}%;"></div></div>
+                            <div class="small mb-3">${{ number_format($rank->rest_actual, 0) }} / ${{ number_format($rank->rest_target, 0) }}</div>
+                        @endif
 
                         <hr>
                         <div class="d-flex justify-content-between small">
                             <span class="text-muted">Reward</span>
                             <span class="fw-bold">${{ number_format($rank->reward_amount, 0) }}</span>
-                        </div>
-                        <div class="d-flex justify-content-between small">
-                            <span class="text-muted">Direct</span>
-                            <span class="fw-semibold">{{ $rank->sort_order >= 5 ? '-' : ($rank->legs_open >= 255 ? 'No Limit' : $rank->legs_open) }}</span>
                         </div>
                         <div class="d-flex justify-content-between small">
                             <span class="text-muted">Levels Unlocked</span>
@@ -85,6 +108,12 @@
                                 @endif
                             </span>
                         </div>
+                        @if ($rank->is_achieved && $rank->achieved_at)
+                            <div class="d-flex justify-content-between small">
+                                <span class="text-muted">Rank Achieved Date</span>
+                                <span class="fw-semibold">{{ $rank->achieved_at->format('d M Y') }}</span>
+                            </div>
+                        @endif
                     </div>
                 </div>
             @endforeach
