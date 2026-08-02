@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ContactMessageMail;
 use App\Models\Rank;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class PageController extends Controller
 {
@@ -38,13 +40,22 @@ class PageController extends Controller
 
     public function submitContact(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:150'],
             'message' => ['required', 'string', 'max:2000'],
         ]);
 
-        // Contact form is stubbed — no outbound email is sent yet.
-        return back()->with('status', 'Thanks for reaching out! Our team will get back to you shortly.');
+        try {
+            Mail::to(config('mlm.contact_email'))->send(new ContactMessageMail(
+                $validated['name'],
+                $validated['email'],
+                $validated['message'],
+            ));
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
+        return redirect()->route('contact')->with('status', 'Thanks for reaching out! Our team will get back to you shortly.');
     }
 }

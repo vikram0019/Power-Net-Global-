@@ -38,4 +38,7 @@ return [
 
     // Smallest amount a member may request in a single withdrawal.
     'minimum_withdrawal' => 20,
+
+    // Where public Contact Us form submissions are emailed to.
+    'contact_email' => env('CONTACT_EMAIL', 'sopt.png2026@gmail.com'),
 ];
