@@ -141,7 +141,12 @@ class WalletController extends Controller
 
     public function verifyWithdrawalOtp(Request $request, Withdrawal $withdrawal)
     {
-        if ($withdrawal->user_id !== $request->user()->id) {
+        // user_id has no explicit cast, so it comes back as whatever the raw
+        // driver returns — a string under this server's PDO config, while
+        // $request->user()->id (a primary key) is a properly-cast int. Cast
+        // explicitly so the strict comparison doesn't wrongly reject the
+        // legitimate owner.
+        if ((int) $withdrawal->user_id !== (int) $request->user()->id) {
             abort(403);
         }
 
