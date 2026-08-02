@@ -73,7 +73,7 @@ class WalletController extends Controller
             'status' => 'pending',
         ]);
 
-        return back()->with('status', 'Payment submitted for review. Your investment will be activated once admin approves it.');
+        return redirect()->route('wallet.add-fund')->with('status', 'Payment submitted for review. Your investment will be activated once admin approves it.');
     }
 
     public function requestWithdrawal(Request $request)
@@ -86,10 +86,10 @@ class WalletController extends Controller
 
         if ($validated['wallet_type'] === 'roi') {
             if (!in_array((int) now()->day, [1, 2], true)) {
-                return back()->withErrors(['amount' => 'ROI Income can only be withdrawn on the 1st or 2nd day of the month.'])->withInput();
+                return redirect()->route('wallet.withdraw.page')->withErrors(['amount' => 'ROI Income can only be withdrawn on the 1st or 2nd day of the month.'])->withInput();
             }
         } elseif (!now()->isSunday()) {
-            return back()->withErrors(['amount' => 'Working Income and Rank & Reward Income can only be withdrawn on Sundays.'])->withInput();
+            return redirect()->route('wallet.withdraw.page')->withErrors(['amount' => 'Working Income and Rank & Reward Income can only be withdrawn on Sundays.'])->withInput();
         }
 
         $user = $request->user();
@@ -101,7 +101,7 @@ class WalletController extends Controller
         };
 
         if ((float) $wallet->{$column} < (float) $validated['amount']) {
-            return back()->withErrors(['amount' => 'Insufficient fund'])->withInput();
+            return redirect()->route('wallet.withdraw.page')->withErrors(['amount' => 'Insufficient fund'])->withInput();
         }
 
         $otp = (string) random_int(100000, 999999);
@@ -136,7 +136,7 @@ class WalletController extends Controller
             $flash['dev_otp_hint'] = $otp;
         }
 
-        return back()->with($flash + ['pending_withdrawal_id' => $withdrawal->id]);
+        return redirect()->route('wallet.withdraw.page')->with($flash + ['pending_withdrawal_id' => $withdrawal->id]);
     }
 
     public function verifyWithdrawalOtp(Request $request, Withdrawal $withdrawal)
@@ -148,7 +148,7 @@ class WalletController extends Controller
         $request->validate(['otp' => ['required', 'digits:6']]);
 
         if ($withdrawal->status !== 'pending' || $withdrawal->otp_code !== $request->otp || $withdrawal->otp_expires_at->isPast()) {
-            return back()->withErrors(['otp' => 'Invalid or expired OTP code.']);
+            return redirect()->route('wallet.withdraw.page')->withErrors(['otp' => 'Invalid or expired OTP code.']);
         }
 
         $withdrawal->update([
@@ -157,6 +157,9 @@ class WalletController extends Controller
             'otp_code' => null,
         ]);
 
-        return back()->with('status', 'OTP verified. Your withdrawal is now pending admin approval.');
+        // Redirect explicitly rather than using back() — back() depends on the
+        // HTTP Referer header, which some browsers/security software strip,
+        // silently falling through to the home page instead of this one.
+        return redirect()->route('wallet.withdraw.page')->with('status', 'OTP verified. Your withdrawal is now pending admin approval.');
     }
 }
