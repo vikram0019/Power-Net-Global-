@@ -16,7 +16,7 @@
         <div class="table-responsive">
             <table class="table table-png align-middle">
                 <thead>
-                    <tr><th>Name</th><th>Contact</th><th>Referral Code</th><th>Sponsor</th><th>Rank</th><th>Investor Status</th><th>Account Status</th><th>MPG</th><th></th></tr>
+                    <tr><th>Name</th><th>Contact</th><th>Referral Code</th><th>Sponsor</th><th>Rank</th><th>Investor Status</th><th>MPG</th><th></th></tr>
                 </thead>
                 <tbody>
                     @forelse ($users as $u)
@@ -28,17 +28,6 @@
                             <td>{{ $u->currentRank->name ?? 'Unranked' }}</td>
                             <td>@include('partials.investor-status', ['user' => $u])</td>
                             <td>
-                                @php
-                                    $accountState = $u->is_dummy ? 'Dummy' : ($u->totalInvested() > 0 ? 'Active' : 'Unactive');
-                                @endphp
-                                <span class="badge
-                                    @class([
-                                        'bg-warning text-dark' => $accountState === 'Dummy',
-                                        'bg-success' => $accountState === 'Active',
-                                        'bg-secondary' => $accountState === 'Unactive',
-                                    ])">{{ $accountState }}</span>
-                            </td>
-                            <td>
                                 <form method="POST" action="{{ route('admin.users.toggle-roi', $u) }}">
                                     @csrf
                                     <button type="submit" class="btn btn-sm {{ $u->roi_enabled ? 'btn-gold' : 'btn-outline-secondary' }}">
@@ -46,20 +35,20 @@
                                     </button>
                                 </form>
                             </td>
-                            <td class="d-flex gap-1">
-                                <a href="{{ route('admin.users.show', $u) }}" class="btn btn-sm btn-navy">View</a>
-                                <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#addFundModal" data-user-id="{{ $u->id }}" data-user-name="{{ $u->name }}">Add Fund</button>
-                                <a href="{{ route('admin.users.edit', $u) }}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                            <td class="d-flex flex-wrap align-items-center gap-1">
+                                <a href="{{ route('admin.users.show', $u) }}" class="btn btn-sm btn-navy text-nowrap">View</a>
+                                <button type="button" class="btn btn-sm btn-outline-success text-nowrap" data-bs-toggle="modal" data-bs-target="#addFundModal" data-user-id="{{ $u->id }}" data-user-name="{{ $u->name }}">Add Fund</button>
+                                <a href="{{ route('admin.users.edit', $u) }}" class="btn btn-sm btn-outline-secondary text-nowrap">Edit</a>
                                 @if ($u->status === 'approval_pending')
                                     <form method="POST" action="{{ route('admin.users.approve', $u) }}">
                                         @csrf
-                                        <button type="submit" class="btn btn-sm btn-gold">Approve</button>
+                                        <button type="submit" class="btn btn-sm btn-gold text-nowrap">Approve</button>
                                     </form>
                                 @endif
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="9" class="text-center text-muted py-4">No users found.</td></tr>
+                        <tr><td colspan="8" class="text-center text-muted py-4">No users found.</td></tr>
                     @endforelse
                 </tbody>
             </table>
