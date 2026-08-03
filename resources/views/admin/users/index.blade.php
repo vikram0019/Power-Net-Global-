@@ -48,6 +48,7 @@
                             </td>
                             <td class="d-flex gap-1">
                                 <a href="{{ route('admin.users.show', $u) }}" class="btn btn-sm btn-navy">View</a>
+                                <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#addFundModal" data-user-id="{{ $u->id }}" data-user-name="{{ $u->name }}">Add Fund</button>
                                 <a href="{{ route('admin.users.edit', $u) }}" class="btn btn-sm btn-outline-secondary">Edit</a>
                                 @if ($u->status === 'approval_pending')
                                     <form method="POST" action="{{ route('admin.users.approve', $u) }}">
@@ -65,4 +66,68 @@
             {{ $users->links() }}
         </div>
     </div>
+
+    <div class="modal fade" id="addFundModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form method="POST" id="addFundForm" data-confirm-title="Confirm Add Fund" data-confirm="Add fund to this member's wallet? This cannot be undone.">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Fund — <span id="addFundUserName"></span></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label class="form-label small fw-semibold">Amount ($)</label>
+                        <input type="number" name="amount" id="addFundAmount" step="0.01" min="1" class="form-control" required>
+                        <p class="text-muted small mt-2 mb-0">This credits the amount directly to the member's deposit wallet — no approval step, takes effect immediately.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-gold fw-bold">Add Fund</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var addFundModal = document.getElementById('addFundModal');
+    if (!addFundModal) {
+        return;
+    }
+
+    var addFundForm = document.getElementById('addFundForm');
+    var addFundAmount = document.getElementById('addFundAmount');
+    var currentUserName = '';
+
+    function updateAddFundConfirmText() {
+        var amount = parseFloat(addFundAmount.value);
+        var amountText = isNaN(amount) ? 'this amount' : ('$' + amount.toFixed(2));
+        addFundForm.dataset.confirm = 'Add ' + amountText + " to " + currentUserName + "'s deposit wallet? This cannot be undone.";
+    }
+
+    addFundModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var userId = button.getAttribute('data-user-id');
+        currentUserName = button.getAttribute('data-user-name');
+
+        document.getElementById('addFundUserName').textContent = currentUserName;
+        addFundForm.action = '/admin/users/' + userId + '/add-fund';
+        addFundAmount.value = '';
+        updateAddFundConfirmText();
+    });
+
+    addFundAmount.addEventListener('input', updateAddFundConfirmText);
+
+    addFundForm.addEventListener('submit', function () {
+        var modalInstance = bootstrap.Modal.getInstance(addFundModal);
+        if (modalInstance) {
+            modalInstance.hide();
+        }
+    });
+});
+</script>
+@endpush

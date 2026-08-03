@@ -49,7 +49,7 @@
                             </td>
                             <td>
                                 @if ($w->status === 'otp_verified')
-                                    <form method="POST" action="{{ route('admin.withdrawals.approve', $w) }}" class="d-inline" onsubmit="return confirm('Approve this withdrawal for {{ $w->user->name }}? Requested: ${{ number_format($w->amount, 2) }}{{ $w->fee_amount > 0 ? ', fee: $' . number_format($w->fee_amount, 2) : '' }}, pay out: ${{ number_format($w->net_amount, 2) }} to their BEP20 address. This cannot be undone.');">
+                                    <form method="POST" action="{{ route('admin.withdrawals.approve', $w) }}" class="d-inline" data-confirm-title="Approve Withdrawal" data-confirm="Approve this withdrawal for {{ $w->user->name }}? Requested: ${{ number_format($w->amount, 2) }}{{ $w->fee_amount > 0 ? ', fee: $' . number_format($w->fee_amount, 2) : '' }}, pay out: ${{ number_format($w->net_amount, 2) }} to their BEP20 address. This cannot be undone.">
                                         @csrf
                                         <button type="submit" class="btn btn-sm btn-gold">Approve</button>
                                     </form>
