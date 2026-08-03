@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Mail\OtpMail;
+use App\Mail\WelcomeMail;
 use App\Models\User;
 use App\Models\Wallet;
 use Illuminate\Http\Request;
@@ -75,7 +76,7 @@ class RegisterController extends Controller
             'name' => $validated['name'],
             'mobile' => $validated['mobile'],
             'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
+            'password' => $validated['password'],
             'sponsor_id' => $sponsor->id,
             'otp_code' => $otp,
             'otp_expires_at' => now()->addMinutes(10)->toDateTimeString(),
@@ -125,7 +126,7 @@ class RegisterController extends Controller
             'name' => $pending['name'],
             'mobile' => $pending['mobile'],
             'email' => $pending['email'],
-            'password' => $pending['password'],
+            'password' => Hash::make($pending['password']),
             'referral_code' => User::generateReferralCode(),
             'sponsor_id' => $pending['sponsor_id'],
             'status' => 'active',
@@ -133,6 +134,12 @@ class RegisterController extends Controller
         ]);
 
         Wallet::firstOrCreate(['user_id' => $user->id]);
+
+        try {
+            Mail::to($user->email)->send(new WelcomeMail($user->name, $user->email, $pending['password'], $user->referral_code));
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         session()->forget(['pending_signup', 'dev_otp_hint']);
         Auth::login($user);
