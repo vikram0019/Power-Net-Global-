@@ -67,8 +67,8 @@
                     </div>
                     <div class="modal-body">
                         <label class="form-label small fw-semibold">Amount ($)</label>
-                        <input type="number" name="amount" id="addFundAmount" step="0.01" min="1" class="form-control" required>
-                        <p class="text-muted small mt-2 mb-0">This credits the amount directly to the member's deposit wallet — no approval step, takes effect immediately.</p>
+                        <input type="number" name="amount" id="addFundAmount" step="0.01" min="{{ config('mlm.minimum_investment') }}" class="form-control" required>
+                        <p class="text-muted small mt-2 mb-0">This credits the amount and creates an investment for the member immediately — no approval step. Triggers direct reward, level income, and rank checks just like a real investment. Minimum ${{ number_format(config('mlm.minimum_investment'), 0) }}.</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateAddFundConfirmText() {
         var amount = parseFloat(addFundAmount.value);
         var amountText = isNaN(amount) ? 'this amount' : ('$' + amount.toFixed(2));
-        addFundForm.dataset.confirm = 'Add ' + amountText + " to " + currentUserName + "'s deposit wallet? This cannot be undone.";
+        addFundForm.dataset.confirm = 'Add ' + amountText + ' as an investment for ' + currentUserName + "? This triggers direct reward, level income, and rank checks. This cannot be undone.";
     }
 
     addFundModal.addEventListener('show.bs.modal', function (event) {
