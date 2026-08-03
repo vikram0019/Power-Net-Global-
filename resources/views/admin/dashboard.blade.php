@@ -66,7 +66,7 @@
         <div class="table-responsive">
             <table class="table table-png align-middle">
                 <thead>
-                    <tr><th>Name</th><th>Email</th><th>Referral Code</th><th>Status</th><th>Joined</th></tr>
+                    <tr><th>Name</th><th>Email</th><th>Referral Code</th><th>Investor Status</th><th>Joined</th></tr>
                 </thead>
                 <tbody>
                     @forelse ($recentUsers as $u)
@@ -74,7 +74,7 @@
                             <td><a href="{{ route('admin.users.show', $u) }}" class="text-decoration-none fw-semibold">{{ $u->name }}</a></td>
                             <td>{{ $u->email }}</td>
                             <td><code>{{ $u->referral_code }}</code></td>
-                            <td><span class="badge {{ $u->status === 'active' ? 'bg-success' : ($u->status === 'pending' ? 'bg-warning text-dark' : 'bg-danger') }}">{{ $u->status }}</span></td>
+                            <td>@include('partials.investor-status', ['user' => $u])</td>
                             <td>{{ $u->created_at->format('d M Y') }}</td>
                         </tr>
                     @empty
