@@ -9,6 +9,7 @@ use App\Services\InvestmentService;
 use App\Services\TeamBusinessCalculator;
 use App\Services\WalletService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use InvalidArgumentException;
 
@@ -97,20 +98,24 @@ class AdminUserController extends Controller
         return back()->with('status', "Monthly ROI benefit {$state} for {$user->name}.");
     }
 
-    public function addFund(Request $request, User $user, WalletService $walletService)
+    public function addFund(Request $request, User $user, WalletService $walletService, InvestmentService $investmentService)
     {
         $validated = $request->validate([
             'amount' => ['required', 'numeric', 'min:1'],
         ]);
 
-        $walletService->credit(
-            $user,
-            'deposit',
-            (float) $validated['amount'],
-            'Manual fund addition by admin'
-        );
+        $amount = (float) $validated['amount'];
 
-        return back()->with('status', '$' . number_format((float) $validated['amount'], 2) . " added to {$user->name}'s deposit wallet.");
+        try {
+            DB::transaction(function () use ($user, $amount, $walletService, $investmentService) {
+                $walletService->credit($user, 'deposit', $amount, 'Manual fund addition by admin');
+                $investmentService->invest($user, $amount);
+            });
+        } catch (InvalidArgumentException $e) {
+            return back()->withErrors(['amount' => $e->getMessage()]);
+        }
+
+        return back()->with('status', '$' . number_format($amount, 2) . " added and invested for {$user->name}.");
     }
 
     public function createDummy()
