@@ -86,6 +86,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('users.update');
     Route::post('/users/{user}/approve', [AdminUserController::class, 'approve'])->name('users.approve');
     Route::post('/users/{user}/toggle-roi', [AdminUserController::class, 'toggleRoi'])->name('users.toggle-roi');
+    Route::post('/users/{user}/add-fund', [AdminUserController::class, 'addFund'])->name('users.add-fund');
 
     Route::get('/withdrawals', [AdminWithdrawalController::class, 'index'])->name('withdrawals.index');
     Route::post('/withdrawals/{withdrawal}/approve', [AdminWithdrawalController::class, 'approve'])->name('withdrawals.approve');

@@ -41,7 +41,7 @@
 
                     @if ($fr->status === 'pending')
                         <div class="d-flex gap-2">
-                            <form method="POST" action="{{ route('admin.fund-requests.approve', $fr) }}" class="flex-fill" onsubmit="return confirm('Approve this fund request for ${{ number_format($fr->amount, 2) }}? This will credit the user\'s wallet.');">
+                            <form method="POST" action="{{ route('admin.fund-requests.approve', $fr) }}" class="flex-fill" data-confirm-title="Approve Fund Request" data-confirm="Approve this fund request for ${{ number_format($fr->amount, 2) }}? This will credit the user's wallet.">
                                 @csrf
                                 <button type="submit" class="btn btn-sm btn-gold w-100">Approve</button>
                             </form>

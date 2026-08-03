@@ -32,7 +32,7 @@
                             </td>
                             <td class="d-flex gap-1">
                                 <a href="{{ route('admin.announcements.edit', $announcement) }}" class="btn btn-sm btn-navy">Edit</a>
-                                <form method="POST" action="{{ route('admin.announcements.destroy', $announcement) }}" onsubmit="return confirm('Delete this announcement? This cannot be undone.');">
+                                <form method="POST" action="{{ route('admin.announcements.destroy', $announcement) }}" data-confirm-title="Delete Announcement" data-confirm="Delete this announcement? This cannot be undone.">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>

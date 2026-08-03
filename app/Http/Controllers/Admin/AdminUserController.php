@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Wallet;
 use App\Services\InvestmentService;
 use App\Services\TeamBusinessCalculator;
+use App\Services\WalletService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use InvalidArgumentException;
@@ -94,6 +95,22 @@ class AdminUserController extends Controller
         $state = $user->roi_enabled ? 'enabled' : 'disabled';
 
         return back()->with('status', "Monthly ROI benefit {$state} for {$user->name}.");
+    }
+
+    public function addFund(Request $request, User $user, WalletService $walletService)
+    {
+        $validated = $request->validate([
+            'amount' => ['required', 'numeric', 'min:1'],
+        ]);
+
+        $walletService->credit(
+            $user,
+            'deposit',
+            (float) $validated['amount'],
+            'Manual fund addition by admin'
+        );
+
+        return back()->with('status', '$' . number_format((float) $validated['amount'], 2) . " added to {$user->name}'s deposit wallet.");
     }
 
     public function createDummy()
