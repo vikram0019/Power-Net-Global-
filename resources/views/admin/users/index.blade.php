@@ -37,7 +37,7 @@
                             </td>
                             <td>
                                 <div class="dropdown">
-                                    <button type="button" class="btn btn-sm btn-navy dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <button type="button" class="btn btn-sm btn-navy dropdown-toggle" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
                                         Action
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
@@ -52,7 +52,7 @@
                                                 data-balance-roi="{{ number_format($u->wallet->roi_balance ?? 0, 2, '.', '') }}"
                                                 data-balance-working="{{ number_format($u->wallet->working_balance ?? 0, 2, '.', '') }}"
                                                 data-balance-rank_reward="{{ number_format($u->wallet->rank_reward_balance ?? 0, 2, '.', '') }}"
-                                                data-balance-deposit="{{ number_format($u->wallet->deposit_balance ?? 0, 2, '.', '') }}">Withdrawal</button>
+                                                data-balance-deposit="{{ number_format($u->investments()->where('status', 'active')->sum('amount'), 2, '.', '') }}">Withdrawal</button>
                                         </li>
                                         <li><a class="dropdown-item" href="{{ route('admin.users.edit', $u) }}">Edit</a></li>
                                         @if ($u->status === 'approval_pending')
@@ -118,7 +118,7 @@
                         </select>
                         <label class="form-label small fw-semibold">Amount ($)</label>
                         <input type="number" name="amount" id="withdrawFundAmount" step="0.01" min="0.01" class="form-control" required>
-                        <p class="text-muted small mt-2 mb-0">This debits the amount directly from the selected wallet — no OTP or approval step, takes effect immediately.</p>
+                        <p class="text-muted small mt-2 mb-0">This debits the amount directly from the selected wallet — no OTP or approval step, takes effect immediately. "Investment" draws down the member's active invested principal directly (oldest investment first), not a wallet balance.</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -137,6 +137,39 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!addFundModal) {
         return;
     }
+
+    // Action dropdowns live inside .table-responsive, which clips overflow
+    // on both axes (a browser quirk: overflow-x:auto forces the other axis
+    // to auto too, so it can't be reopened with CSS alone). Moving the menu
+    // to <body> with fixed positioning while open sidesteps the clipping
+    // entirely, then it's moved back on close so each row's own button
+    // still owns its own menu element.
+    document.querySelectorAll('.dropdown').forEach(function (dropdown) {
+        var toggle = dropdown.querySelector('.dropdown-toggle');
+        var menu = dropdown.querySelector('.dropdown-menu');
+        if (!toggle || !menu) {
+            return;
+        }
+
+        toggle.addEventListener('show.bs.dropdown', function () {
+            var rect = toggle.getBoundingClientRect();
+            document.body.appendChild(menu);
+            menu.style.position = 'fixed';
+            menu.style.top = rect.bottom + 'px';
+            menu.style.right = (window.innerWidth - rect.right) + 'px';
+            menu.style.left = 'auto';
+            menu.style.zIndex = 3000;
+        });
+
+        toggle.addEventListener('hidden.bs.dropdown', function () {
+            dropdown.appendChild(menu);
+            menu.style.position = '';
+            menu.style.top = '';
+            menu.style.right = '';
+            menu.style.left = '';
+            menu.style.zIndex = '';
+        });
+    });
 
     var addFundForm = document.getElementById('addFundForm');
     var addFundAmount = document.getElementById('addFundAmount');

@@ -14,6 +14,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RankController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\WalletController;
@@ -73,6 +74,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/team', [TeamController::class, 'index'])->name('team.index');
     Route::get('/team/print', [TeamController::class, 'print'])->name('team.print');
     Route::get('/rank', [RankController::class, 'index'])->name('rank.index');
+
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile/image', [ProfileController::class, 'uploadImage'])->name('profile.upload-image');
+    Route::delete('/profile/image', [ProfileController::class, 'removeImage'])->name('profile.remove-image');
 });
 
 // Admin panel
@@ -89,6 +94,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/users/{user}/toggle-roi', [AdminUserController::class, 'toggleRoi'])->name('users.toggle-roi');
     Route::post('/users/{user}/add-fund', [AdminUserController::class, 'addFund'])->name('users.add-fund');
     Route::post('/users/{user}/withdraw-fund', [AdminUserController::class, 'withdrawFund'])->name('users.withdraw-fund');
+    Route::post('/users/{user}/profile-image', [AdminUserController::class, 'uploadProfileImage'])->name('users.profile-image');
+    Route::delete('/users/{user}/profile-image', [AdminUserController::class, 'removeProfileImage'])->name('users.profile-image.remove');
 
     Route::get('/withdrawals', [AdminWithdrawalController::class, 'index'])->name('withdrawals.index');
     Route::post('/withdrawals/{withdrawal}/approve', [AdminWithdrawalController::class, 'approve'])->name('withdrawals.approve');

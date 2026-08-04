@@ -21,7 +21,11 @@
                     @endfor
                 </div>
                 <button type="button" class="rank-celebrate-close" @click="open = false" aria-label="Close">&times;</button>
-                <i class="bi bi-trophy-fill rank-celebrate-trophy"></i>
+                @if (auth()->user()->profile_image)
+                    <img src="{{ asset('storage/' . auth()->user()->profile_image) }}" alt="{{ auth()->user()->name }}" class="rank-celebrate-photo">
+                @else
+                    <i class="bi bi-trophy-fill rank-celebrate-trophy"></i>
+                @endif
                 <div class="rank-celebrate-name">{{ auth()->user()->name }}</div>
                 <div class="rank-celebrate-msg">🎉 Congratulations! You achieved <strong>{{ $achievedToday->rank->name }}</strong>!</div>
                 <button type="button" class="btn btn-gold fw-bold mt-3" @click="open = false">Awesome!</button>
