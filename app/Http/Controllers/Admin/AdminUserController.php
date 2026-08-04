@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Wallet;
+use App\Models\Withdrawal;
 use App\Services\InvestmentService;
 use App\Services\TeamBusinessCalculator;
 use App\Services\WalletService;
@@ -116,6 +117,45 @@ class AdminUserController extends Controller
         }
 
         return back()->with('status', '$' . number_format($amount, 2) . " added and invested for {$user->name}.");
+    }
+
+    public function withdrawFund(Request $request, User $user, WalletService $walletService)
+    {
+        $validated = $request->validate([
+            'wallet_type' => ['required', 'in:roi,working,rank_reward,deposit'],
+            'amount' => ['required', 'numeric', 'min:0.01'],
+        ]);
+
+        $amount = (float) $validated['amount'];
+
+        try {
+            DB::transaction(function () use ($request, $user, $validated, $amount, $walletService) {
+                $withdrawal = Withdrawal::create([
+                    'user_id' => $user->id,
+                    'wallet_type' => $validated['wallet_type'],
+                    'amount' => $amount,
+                    'fee_amount' => 0,
+                    'net_amount' => $amount,
+                    'status' => 'paid',
+                    'admin_id' => $request->user()->id,
+                    'admin_note' => 'Manual withdrawal by admin',
+                    'processed_at' => now(),
+                ]);
+
+                $walletService->debit(
+                    $user,
+                    $validated['wallet_type'],
+                    $amount,
+                    'Manual withdrawal by admin',
+                    Withdrawal::class,
+                    $withdrawal->id
+                );
+            });
+        } catch (InvalidArgumentException $e) {
+            return back()->withErrors(['amount' => $e->getMessage()]);
+        }
+
+        return back()->with('status', '$' . number_format($amount, 2) . " withdrawn from {$user->name}'s wallet.");
     }
 
     public function createDummy()
