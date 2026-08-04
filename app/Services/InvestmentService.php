@@ -35,4 +35,47 @@ class InvestmentService
             return $investment;
         });
     }
+
+    /**
+     * Reduces a user's active investment principal by $amount (oldest
+     * investments drawn down first), used for admin-initiated "Investment"
+     * withdrawals. Unlike invest(), this never touches the deposit wallet —
+     * it directly shrinks/closes Investment rows, since invested principal
+     * isn't tracked as a wallet balance column.
+     */
+    public function withdrawPrincipal(User $user, float $amount): void
+    {
+        $available = (float) $user->investments()->where('status', 'active')->sum('amount');
+
+        if ($amount > $available) {
+            throw new InvalidArgumentException('Insufficient invested principal.');
+        }
+
+        DB::transaction(function () use ($user, $amount) {
+            $remaining = $amount;
+
+            $investments = $user->investments()
+                ->where('status', 'active')
+                ->oldest()
+                ->lockForUpdate()
+                ->get();
+
+            foreach ($investments as $investment) {
+                if ($remaining <= 0) {
+                    break;
+                }
+
+                $draw = min($remaining, (float) $investment->amount);
+                $investment->amount = bcsub((string) $investment->amount, (string) $draw, 2);
+
+                if (bccomp((string) $investment->amount, '0', 2) <= 0) {
+                    $investment->amount = 0;
+                    $investment->status = 'completed';
+                }
+
+                $investment->save();
+                $remaining -= $draw;
+            }
+        });
+    }
 }

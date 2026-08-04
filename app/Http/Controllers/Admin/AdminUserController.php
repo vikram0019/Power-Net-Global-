@@ -119,7 +119,7 @@ class AdminUserController extends Controller
         return back()->with('status', '$' . number_format($amount, 2) . " added and invested for {$user->name}.");
     }
 
-    public function withdrawFund(Request $request, User $user, WalletService $walletService)
+    public function withdrawFund(Request $request, User $user, WalletService $walletService, InvestmentService $investmentService)
     {
         $validated = $request->validate([
             'wallet_type' => ['required', 'in:roi,working,rank_reward,deposit'],
@@ -129,7 +129,7 @@ class AdminUserController extends Controller
         $amount = (float) $validated['amount'];
 
         try {
-            DB::transaction(function () use ($request, $user, $validated, $amount, $walletService) {
+            DB::transaction(function () use ($request, $user, $validated, $amount, $walletService, $investmentService) {
                 $withdrawal = Withdrawal::create([
                     'user_id' => $user->id,
                     'wallet_type' => $validated['wallet_type'],
@@ -142,14 +142,20 @@ class AdminUserController extends Controller
                     'processed_at' => now(),
                 ]);
 
-                $walletService->debit(
-                    $user,
-                    $validated['wallet_type'],
-                    $amount,
-                    'Manual withdrawal by admin',
-                    Withdrawal::class,
-                    $withdrawal->id
-                );
+                if ($validated['wallet_type'] === 'deposit') {
+                    // "Investment" — draws down invested principal directly,
+                    // not a wallet balance column.
+                    $investmentService->withdrawPrincipal($user, $amount);
+                } else {
+                    $walletService->debit(
+                        $user,
+                        $validated['wallet_type'],
+                        $amount,
+                        'Manual withdrawal by admin',
+                        Withdrawal::class,
+                        $withdrawal->id
+                    );
+                }
             });
         } catch (InvalidArgumentException $e) {
             return back()->withErrors(['amount' => $e->getMessage()]);

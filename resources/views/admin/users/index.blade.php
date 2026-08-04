@@ -52,7 +52,7 @@
                                                 data-balance-roi="{{ number_format($u->wallet->roi_balance ?? 0, 2, '.', '') }}"
                                                 data-balance-working="{{ number_format($u->wallet->working_balance ?? 0, 2, '.', '') }}"
                                                 data-balance-rank_reward="{{ number_format($u->wallet->rank_reward_balance ?? 0, 2, '.', '') }}"
-                                                data-balance-deposit="{{ number_format($u->wallet->deposit_balance ?? 0, 2, '.', '') }}">Withdrawal</button>
+                                                data-balance-deposit="{{ number_format($u->investments()->where('status', 'active')->sum('amount'), 2, '.', '') }}">Withdrawal</button>
                                         </li>
                                         <li><a class="dropdown-item" href="{{ route('admin.users.edit', $u) }}">Edit</a></li>
                                         @if ($u->status === 'approval_pending')
@@ -118,7 +118,7 @@
                         </select>
                         <label class="form-label small fw-semibold">Amount ($)</label>
                         <input type="number" name="amount" id="withdrawFundAmount" step="0.01" min="0.01" class="form-control" required>
-                        <p class="text-muted small mt-2 mb-0">This debits the amount directly from the selected wallet — no OTP or approval step, takes effect immediately.</p>
+                        <p class="text-muted small mt-2 mb-0">This debits the amount directly from the selected wallet — no OTP or approval step, takes effect immediately. "Investment" draws down the member's active invested principal directly (oldest investment first), not a wallet balance.</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
