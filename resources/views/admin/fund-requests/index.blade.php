@@ -38,7 +38,7 @@
         <div class="table-responsive">
             <table class="table table-png align-middle">
                 <thead>
-                    <tr><th>User Name</th><th>Amount</th><th>Referral Code</th><th>Date</th><th>Screenshot</th><th>Status</th><th>Action</th></tr>
+                    <tr><th>User Name</th><th>Amount</th><th>Referral Code</th><th>Date</th><th>Screenshot</th>@if ($status === 'all')<th>Status</th>@endif<th>Action</th></tr>
                 </thead>
                 <tbody>
                     @forelse ($fundRequests as $fr)
@@ -52,14 +52,16 @@
                                     <i class="bi bi-image"></i> View
                                 </button>
                             </td>
-                            <td>
-                                <span class="badge
-                                    @class([
+                            @if ($status === 'all')
+                                <td>
+                                    <span @class([
+                                        'badge',
                                         'bg-warning text-dark' => $fr->status === 'pending',
                                         'bg-success' => $fr->status === 'approved',
                                         'bg-danger' => $fr->status === 'rejected',
-                                    ])">{{ $fr->status }}</span>
-                            </td>
+                                    ])>{{ $fr->status }}</span>
+                                </td>
+                            @endif
                             <td>
                                 @if ($fr->status === 'pending')
                                     <div class="d-flex gap-1">
@@ -96,7 +98,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="7" class="text-center text-muted py-4">No fund requests in this category.</td></tr>
+                        <tr><td colspan="{{ $status === 'all' ? 7 : 6 }}" class="text-center text-muted py-4">No fund requests in this category.</td></tr>
                     @endforelse
                 </tbody>
             </table>
