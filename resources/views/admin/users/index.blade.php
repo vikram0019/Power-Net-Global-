@@ -35,16 +35,36 @@
                                     </button>
                                 </form>
                             </td>
-                            <td class="d-flex flex-wrap align-items-center gap-1">
-                                <a href="{{ route('admin.users.show', $u) }}" class="btn btn-sm btn-navy text-nowrap">View</a>
-                                <button type="button" class="btn btn-sm btn-outline-success text-nowrap" data-bs-toggle="modal" data-bs-target="#addFundModal" data-user-id="{{ $u->id }}" data-user-name="{{ $u->name }}">Add Fund</button>
-                                <a href="{{ route('admin.users.edit', $u) }}" class="btn btn-sm btn-outline-secondary text-nowrap">Edit</a>
-                                @if ($u->status === 'approval_pending')
-                                    <form method="POST" action="{{ route('admin.users.approve', $u) }}">
-                                        @csrf
-                                        <button type="submit" class="btn btn-sm btn-gold text-nowrap">Approve</button>
-                                    </form>
-                                @endif
+                            <td>
+                                <div class="dropdown">
+                                    <button type="button" class="btn btn-sm btn-navy dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Action
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" href="{{ route('admin.users.show', $u) }}">View</a></li>
+                                        <li>
+                                            <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addFundModal" data-user-id="{{ $u->id }}" data-user-name="{{ $u->name }}">Add Fund</button>
+                                        </li>
+                                        <li>
+                                            <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#withdrawFundModal"
+                                                data-user-id="{{ $u->id }}"
+                                                data-user-name="{{ $u->name }}"
+                                                data-balance-roi="{{ number_format($u->wallet->roi_balance ?? 0, 2, '.', '') }}"
+                                                data-balance-working="{{ number_format($u->wallet->working_balance ?? 0, 2, '.', '') }}"
+                                                data-balance-rank_reward="{{ number_format($u->wallet->rank_reward_balance ?? 0, 2, '.', '') }}"
+                                                data-balance-deposit="{{ number_format($u->wallet->deposit_balance ?? 0, 2, '.', '') }}">Withdrawal</button>
+                                        </li>
+                                        <li><a class="dropdown-item" href="{{ route('admin.users.edit', $u) }}">Edit</a></li>
+                                        @if ($u->status === 'approval_pending')
+                                            <li>
+                                                <form method="POST" action="{{ route('admin.users.approve', $u) }}">
+                                                    @csrf
+                                                    <button type="submit" class="dropdown-item">Approve</button>
+                                                </form>
+                                            </li>
+                                        @endif
+                                    </ul>
+                                </div>
                             </td>
                         </tr>
                     @empty
@@ -73,6 +93,36 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-gold fw-bold">Add Fund</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="withdrawFundModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form method="POST" id="withdrawFundForm" data-confirm-title="Confirm Withdrawal" data-confirm="Withdraw funds from this member's wallet? This cannot be undone.">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title">Withdrawal — <span id="withdrawFundUserName"></span></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label class="form-label small fw-semibold">Wallet Type</label>
+                        <select name="wallet_type" id="withdrawFundWalletType" class="form-select mb-3" required>
+                            <option value="roi" data-label="MPG Income">MPG Income</option>
+                            <option value="working" data-label="Working Income">Working Income</option>
+                            <option value="rank_reward" data-label="Rank &amp; Rewards">Rank &amp; Rewards</option>
+                            <option value="deposit" data-label="Investment">Investment</option>
+                        </select>
+                        <label class="form-label small fw-semibold">Amount ($)</label>
+                        <input type="number" name="amount" id="withdrawFundAmount" step="0.01" min="0.01" class="form-control" required>
+                        <p class="text-muted small mt-2 mb-0">This debits the amount directly from the selected wallet — no OTP or approval step, takes effect immediately.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger fw-bold">Withdraw</button>
                     </div>
                 </form>
             </div>
@@ -113,6 +163,58 @@ document.addEventListener('DOMContentLoaded', function () {
 
     addFundForm.addEventListener('submit', function () {
         var modalInstance = bootstrap.Modal.getInstance(addFundModal);
+        if (modalInstance) {
+            modalInstance.hide();
+        }
+    });
+
+    var withdrawFundModal = document.getElementById('withdrawFundModal');
+    var withdrawFundForm = document.getElementById('withdrawFundForm');
+    var withdrawFundAmount = document.getElementById('withdrawFundAmount');
+    var withdrawFundWalletType = document.getElementById('withdrawFundWalletType');
+    var withdrawCurrentUserName = '';
+
+    function updateWithdrawFundConfirmText() {
+        var amount = parseFloat(withdrawFundAmount.value);
+        var amountText = isNaN(amount) ? 'this amount' : ('$' + amount.toFixed(2));
+        var selectedOption = withdrawFundWalletType.options[withdrawFundWalletType.selectedIndex];
+        var walletLabel = selectedOption.getAttribute('data-label');
+        withdrawFundForm.dataset.confirm = 'Withdraw ' + amountText + ' from ' + withdrawCurrentUserName + "'s " + walletLabel + ' wallet? This cannot be undone.';
+    }
+
+    function updateWithdrawFundBalances(button) {
+        var balances = {
+            roi: button.getAttribute('data-balance-roi'),
+            working: button.getAttribute('data-balance-working'),
+            rank_reward: button.getAttribute('data-balance-rank_reward'),
+            deposit: button.getAttribute('data-balance-deposit'),
+        };
+
+        Array.from(withdrawFundWalletType.options).forEach(function (option) {
+            var label = option.getAttribute('data-label');
+            var balance = balances[option.value];
+            option.text = balance !== null ? label + ' ($' + parseFloat(balance).toFixed(2) + ')' : label;
+        });
+    }
+
+    withdrawFundModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var userId = button.getAttribute('data-user-id');
+        withdrawCurrentUserName = button.getAttribute('data-user-name');
+
+        document.getElementById('withdrawFundUserName').textContent = withdrawCurrentUserName;
+        withdrawFundForm.action = '/admin/users/' + userId + '/withdraw-fund';
+        withdrawFundAmount.value = '';
+        withdrawFundWalletType.selectedIndex = 0;
+        updateWithdrawFundBalances(button);
+        updateWithdrawFundConfirmText();
+    });
+
+    withdrawFundAmount.addEventListener('input', updateWithdrawFundConfirmText);
+    withdrawFundWalletType.addEventListener('change', updateWithdrawFundConfirmText);
+
+    withdrawFundForm.addEventListener('submit', function () {
+        var modalInstance = bootstrap.Modal.getInstance(withdrawFundModal);
         if (modalInstance) {
             modalInstance.hide();
         }

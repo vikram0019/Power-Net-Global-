@@ -26,6 +26,10 @@
                 <div class="stat-value">${{ number_format($tree['leg_stats']['power']['investment'], 2) }}</div>
                 <div class="small opacity-75 mt-1">Total member</div>
                 <div class="fw-bold">{{ $tree['leg_stats']['power']['count'] }}</div>
+                <div class="d-flex gap-3 mt-2 small">
+                    <span class="d-inline-flex align-items-center gap-1"><span class="status-dot green"></span>{{ $tree['leg_stats']['power']['active_count'] }} active</span>
+                    <span class="d-inline-flex align-items-center gap-1"><span class="status-dot red"></span>{{ $tree['leg_stats']['power']['inactive_count'] }} inactive</span>
+                </div>
             </div>
         </div>
         <div class="col-lg-4 col-md-4 col-sm-6 col-12">
@@ -34,6 +38,10 @@
                 <div class="stat-value">${{ number_format($tree['leg_stats']['second']['investment'], 2) }}</div>
                 <div class="small opacity-75 mt-1">Total member</div>
                 <div class="fw-bold">{{ $tree['leg_stats']['second']['count'] }}</div>
+                <div class="d-flex gap-3 mt-2 small">
+                    <span class="d-inline-flex align-items-center gap-1"><span class="status-dot green"></span>{{ $tree['leg_stats']['second']['active_count'] }} active</span>
+                    <span class="d-inline-flex align-items-center gap-1"><span class="status-dot red"></span>{{ $tree['leg_stats']['second']['inactive_count'] }} inactive</span>
+                </div>
             </div>
         </div>
         <div class="col-lg-4 col-md-4 col-sm-6 col-12">
@@ -42,6 +50,10 @@
                 <div class="stat-value">${{ number_format($tree['leg_stats']['rest']['investment'], 2) }}</div>
                 <div class="small opacity-75 mt-1">Total member</div>
                 <div class="fw-bold">{{ $tree['leg_stats']['rest']['count'] }}</div>
+                <div class="d-flex gap-3 mt-2 small">
+                    <span class="d-inline-flex align-items-center gap-1"><span class="status-dot green"></span>{{ $tree['leg_stats']['rest']['active_count'] }} active</span>
+                    <span class="d-inline-flex align-items-center gap-1"><span class="status-dot red"></span>{{ $tree['leg_stats']['rest']['inactive_count'] }} inactive</span>
+                </div>
             </div>
         </div>
     </div>
@@ -157,10 +169,20 @@
 
     <div class="card-png p-4">
         <h6 class="fw-bold mb-3">Team Payment Detail</h6>
+        <form method="GET" class="d-flex flex-wrap align-items-end gap-2 mb-3">
+            <div>
+                <label class="form-label small fw-semibold mb-1">Search</label>
+                <input type="text" name="q" class="form-control form-control-sm" style="min-width: 220px;" placeholder="Search any column..." value="{{ $search }}">
+            </div>
+            <button type="submit" class="btn btn-sm btn-navy">Search</button>
+            @if ($search !== '')
+                <a href="{{ route('team.index') }}" class="btn btn-sm btn-outline-secondary">Clear</a>
+            @endif
+        </form>
         <div class="table-responsive">
             <table class="table table-png align-middle">
                 <thead>
-                    <tr><th>Name</th><th>Level</th><th>Status</th><th>Rank</th><th>Invested</th><th>Joined</th></tr>
+                    <tr><th>S.No.</th><th>Name</th><th>Level</th><th>Status</th><th>Rank</th><th>Invested</th><th>Joined</th></tr>
                 </thead>
                 <tbody>
                     @forelse ($rows as $row)
@@ -169,6 +191,7 @@
                             $rowStatusLabel = ['yellow' => 'Dummy', 'green' => 'Active', 'red' => 'Inactive'][$rowStatus];
                         @endphp
                         <tr>
+                            <td>{{ $rows->firstItem() + $loop->index }}</td>
                             <td>{{ $row->name }}</td>
                             <td>Level {{ $row->depth }}</td>
                             <td>
@@ -182,10 +205,11 @@
                             <td>{{ \Illuminate\Support\Carbon::parse($row->created_at)->format('d M Y') }}</td>
                         </tr>
                     @empty
-                        <tr><td colspan="6" class="text-center text-muted py-4">No team members yet.</td></tr>
+                        <tr><td colspan="7" class="text-center text-muted py-4">No team members found.</td></tr>
                     @endforelse
                 </tbody>
             </table>
+            {{ $rows->links() }}
         </div>
     </div>
 @endsection

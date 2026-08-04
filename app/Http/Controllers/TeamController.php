@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class TeamController extends Controller
 {
@@ -14,26 +16,60 @@ class TeamController extends Controller
         $tree = $this->buildTree($user);
         $this->tagTeams($tree);
 
-        $rows = $this->flattenTree($tree);
-        usort($rows, fn ($a, $b) => $a->depth <=> $b->depth ?: $a->created_at <=> $b->created_at);
+        $allRows = $this->flattenTree($tree);
+        usort($allRows, fn ($a, $b) => $a->depth <=> $b->depth ?: $a->created_at <=> $b->created_at);
 
-        $teamSize = count($rows);
-        $totalTeamBusiness = array_sum(array_map(fn ($r) => (float) $r->invested, $rows));
+        $teamSize = count($allRows);
+        $totalTeamBusiness = array_sum(array_map(fn ($r) => (float) $r->invested, $allRows));
 
-        return view('dashboard.team', compact('rows', 'teamSize', 'totalTeamBusiness', 'tree'));
+        $search = trim((string) $request->query('q', ''));
+        $filtered = new Collection($allRows);
+
+        if ($search !== '') {
+            $filtered = $filtered->filter(function ($row) use ($search) {
+                $status = $row->is_dummy ? 'Dummy' : ((float) $row->invested > 0 ? 'Active' : 'Inactive');
+                $haystacks = [
+                    $row->name,
+                    'Level ' . $row->depth,
+                    $status,
+                    $row->rank_name ?? 'Unranked',
+                    number_format((float) $row->invested, 2),
+                    $row->created_at->format('d M Y'),
+                ];
+
+                foreach ($haystacks as $haystack) {
+                    if (stripos((string) $haystack, $search) !== false) {
+                        return true;
+                    }
+                }
+
+                return false;
+            })->values();
+        }
+
+        $perPage = 20;
+        $currentPage = (int) $request->query('page', 1);
+
+        $rows = new LengthAwarePaginator(
+            $filtered->forPage($currentPage, $perPage),
+            $filtered->count(),
+            $perPage,
+            $currentPage,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        return view('dashboard.team', compact('rows', 'teamSize', 'totalTeamBusiness', 'tree', 'search'));
     }
 
     /**
      * Builds the tree via plain Eloquent recursion (portable to any
      * MySQL/MariaDB version — no recursive CTE support required).
      */
-    private function buildTree(User $user, int $depth = 0, int $maxDepth = 20): array
+    private function buildTree(User $user, int $depth = 0): array
     {
-        $children = $depth >= $maxDepth
-            ? collect()
-            : $user->directReferrals()->with('currentRank')->orderBy('created_at')->get();
+        $children = $user->directReferrals()->with('currentRank')->orderBy('created_at')->get();
 
-        $childNodes = $children->map(fn (User $child) => $this->buildTree($child, $depth + 1, $maxDepth))->all();
+        $childNodes = $children->map(fn (User $child) => $this->buildTree($child, $depth + 1))->all();
 
         return [
             'user' => $user,
@@ -54,14 +90,23 @@ class TeamController extends Controller
     {
         $count = 1;
         $investment = (float) $node['invested'];
+        $activeCount = $investment > 0 ? 1 : 0;
+        $inactiveCount = $investment > 0 ? 0 : 1;
 
         foreach ($node['children'] as $child) {
             $childStats = $this->nodeStats($child);
             $count += $childStats['count'];
             $investment += $childStats['investment'];
+            $activeCount += $childStats['active_count'];
+            $inactiveCount += $childStats['inactive_count'];
         }
 
-        return ['count' => $count, 'investment' => $investment];
+        return [
+            'count' => $count,
+            'investment' => $investment,
+            'active_count' => $activeCount,
+            'inactive_count' => $inactiveCount,
+        ];
     }
 
     private function legStats(array $childNodes): array
@@ -71,7 +116,7 @@ class TeamController extends Controller
             ->sortByDesc('investment')
             ->values();
 
-        $empty = ['count' => 0, 'investment' => 0.0];
+        $empty = ['count' => 0, 'investment' => 0.0, 'active_count' => 0, 'inactive_count' => 0];
 
         return [
             'power' => $legs->get(0, $empty),
@@ -79,6 +124,8 @@ class TeamController extends Controller
             'rest' => [
                 'count' => $legs->slice(2)->sum('count'),
                 'investment' => $legs->slice(2)->sum('investment'),
+                'active_count' => $legs->slice(2)->sum('active_count'),
+                'inactive_count' => $legs->slice(2)->sum('inactive_count'),
             ],
         ];
     }

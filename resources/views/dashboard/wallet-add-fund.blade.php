@@ -83,12 +83,12 @@
                                 <td>{{ $fr->created_at->format('d M Y, H:i') }}</td>
                                 <td>${{ number_format($fr->amount, 2) }}</td>
                                 <td>
-                                    <span class="badge
-                                        @class([
-                                            'bg-warning text-dark' => $fr->status === 'pending',
-                                            'bg-success' => $fr->status === 'approved',
-                                            'bg-danger' => $fr->status === 'rejected',
-                                        ])">{{ $fr->status }}</span>
+                                    <span @class([
+                                        'badge',
+                                        'bg-warning text-dark' => $fr->status === 'pending',
+                                        'bg-success' => $fr->status === 'approved',
+                                        'bg-danger' => $fr->status === 'rejected',
+                                    ])>{{ $fr->status }}</span>
                                 </td>
                             </tr>
                         @endforeach

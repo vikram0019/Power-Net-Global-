@@ -20,14 +20,14 @@
                             <td class="fw-semibold">${{ number_format($w->net_amount, 2) }}</td>
                             <td><code class="small">{{ $w->bep20_address ?? '—' }}</code></td>
                             <td>
-                                <span class="badge
-                                    @class([
-                                        'bg-warning text-dark' => $w->status === 'pending',
-                                        'bg-info text-dark' => $w->status === 'otp_verified',
-                                        'bg-primary' => $w->status === 'approved',
-                                        'bg-danger' => $w->status === 'rejected',
-                                        'bg-success' => $w->status === 'paid',
-                                    ])">{{ str_replace('_', ' ', $w->status) }}</span>
+                                <span @class([
+                                    'badge',
+                                    'bg-warning text-dark' => $w->status === 'pending',
+                                    'bg-info text-dark' => $w->status === 'otp_verified',
+                                    'bg-primary' => $w->status === 'approved',
+                                    'bg-danger' => $w->status === 'rejected',
+                                    'bg-success' => $w->status === 'paid',
+                                ])>{{ str_replace('_', ' ', $w->status) }}</span>
                             </td>
                         </tr>
                     @empty
