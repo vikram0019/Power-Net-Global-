@@ -16,13 +16,13 @@
             @include('partials.investor-status', ['user' => $user])
         </div>
         <div class="text-end">
-            <span class="badge fs-6 mb-2
-                @class([
-                    'bg-success' => $user->status === 'active',
-                    'bg-info text-dark' => $user->status === 'approval_pending',
-                    'bg-warning text-dark' => $user->status === 'pending',
-                    'bg-danger' => $user->status === 'suspended',
-                ])">{{ str_replace('_', ' ', $user->status) }}</span>
+            <span @class([
+                'badge fs-6 mb-2',
+                'bg-success' => $user->status === 'active',
+                'bg-info text-dark' => $user->status === 'approval_pending',
+                'bg-warning text-dark' => $user->status === 'pending',
+                'bg-danger' => $user->status === 'suspended',
+            ])>{{ str_replace('_', ' ', $user->status) }}</span>
             <div class="d-flex gap-2 justify-content-end">
                 <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-sm btn-navy">
                     <i class="bi bi-pencil-square me-1"></i> Edit
