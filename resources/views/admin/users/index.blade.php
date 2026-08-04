@@ -37,7 +37,7 @@
                             </td>
                             <td>
                                 <div class="dropdown">
-                                    <button type="button" class="btn btn-sm btn-navy dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <button type="button" class="btn btn-sm btn-navy dropdown-toggle" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
                                         Action
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
@@ -137,6 +137,39 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!addFundModal) {
         return;
     }
+
+    // Action dropdowns live inside .table-responsive, which clips overflow
+    // on both axes (a browser quirk: overflow-x:auto forces the other axis
+    // to auto too, so it can't be reopened with CSS alone). Moving the menu
+    // to <body> with fixed positioning while open sidesteps the clipping
+    // entirely, then it's moved back on close so each row's own button
+    // still owns its own menu element.
+    document.querySelectorAll('.dropdown').forEach(function (dropdown) {
+        var toggle = dropdown.querySelector('.dropdown-toggle');
+        var menu = dropdown.querySelector('.dropdown-menu');
+        if (!toggle || !menu) {
+            return;
+        }
+
+        toggle.addEventListener('show.bs.dropdown', function () {
+            var rect = toggle.getBoundingClientRect();
+            document.body.appendChild(menu);
+            menu.style.position = 'fixed';
+            menu.style.top = rect.bottom + 'px';
+            menu.style.right = (window.innerWidth - rect.right) + 'px';
+            menu.style.left = 'auto';
+            menu.style.zIndex = 3000;
+        });
+
+        toggle.addEventListener('hidden.bs.dropdown', function () {
+            dropdown.appendChild(menu);
+            menu.style.position = '';
+            menu.style.top = '';
+            menu.style.right = '';
+            menu.style.left = '';
+            menu.style.zIndex = '';
+        });
+    });
 
     var addFundForm = document.getElementById('addFundForm');
     var addFundAmount = document.getElementById('addFundAmount');
