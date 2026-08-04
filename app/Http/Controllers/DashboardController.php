@@ -35,7 +35,7 @@ class DashboardController extends Controller
         $announcements = Announcement::active()->latest()->get();
 
         $achievedToday = $user->rankHistory()
-            ->whereDate('achieved_at', now()->toDateString())
+            ->where('achieved_at', '>=', now()->subDays(5)->startOfDay())
             ->with('rank')
             ->latest('achieved_at')
             ->first();

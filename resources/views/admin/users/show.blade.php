@@ -9,11 +9,34 @@
     </a>
 
     <div class="d-flex justify-content-between align-items-start mb-4">
-        <div>
-            <h4 class="fw-bold mb-0">{{ $user->name }}</h4>
-            <p class="text-muted small mb-0">{{ $user->email }} &middot; {{ $user->mobile }} &middot; Referral: <code>{{ $user->referral_code }}</code></p>
-            <p class="small mb-1">Sponsor: {{ $user->sponsor->name ?? '—' }} &middot; Joined {{ $user->created_at->format('d M Y') }}</p>
-            @include('partials.investor-status', ['user' => $user])
+        <div class="d-flex gap-3">
+            <div class="text-center">
+                @if ($user->profile_image)
+                    <img src="{{ asset('storage/' . $user->profile_image) }}" alt="{{ $user->name }}" class="rounded-circle mb-1" style="width:64px;height:64px;object-fit:cover;">
+                @else
+                    <div class="rounded-circle bg-secondary bg-opacity-25 d-flex align-items-center justify-content-center mb-1" style="width:64px;height:64px;">
+                        <i class="bi bi-person fs-4 text-muted"></i>
+                    </div>
+                @endif
+                <form method="POST" action="{{ route('admin.users.profile-image', $user) }}" enctype="multipart/form-data">
+                    @csrf
+                    <label class="small text-decoration-underline" style="cursor:pointer;" for="profileImageInput">Change</label>
+                    <input type="file" id="profileImageInput" name="profile_image" accept="image/png,image/jpeg" class="d-none" onchange="this.form.submit()">
+                </form>
+                @if ($user->profile_image)
+                    <form method="POST" action="{{ route('admin.users.profile-image.remove', $user) }}" data-confirm-title="Remove Profile Image" data-confirm="Remove {{ $user->name }}'s profile image?">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-link btn-sm text-danger small text-decoration-underline p-0">Remove</button>
+                    </form>
+                @endif
+            </div>
+            <div>
+                <h4 class="fw-bold mb-0">{{ $user->name }}</h4>
+                <p class="text-muted small mb-0">{{ $user->email }} &middot; {{ $user->mobile }} &middot; Referral: <code>{{ $user->referral_code }}</code></p>
+                <p class="small mb-1">Sponsor: {{ $user->sponsor->name ?? '—' }} &middot; Joined {{ $user->created_at->format('d M Y') }}</p>
+                @include('partials.investor-status', ['user' => $user])
+            </div>
         </div>
         <div class="text-end">
             <span @class([

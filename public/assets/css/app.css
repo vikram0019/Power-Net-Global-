@@ -885,6 +885,19 @@ body {
   filter: drop-shadow(0 6px 14px rgba(212, 169, 74, 0.45));
 }
 
+.rank-celebrate-photo {
+  position: relative;
+  z-index: 1;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: inline-block;
+  border: 3px solid var(--png-gold-400);
+  box-shadow: 0 6px 14px rgba(212, 169, 74, 0.45);
+  animation: rank-celebrate-bounce 1.3s ease-in-out infinite;
+}
+
 .rank-celebrate-name {
   position: relative;
   z-index: 1;
