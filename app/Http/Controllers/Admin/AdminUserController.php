@@ -20,7 +20,7 @@ class AdminUserController extends Controller
     {
         $search = $request->query('search');
 
-        $users = User::with('currentRank', 'sponsor')
+        $users = User::with('currentRank', 'sponsor', 'wallet')
             ->where('is_admin', false)
             ->where('status', '!=', 'pending')
             ->when($search, function ($query, $search) {
