@@ -4,6 +4,10 @@
 @section('page-title', 'Member Detail')
 
 @section('content')
+    <a href="{{ route('admin.users.index') }}" class="d-inline-flex align-items-center gap-1 text-decoration-none small fw-semibold mb-3">
+        <i class="bi bi-arrow-left"></i> Back to Users List
+    </a>
+
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div>
             <h4 class="fw-bold mb-0">{{ $user->name }}</h4>
