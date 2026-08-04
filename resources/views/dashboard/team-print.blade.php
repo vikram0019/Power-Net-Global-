@@ -22,6 +22,7 @@
             .print-bar { display: none; }
             body { padding: 0; }
             @page { size: landscape; margin: 12mm; }
+            .org-tree-wrap { zoom: 0.4; }
         }
     </style>
 </head>
