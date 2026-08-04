@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Withdrawal;
 use App\Services\WalletService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
 
@@ -16,11 +17,43 @@ class AdminWithdrawalController extends Controller
 
         $withdrawals = Withdrawal::with('user')
             ->when($status !== 'all', fn ($q) => $q->where('status', $status))
+            ->tap(fn ($q) => $this->applyDateRange($q, $request))
+            ->tap(fn ($q) => $this->applySearch($q, $request))
             ->latest()
             ->paginate(20)
             ->withQueryString();
 
         return view('admin.withdrawals.index', compact('withdrawals', 'status'));
+    }
+
+    private function applyDateRange(Builder $query, Request $request): void
+    {
+        if ($request->filled('from')) {
+            $query->whereDate('created_at', '>=', $request->input('from'));
+        }
+
+        if ($request->filled('to')) {
+            $query->whereDate('created_at', '<=', $request->input('to'));
+        }
+    }
+
+    private function applySearch(Builder $query, Request $request): void
+    {
+        $term = trim((string) $request->input('q', ''));
+
+        if ($term === '') {
+            return;
+        }
+
+        $query->where(function (Builder $q) use ($term) {
+            $q->where('amount', 'like', "%{$term}%")
+                ->orWhere('bep20_address', 'like', "%{$term}%")
+                ->orWhereRaw("DATE_FORMAT(created_at, '%d %b %Y') LIKE ?", ["%{$term}%"])
+                ->orWhereHas('user', function (Builder $uq) use ($term) {
+                    $uq->where('name', 'like', "%{$term}%")
+                        ->orWhere('referral_code', 'like', "%{$term}%");
+                });
+        });
     }
 
     public function approve(Request $request, Withdrawal $withdrawal, WalletService $walletService)

@@ -10,11 +10,30 @@
 
     <div class="d-flex flex-wrap gap-2 mb-4">
         @foreach ($statuses as $key => $label)
-            <a href="{{ route('admin.withdrawals.index', ['status' => $key]) }}" class="wallet-tab-btn {{ $status === $key ? 'active' : '' }} text-decoration-none">{{ $label }}</a>
+            <a href="{{ route('admin.withdrawals.index', array_merge(request()->except('page'), ['status' => $key])) }}" class="wallet-tab-btn {{ $status === $key ? 'active' : '' }} text-decoration-none">{{ $label }}</a>
         @endforeach
     </div>
 
     <div class="card-png p-4">
+        <form method="GET" class="d-flex flex-wrap align-items-end gap-2 mb-3">
+            <input type="hidden" name="status" value="{{ $status }}">
+            <div>
+                <label class="form-label small fw-semibold mb-1">Search</label>
+                <input type="text" name="q" class="form-control form-control-sm" style="min-width: 200px;" placeholder="Search name, referral code, amount..." value="{{ request('q') }}">
+            </div>
+            <div>
+                <label class="form-label small fw-semibold mb-1">From</label>
+                <input type="date" name="from" class="form-control form-control-sm" value="{{ request('from') }}">
+            </div>
+            <div>
+                <label class="form-label small fw-semibold mb-1">To</label>
+                <input type="date" name="to" class="form-control form-control-sm" value="{{ request('to') }}">
+            </div>
+            <button type="submit" class="btn btn-sm btn-navy">Filter</button>
+            @if (request()->filled('from') || request()->filled('to') || request()->filled('q'))
+                <a href="{{ route('admin.withdrawals.index', ['status' => $status]) }}" class="btn btn-sm btn-outline-secondary">Clear</a>
+            @endif
+        </form>
         <div class="table-responsive">
             <table class="table table-png align-middle">
                 <thead>
