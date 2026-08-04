@@ -61,6 +61,20 @@ class TeamController extends Controller
         return view('dashboard.team', compact('rows', 'teamSize', 'totalTeamBusiness', 'tree', 'search'));
     }
 
+    public function print(Request $request)
+    {
+        $user = $request->user();
+
+        $tree = $this->buildTree($user);
+        $this->tagTeams($tree);
+
+        $rows = $this->flattenTree($tree);
+        $teamSize = count($rows);
+        $totalTeamBusiness = array_sum(array_map(fn ($r) => (float) $r->invested, $rows));
+
+        return view('dashboard.team-print', compact('user', 'tree', 'teamSize', 'totalTeamBusiness'));
+    }
+
     /**
      * Builds the tree via plain Eloquent recursion (portable to any
      * MySQL/MariaDB version — no recursive CTE support required).

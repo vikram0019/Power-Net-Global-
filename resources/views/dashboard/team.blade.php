@@ -4,6 +4,12 @@
 @section('page-title', 'Team')
 
 @section('content')
+    <div class="d-flex justify-content-end mb-3">
+        <a href="{{ route('team.print') }}" target="_blank" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-printer me-1"></i> Print Team Tree
+        </a>
+    </div>
+
     <div class="row g-3 mb-4">
         <div class="col-md-6">
             <div class="stat-card">
