@@ -71,6 +71,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/team', [TeamController::class, 'index'])->name('team.index');
+    Route::get('/team/print', [TeamController::class, 'print'])->name('team.print');
     Route::get('/rank', [RankController::class, 'index'])->name('rank.index');
 });
 
