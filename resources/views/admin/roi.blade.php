@@ -26,11 +26,14 @@
     </div>
 
     <div class="card-png p-4 mb-4">
-        <h6 class="fw-bold mb-2"><i class="bi bi-calendar-check me-1"></i> Automatic Monthly Payout</h6>
+        <h6 class="fw-bold mb-2"><i class="bi bi-calendar-check me-1"></i> Automatic Daily Payout</h6>
         <p class="small text-muted mb-1">
-            MPG now runs automatically on the <strong>1st of every month</strong> — 8% of invested amount paid to every
-            MPG-enabled active investment under the {{ config('mlm.roi_max_months') }}-month cap. Dummy users with the
-            monthly MPG benefit turned off are skipped.
+            MPG now runs automatically <strong>once every day</strong> — each active, MPG-enabled investment is credited
+            {{ config('mlm.monthly_roi_percent') }}% &divide; days-in-month, so every calendar month still totals
+            {{ config('mlm.monthly_roi_percent') }}%, up to the lifetime cap of
+            {{ config('mlm.monthly_roi_percent') * config('mlm.roi_max_months') }}% ({{ config('mlm.roi_max_months') }}
+            months' worth). Dummy users with the MPG benefit turned off are skipped, and each investment is only paid
+            once per calendar day.
         </p>
         <p class="small text-muted mb-0">
             Next scheduled run: <strong>{{ $nextScheduledRun->format('d M Y, H:i') }}</strong>
@@ -47,9 +50,9 @@
         <h6 class="fw-bold mb-2">Run Manually</h6>
         <p class="small text-muted">
             Use this to run a payout on demand (e.g. to catch up if a scheduled run was missed, or during local testing
-            where no cron is wired up).
+            where no cron is wired up). Safe to click more than once — each investment is only paid once per day.
         </p>
-        <form method="POST" action="{{ route('admin.roi.run') }}" data-confirm-title="Run Monthly MPG Payout" data-confirm="Run monthly MPG payout now? This will credit 8% MPG to every eligible active investment and cannot be undone.">
+        <form method="POST" action="{{ route('admin.roi.run') }}" data-confirm-title="Run Daily MPG Payout" data-confirm="Run daily MPG payout now? This will credit today's MPG slice to every eligible active investment not yet paid today, and cannot be undone.">
             @csrf
             <button type="submit" class="btn btn-gold fw-bold px-4">
                 <i class="bi bi-play-circle me-1"></i> Run MPG Now

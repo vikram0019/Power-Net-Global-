@@ -18,7 +18,7 @@
                 <div class="position-relative" style="color: #fff;">
                     <div class="eyebrow-gold mb-2">Monthly Profit Sharing</div>
                     <h2 class="display-5 fw-800 mb-2">{{ config('mlm.monthly_roi_percent') }}% Monthly — <span style="color: var(--png-gold-400);">2x in {{ config('mlm.roi_max_months') }} Months</span></h2>
-                    <p class="opacity-75 col-lg-7 mx-auto mb-4">Every eligible investment earns {{ config('mlm.monthly_roi_percent') }}% every month for {{ config('mlm.roi_max_months') }} months — {{ config('mlm.monthly_roi_percent') * config('mlm.roi_max_months') }}% in total, doubling your original investment through monthly profit sharing alone.</p>
+                    <p class="opacity-75 col-lg-7 mx-auto mb-4">Every eligible investment earns {{ config('mlm.monthly_roi_percent') }}% every month, credited daily, for {{ config('mlm.roi_max_months') }} months — {{ config('mlm.monthly_roi_percent') * config('mlm.roi_max_months') }}% in total, doubling your original investment through monthly profit sharing alone.</p>
                     <div class="row g-3 justify-content-center">
                         <div class="col-4 col-md-3">
                             <div class="fs-3 fw-800" style="color: var(--png-gold-400);">{{ config('mlm.monthly_roi_percent') }}%</div>
@@ -185,7 +185,7 @@
                 <h6 class="fw-bold mb-2">Notes</h6>
                 <ul class="small text-muted mb-0">
                     <li>Withdrawals are paid after admin approval and email OTP verification.</li>
-                    <li>Monthly profit is 8% of the invested amount, paid monthly for up to {{ config('mlm.roi_max_months') }} months.</li>
+                    <li>Monthly profit is 8% of the invested amount, credited daily for up to {{ config('mlm.roi_max_months') }} months.</li>
                     <li>A minimum investment of ${{ number_format(config('mlm.minimum_investment')) }} is required to be eligible for the monthly profit, level income, and rank income benefits.</li>
                     <li>Every member has a wallet system to submit deposits and track all earnings.</li>
                     <li>Team Business requires all three legs (Power/2nd/Rest) to independently clear their own share — a large Power leg can't make up for an empty Rest bucket.</li>
