@@ -8,13 +8,12 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-// Pays each eligible active investment its daily slice of MPG (8% monthly,
-// divided by the number of days in the current month), automatically, once a
-// day. Requires the scheduler itself to be triggered regularly — in production
-// via a single cron entry (`* * * * * php artisan schedule:run`), locally via
-// a Windows Scheduled Task running the same command every minute.
+// Pays one month of ROI to every eligible active investment, automatically, on the
+// 1st of every month. Requires the scheduler itself to be triggered regularly —
+// in production via a single cron entry (`* * * * * php artisan schedule:run`),
+// locally via a Windows Scheduled Task running the same command every minute.
 Schedule::command('investments:pay-roi')
-    ->dailyAt('00:05')
-    ->name('daily-mpg-payout')
+    ->monthlyOn(1, '00:00')
+    ->name('monthly-roi-payout')
     ->withoutOverlapping()
     ->onOneServer();

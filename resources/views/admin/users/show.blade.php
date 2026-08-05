@@ -107,7 +107,7 @@
                                 <tr>
                                     <td>{{ $inv->created_at->format('d M Y') }}</td>
                                     <td>${{ number_format($inv->amount, 2) }}</td>
-                                    <td>{{ number_format($inv->roiMonthsEquivalent(), 1) }}/{{ config('mlm.roi_max_months') }} (${{ number_format($inv->roi_total_paid, 2) }})</td>
+                                    <td>{{ $inv->roi_months_paid }}/{{ config('mlm.roi_max_months') }} (${{ number_format($inv->roi_total_paid, 2) }})</td>
                                     <td><span class="badge {{ $inv->status === 'active' ? 'bg-success' : 'bg-secondary' }}">{{ $inv->status }}</span></td>
                                 </tr>
                             @empty

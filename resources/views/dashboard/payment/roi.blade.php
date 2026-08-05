@@ -19,22 +19,23 @@
             <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
                 <div>
                     <h6 class="fw-bold mb-1">Investment of ${{ number_format($investment->amount, 2) }}</h6>
-                    <div class="small text-muted">Invested {{ $investment->created_at->format('d M Y') }} &middot; 8% monthly (credited daily), {{ config('mlm.roi_max_months') }}-month schedule</div>
+                    <div class="small text-muted">Invested {{ $investment->created_at->format('d M Y') }} &middot; 8% monthly, {{ config('mlm.roi_max_months') }}-month schedule</div>
                 </div>
                 <div class="text-end">
                     <span class="badge {{ $investment->status === 'active' ? 'bg-success' : 'bg-secondary' }}">{{ $investment->status }}</span>
-                    <div class="small text-muted mt-1">{{ number_format($investment->roiMonthsEquivalent(), 1) }} / {{ config('mlm.roi_max_months') }} months' worth paid</div>
+                    <div class="small text-muted mt-1">{{ $investment->roi_months_paid }} / {{ config('mlm.roi_max_months') }} months paid</div>
                 </div>
             </div>
-            <div class="progress-png mb-3"><div class="bar" style="width: {{ min(100, ($investment->roiMonthsEquivalent() / config('mlm.roi_max_months')) * 100) }}%;"></div></div>
+            <div class="progress-png mb-3"><div class="bar" style="width: {{ min(100, ($investment->roi_months_paid / config('mlm.roi_max_months')) * 100) }}%;"></div></div>
 
             @if ($rows->count())
                 <div class="table-responsive">
                     <table class="table table-png align-middle mb-0">
-                        <thead><tr><th>Date Paid</th><th>Amount</th></tr></thead>
+                        <thead><tr><th>Month</th><th>Date Paid</th><th>Amount</th></tr></thead>
                         <tbody>
-                            @foreach ($rows as $row)
+                            @foreach ($rows as $i => $row)
                                 <tr>
+                                    <td>Month {{ $i + 1 }}</td>
                                     <td>{{ $row->created_at->format('d M Y, H:i') }}</td>
                                     <td class="fw-semibold">${{ number_format($row->amount, 2) }}</td>
                                 </tr>
